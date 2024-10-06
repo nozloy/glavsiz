@@ -1,0 +1,108 @@
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider          = "postgresql"
+  url               = env("DATABASE_URL")
+  shadowDatabaseUrl = env("SHADOW_DATABASE_URL")
+}
+
+model User {
+  id    Int    @id @default(autoincrement())
+  email String @unique
+  name  String
+  role  Role   @default(USER)
+}
+
+model ParentCategory {
+  id          Int        @id @default(autoincrement())
+  name        String     @unique
+  icon        String     @default("default_icon.png")
+  description String?
+  categories  Category[]
+}
+
+model Category {
+  id               Int            @id @default(autoincrement())
+  name             String
+  parentCategoryId Int
+  parentCategory   ParentCategory @relation(fields: [parentCategoryId], references: [id])
+  Subcategory      Subcategory[]
+  Item             Item[]
+}
+
+model Subcategory {
+  id         Int      @id @default(autoincrement())
+  name       String
+  categoryId Int
+  category   Category @relation(fields: [categoryId], references: [id])
+}
+
+model Item {
+  id          Int           @id @default(autoincrement())
+  name        String
+  description String?
+  vendorCode  String?
+  count       Int           @default(0)
+  size        String?
+  images      String[]
+  price       Int?
+  season      Season?
+  materials   String?
+  variants    ItemVariant[]
+  color       String?
+  category    Category?     @relation(fields: [categoryId], references: [id])
+  categoryId  Int
+}
+
+model ItemVariant {
+  id           Int      @id @default(autoincrement())
+  count        Int
+  specialPrice Int?
+  vendorCode   String?
+  itemId       Int
+  item         Item     @relation(fields: [itemId], references: [id])
+  size         String[]
+}
+
+model City {
+  id        Int       @id @default(autoincrement())
+  name      String    @unique
+  contacts  Contact[]
+  addresses Address[]
+}
+
+model Contact {
+  id        Int       @id @default(autoincrement())
+  one       String?
+  two       String?
+  three     String?
+  city      City      @relation(fields: [cityId], references: [id])
+  cityId    Int
+  addresses Address[] @relation("ContactAddresses")
+}
+
+model Address {
+  id       Int       @id @default(autoincrement())
+  name     String
+  url1     String
+  url2     String?
+  url3     String?
+  city     City      @relation(fields: [cityId], references: [id])
+  cityId   Int
+  contacts Contact[] @relation("ContactAddresses")
+}
+
+enum Season {
+  Spring
+  Summer
+  Autumn
+  Winter
+}
+
+enum Role {
+  ADMIN
+  MODER
+  USER
+}

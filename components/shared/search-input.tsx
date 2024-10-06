@@ -14,9 +14,9 @@ interface Props {
 }
 
 export const SearchInput: React.FC<Props> = ({ className }) => {
-	const [searchQuery, setSearchQuery] = React.useState('')
+	// const [searchQuery, setSearchQuery] = React.useState('')
 	const [focused, setFocused] = React.useState(false)
-	const [items, setItems] = React.useState<Item[]>([])
+	// const [items, setItems] = React.useState<Item[]>([])
 	const ref = React.useRef(null)
 
 	useClickAway(ref, () => {
@@ -28,7 +28,7 @@ export const SearchInput: React.FC<Props> = ({ className }) => {
 		const handleEsc = (event: KeyboardEvent) => {
 			if (event.key === 'Escape' || event.key === 'Tab') {
 				setFocused(false)
-				setSearchQuery('')
+				// setSearchQuery('')
 			}
 		}
 
@@ -40,28 +40,28 @@ export const SearchInput: React.FC<Props> = ({ className }) => {
 		}
 	}, [])
 	// Хук useDebounce для отправки асинхронного запроса при изменении searchQuery
-	useDebounce(
-		async () => {
-			try {
-				const response = await Api.items.search(searchQuery)
-				setItems(response)
-			} catch (error) {
-				console.log(error)
-			}
-		},
-		250,
-		[searchQuery],
-	)
+	// useDebounce(
+	// 	async () => {
+	// 		try {
+	// 			const response = await Api.items.search(searchQuery)
+	// 			setItems(response)
+	// 		} catch (error) {
+	// 			console.log(error)
+	// 		}
+	// 	},
+	// 	250,
+	// 	[searchQuery],
+	// )
 	// Возобновлять фокус при печати в строке поиска
 	const makeFocused = (value: string) => {
-		setSearchQuery(value)
+		// setSearchQuery(value)
 		setFocused(true)
 	}
 	// Функция для обработки клика по элементу списка
 	const onClickItem = () => {
 		setFocused(false)
-		setSearchQuery('')
-		setItems([])
+		// setSearchQuery('')
+		// setItems([])
 	}
 	return (
 		<>
@@ -82,11 +82,11 @@ export const SearchInput: React.FC<Props> = ({ className }) => {
 					type='text'
 					placeholder='Найти...'
 					onFocus={() => setFocused(true)}
-					value={searchQuery}
+					// value={searchQuery}
 					onChange={e => makeFocused(e.target.value)}
 				/>
 
-				{items.length > 0 && (
+				{/* {items.length > 0 && (
 					<div
 						className={cn(
 							'absolute w-full bg-white rounded-xl top-14 shadow-md transition-all duration-200 invisible opacity-0 z-30',
@@ -115,7 +115,7 @@ export const SearchInput: React.FC<Props> = ({ className }) => {
 							</Link>
 						))}
 					</div>
-				)}
+				)} */}
 			</div>
 		</>
 	)

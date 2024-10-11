@@ -14,6 +14,7 @@ export default async function ProductModalPage({
 	})
 
 	const item = await prisma.item.findMany({
+		distinct: ['vendorCode'],
 		where: {
 			categoryId: Number(id),
 		},

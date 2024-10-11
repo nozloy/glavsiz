@@ -1,12 +1,11 @@
 'use client'
 
-import Image from 'next/image'
 import { cn } from '@/lib/utils'
 import { Api } from '@/services/api-clients'
 import { Item } from '@prisma/client'
 import { Search } from 'lucide-react'
 import Link from 'next/link'
-import React, { useEffect } from 'react'
+import React from 'react'
 import { useClickAway, useDebounce } from 'react-use'
 
 interface Props {
@@ -14,55 +13,58 @@ interface Props {
 }
 
 export const SearchInput: React.FC<Props> = ({ className }) => {
-	// const [searchQuery, setSearchQuery] = React.useState('')
+	const [searchQuery, setSearchQuery] = React.useState('')
 	const [focused, setFocused] = React.useState(false)
-	// const [items, setItems] = React.useState<Item[]>([])
+	const [items, setItems] = React.useState<Item[]>([])
 	const ref = React.useRef(null)
 
 	useClickAway(ref, () => {
 		setFocused(false)
 	})
 
-	// Обработчик нажатия ESC
-	useEffect(() => {
-		const handleEsc = (event: KeyboardEvent) => {
-			if (event.key === 'Escape' || event.key === 'Tab') {
-				setFocused(false)
-				// setSearchQuery('')
-			}
-		}
-
-		document.addEventListener('keydown', handleEsc)
-
-		// Удаляем обработчик при размонтировании компонента
-		return () => {
-			document.removeEventListener('keydown', handleEsc)
-		}
-	}, [])
 	// Хук useDebounce для отправки асинхронного запроса при изменении searchQuery
-	// useDebounce(
-	// 	async () => {
-	// 		try {
-	// 			const response = await Api.items.search(searchQuery)
-	// 			setItems(response)
-	// 		} catch (error) {
-	// 			console.log(error)
-	// 		}
-	// 	},
-	// 	250,
-	// 	[searchQuery],
-	// )
-	// Возобновлять фокус при печати в строке поиска
-	const makeFocused = (value: string) => {
-		// setSearchQuery(value)
-		setFocused(true)
+	useDebounce(
+		async () => {
+			try {
+				if (!searchQuery) return
+				const response = await Api.items.search(searchQuery)
+				setItems(response)
+			} catch (error) {
+				console.log(error)
+			}
+		},
+		250,
+		[searchQuery],
+	)
+
+	// Обработка нажатия Enter в строке поиска
+	const handleKeyDown = (event: React.KeyboardEvent<HTMLInputElement>) => {
+		if (event.key === 'Enter') {
+			event.preventDefault() // Предотвращаем стандартное поведение
+			setFocused(false)
+			const param = searchQuery
+			if (param) {
+				window.location.href = `/catalog?query=${param}`
+			}
+		} else if (event.key === 'Escape') {
+			setFocused(false)
+			setSearchQuery('')
+		}
 	}
+
 	// Функция для обработки клика по элементу списка
 	const onClickItem = () => {
 		setFocused(false)
-		// setSearchQuery('')
-		// setItems([])
+		setSearchQuery('')
+		setItems([])
 	}
+
+	// Возобновлять фокус при печати в строке поиска
+	const makeFocused = (value: string) => {
+		setSearchQuery(value)
+		setFocused(true)
+	}
+
 	return (
 		<>
 			{focused && (
@@ -82,11 +84,12 @@ export const SearchInput: React.FC<Props> = ({ className }) => {
 					type='text'
 					placeholder='Найти...'
 					onFocus={() => setFocused(true)}
-					// value={searchQuery}
+					value={searchQuery}
 					onChange={e => makeFocused(e.target.value)}
+					onKeyDown={handleKeyDown} // Обработка нажатий клавиш
 				/>
 
-				{/* {items.length > 0 && (
+				{items.length > 0 && (
 					<div
 						className={cn(
 							'absolute w-full bg-white rounded-xl top-14 shadow-md transition-all duration-200 invisible opacity-0 z-30',
@@ -102,20 +105,15 @@ export const SearchInput: React.FC<Props> = ({ className }) => {
 									index === 0 && 'hover:rounded-t-xl', // Закругление верхнего края при наведении на первый элемент
 									index === items.length - 1 && 'hover:rounded-b-xl', // Закругление нижнего края при наведении на последний элемент
 								)}
-								href={`/product/${item.id}`}
+								href={`/item/${item.id}`}
 							>
-								<Image
-									width={32}
-									height={32}
-									className='rounded-sm h-8 w-8'
-									src={item.images[0]}
-									alt={item.name}
-								/>
-								<span>{item.name}</span>
+								<span>
+									{item.name} {item.size ? item.size : ''}
+								</span>
 							</Link>
 						))}
 					</div>
-				)} */}
+				)}
 			</div>
 		</>
 	)

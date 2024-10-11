@@ -1,9 +1,9 @@
 import { BestSellers, Container, RecentArrivals } from '@/components/shared'
 import { BannerCarousel } from '@/components/shared/banner-carousel'
-import { allItems, allCategories } from '@/lib/find-items'
+import { uniqueItems, allCategories } from '@/lib/find-items'
 
 export default async function Home() {
-	const items = await allItems()
+	const items = await uniqueItems()
 	const categories = await allCategories()
 	return (
 		<div className='bg-secondary'>

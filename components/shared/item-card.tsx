@@ -38,7 +38,7 @@ export const ItemCard: React.FC<Props> = ({
 	}
 	return (
 		<Link
-			className={cn('h-[470px] w-[255px]', className)}
+			className={cn('h-[420px] w-[255px]', className)}
 			href={'/item/' + item.id + '/'}
 		>
 			<Card className='group relative flex flex-col justify-end h-full shadow-md hover:shadow-lg hover:scale-105 hover:shadow-primary/50 cursor-pointer select-none transition-all duration-300 bg-card'>
@@ -51,23 +51,36 @@ export const ItemCard: React.FC<Props> = ({
 							item.name.slice(1).toLowerCase()}
 					</CardTitle>
 				</CardHeader>
-				<CardContent className='pt-2 pb-4 mt-auto'>
+				<CardContent className='pt-0 pb-4 mt-auto'>
 					{item && images ? (
-						<div className='relative w-[205px] h-[275px] overflow-hidden rounded-2xl mx-auto p-0'>
-							<Image
-								src={images[0]}
-								alt={item.name}
-								width={205}
-								height={275}
-								className={'scale-100'}
-							/>
-							<div className='absolute inset-0 rounded-2xl '></div>
-						</div>
+						(() => {
+							const isDefaultImage = images[0].includes('default')
+
+							return (
+								<div
+									className={`relative w-[205px] h-[275px] overflow-hidden rounded-2xl p-0 flex items-center justify-center`}
+								>
+									<Image
+										src={!isDefaultImage ? images[0] : '/logo_black.svg'}
+										alt={item.name}
+										width={155}
+										height={275}
+										className={`${
+											isDefaultImage
+												? 'object-contain opacity-30'
+												: 'object-cover'
+										}`}
+									/>
+									{/* тут должен быть стикер */}
+									<div className='absolute inset-0 rounded-2xl'></div>
+								</div>
+							)
+						})()
 					) : (
 						<Skeleton className='w-[205px] h-[275px] rounded-xl mx-auto' />
 					)}
 				</CardContent>
-				<CardFooter className='mt-auto flex flex-row justify-between '>
+				<CardFooter className='mt-auto flex flex-row justify-between pb-5'>
 					<p className='text-muted-foreground pl-1 text-lg font-semibold'>
 						{item.price} ₽
 					</p>

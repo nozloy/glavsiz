@@ -10,5 +10,9 @@ export const ItemDescription: React.FC<Props> = ({
 	className,
 	description,
 }) => {
-	return <div className={cn('', className)}>{description}</div>
+	return (
+		<div className={cn('overflow-auto scrollbar h-[320px]', className)}>
+			{description}
+		</div>
+	)
 }

@@ -1,5 +1,6 @@
 import { ModalItem } from '@/components/shared/modal'
 import { prisma } from '@/prisma/prisma-client'
+import { Item } from '@prisma/client'
 import { notFound } from 'next/navigation'
 
 export default async function ProductModalPage({
@@ -12,6 +13,15 @@ export default async function ProductModalPage({
 			id: Number(id),
 		},
 	})
+	const vendorId = item?.vendorCode
+	let variants: Item[] = []
+	if (vendorId) {
+		variants = await prisma.item.findMany({
+			where: {
+				vendorCode: vendorId,
+			},
+		})
+	}
 
 	const category = await prisma.category.findFirst({
 		where: {
@@ -23,5 +33,5 @@ export default async function ProductModalPage({
 		return notFound()
 	}
 
-	return <ModalItem item={item} category={category} />
+	return <ModalItem item={item} category={category} variants={variants} />
 }

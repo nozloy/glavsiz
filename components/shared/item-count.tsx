@@ -21,7 +21,9 @@ export const ItemCount: React.FC<Props> = ({ className, count, id }) => {
 						exit={{ opacity: 0, x: 20 }}
 						transition={{ duration: 0.3 }}
 					>
-						<Badge className='select-none text-md'>В наличии {count} шт.</Badge>
+						<Badge className='rounded-md select-none text-md text-secondary-foreground bg-secondary p-3 py-2'>
+							В наличии {count} шт.
+						</Badge>
 					</motion.div>
 				) : (
 					<motion.div

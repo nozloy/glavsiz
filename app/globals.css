@@ -2,6 +2,9 @@
 @tailwind components;
 @tailwind utilities;
 
+html {
+	scroll-behavior: smooth;
+}
 @layer base {
 	:root {
 		--background: 0 0% 100%;
@@ -56,6 +59,24 @@
 		--chart-3: 30 80% 55%;
 		--chart-4: 280 65% 60%;
 		--chart-5: 340 75% 55%;
+	}
+
+	.scrollbar::-webkit-scrollbar {
+		width: 4px;
+	}
+
+	.scrollbar::-webkit-scrollbar-track {
+		border-radius: 6px;
+		background: #fff;
+	}
+
+	.scrollbar::-webkit-scrollbar-thumb {
+		background: #dbdadd;
+		border-radius: 6px;
+	}
+
+	.scrollbar::-webkit-scrollbar-thumb:hover {
+		background: #dbdadd;
 	}
 }
 

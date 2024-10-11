@@ -31,7 +31,7 @@ export const ItemCode: React.FC<Props> = ({ className, code }) => {
 					transition={{ duration: 0.3 }}
 				>
 					<Badge
-						className='select-none text-md cursor-pointer'
+						className='py-[6px] select-none text-md cursor-pointer'
 						onClick={handleCopyToClipboard}
 					>
 						{code}

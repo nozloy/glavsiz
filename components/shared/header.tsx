@@ -1,8 +1,7 @@
+'use client'
 import React from 'react'
 import { cn } from '@/lib/utils'
 import Image from 'next/image'
-import { Button } from '@/components/ui/button'
-import { User } from 'lucide-react'
 import Link from 'next/link'
 import {
 	Container,
@@ -11,13 +10,15 @@ import {
 	SearchInput,
 } from '@/components/shared'
 import { TelephoneLink } from './telephone-link'
-import { ParentCategoriesMenu } from './parent-categories-menu'
+import { AuthButton } from './auth-button'
+import { ModalAuth } from '@/components/shared/modal/modal-auth'
 
 interface Props {
 	className?: string
 }
 
 export const Header: React.FC<Props> = ({ className }) => {
+	const [openAuthModal, setOpenAuthModal] = React.useState(false)
 	return (
 		<header className={cn(' bg-background', className)}>
 			<Container className='flex flex-col gap-2 pb-0'>
@@ -45,10 +46,12 @@ export const Header: React.FC<Props> = ({ className }) => {
 
 					{/* Правая сторона - меню */}
 					<div className='flex items-center gap-3'>
-						<Button variant={'outline'} className='flex items-center gap-1'>
-							<User size={16} />
-							Войти
-						</Button>
+						<ModalAuth
+							open={openAuthModal}
+							onClose={() => setOpenAuthModal(false)}
+						/>
+
+						<AuthButton onClickSignIn={() => setOpenAuthModal(true)} />
 						<div>
 							<CartButton />
 						</div>

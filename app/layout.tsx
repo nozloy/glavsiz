@@ -1,7 +1,7 @@
 import { Montserrat } from 'next/font/google'
 import '@/app/globals.css'
 import { cn } from '@/lib/utils'
-import { Toaster } from '@/components/ui/sonner'
+import { Providers } from '@/components/shared/providers'
 const montserrat = Montserrat({
 	subsets: ['cyrillic'],
 	variable: '--font-montserrat',
@@ -29,8 +29,7 @@ export default function RootLayout({
 					montserrat.variable,
 				)}
 			>
-				{children}
-				<Toaster />
+				<Providers>{children}</Providers>
 			</body>
 		</html>
 	)

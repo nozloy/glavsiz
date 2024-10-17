@@ -19,6 +19,7 @@
 		"seed": "ts-node --compiler-options {\"module\":\"CommonJS\"} prisma/seed.ts"
 	},
 	"dependencies": {
+		"@hookform/resolvers": "^3.9.0",
 		"@radix-ui/react-alert-dialog": "^1.1.1",
 		"@radix-ui/react-avatar": "^1.1.0",
 		"@radix-ui/react-checkbox": "^1.1.1",
@@ -38,6 +39,7 @@
 		"@radix-ui/react-switch": "^1.1.0",
 		"@tanstack/react-table": "^8.20.1",
 		"axios": "^1.7.7",
+		"bcrypt": "^5.1.1",
 		"class-variance-authority": "^0.7.0",
 		"clsx": "^2.1.1",
 		"cmdk": "^1.0.0",
@@ -46,9 +48,11 @@
 		"framer-motion": "^11.3.31",
 		"lucide-react": "^0.435.0",
 		"next": "^14.2.14",
+		"next-auth": "^4.24.8",
 		"next-themes": "^0.3.0",
 		"react": "^18",
 		"react-dom": "^18",
+		"react-hook-form": "^7.53.0",
 		"react-use": "^17.5.1",
 		"scrollbar-width": "^3.1.1",
 		"sonner": "^1.5.0",
@@ -61,6 +65,7 @@
 	},
 	"devDependencies": {
 		"@prisma/client": "^5.19.0",
+		"@types/bcrypt": "^5.0.2",
 		"@types/node": "^20",
 		"@types/react": "^18",
 		"@types/react-dom": "^18",

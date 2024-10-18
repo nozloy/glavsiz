@@ -1,4 +1,4 @@
-import React from 'react'
+import React, { lazy, useState } from 'react'
 import {
 	Card,
 	CardContent,
@@ -13,7 +13,7 @@ import { Button } from '../ui/button'
 import { Item, Category } from '@prisma/client'
 import Image from 'next/image'
 import Link from 'next/link'
-import { Separator } from '../ui/separator'
+import { Suspense } from 'react'
 
 interface Props {
 	className?: string
@@ -28,65 +28,43 @@ export const ItemCard: React.FC<Props> = ({
 	category,
 	images,
 }) => {
-	if (!item || !category) {
-		return (
-			<Skeleton
-				className='h-[470px] w-[255px] rounded-xl mx-auto bg-muted-foreground shadow-md
-			cursor-pointer select-none transition-all'
-			></Skeleton>
-		)
-	}
+	const isDefaultImage = images[0].includes('default')
 	return (
 		<Link
-			className={cn('h-[420px] w-[255px]', className)}
+			className={cn('h-[440px] w-[255px]', className)}
 			href={'/item/' + item.id + '/'}
 		>
 			<Card className='group relative flex flex-col justify-end h-full shadow-md hover:shadow-lg hover:scale-105 hover:shadow-primary/50 cursor-pointer select-none transition-all duration-300 bg-card'>
-				<CardHeader className='pb-0 pt-4 *:text-right *:drop-shadow-sm *:group-hover:drop-shadow-md *:group-hover:drop-shadow-primary'>
-					{/* <CardDescription className='min-h-10'>
-						{category.name}
-					</CardDescription> */}
+				<CardHeader className='pb-0 pt-6 *:text-right *:drop-shadow-sm *:group-hover:drop-shadow-md *:group-hover:drop-shadow-primary'>
 					<CardTitle className='min-h-12 line-clamp-3'>
 						{item.name.charAt(0).toUpperCase() +
 							item.name.slice(1).toLowerCase()}
 					</CardTitle>
 				</CardHeader>
 				<CardContent className='pt-0 pb-4 mt-auto'>
-					{item && images ? (
-						(() => {
-							const isDefaultImage = images[0].includes('default')
-
-							return (
-								<div
-									className={`relative w-[205px] h-[275px] overflow-hidden rounded-2xl p-0 flex items-center justify-center`}
-								>
-									<Image
-										src={!isDefaultImage ? images[0] : '/logo_black.svg'}
-										alt={item.name}
-										width={155}
-										height={275}
-										className={`${
-											isDefaultImage
-												? 'object-contain opacity-30'
-												: 'object-cover'
-										}`}
-									/>
-									{/* тут должен быть стикер */}
-									<div className='absolute inset-0 rounded-2xl'></div>
-								</div>
-							)
-						})()
-					) : (
-						<Skeleton className='w-[205px] h-[275px] rounded-xl mx-auto' />
-					)}
+					<div
+						className={`relative w-[205px] h-[275px] overflow-hidden rounded-2xl p-0 flex items-center justify-center`}
+					>
+						<Image
+							src={!isDefaultImage ? images[0] : '/logo_black.svg'}
+							alt={item.name}
+							width={155}
+							height={275}
+							className={`${
+								isDefaultImage ? 'object-contain opacity-30' : 'object-cover'
+							}`}
+						/>
+						{/* тут должен быть стикер */}
+						<div className='absolute inset-0 rounded-2xl'></div>
+					</div>
 				</CardContent>
 				<CardFooter className='mt-auto flex flex-row justify-between pb-5'>
-					<p className='text-muted-foreground pl-1 text-lg font-semibold'>
+					<p className=' text-accent-foreground pl-1 text-xl font-bold'>
 						{item.price} ₽
 					</p>
 					<Button
 						variant={'default'}
-						className='font-semibold text-md text-accent-foreground'
+						className='font-semibold text-md text-card-foreground'
 					>
 						подробнее
 					</Button>

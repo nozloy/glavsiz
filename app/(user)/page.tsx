@@ -1,6 +1,7 @@
 import { BestSellers, Container, RecentArrivals } from '@/components/shared'
 import { BannerCarousel } from '@/components/shared/banner-carousel'
 import { uniqueItems, allCategories } from '@/lib/find-items'
+import { Suspense } from 'react'
 
 export default async function Home() {
 	const items = await uniqueItems()

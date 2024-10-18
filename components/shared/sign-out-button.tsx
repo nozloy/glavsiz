@@ -12,11 +12,11 @@ interface Props {
 
 export const SignOutButton: React.FC<Props> = ({ className }) => {
 	return (
-		<div className={cn('', className)}>
+		<div className={cn('p-1', className)}>
 			<Button
 				onClick={() => signOut({ callbackUrl: '/' })}
 				variant={'outline'}
-				className='flex items-center gap-1 w-full text-md border-primary-foreground text-primary-foreground'
+				className='p-1 flex items-center gap-1 w-full text-md border-muted-foreground/50 text-muted-foreground'
 			>
 				<LogOut size={16} />
 				Выйти

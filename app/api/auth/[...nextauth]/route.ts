@@ -34,7 +34,7 @@ export const authOptions: AuthOptions = {
 			clientSecret: process.env.VK_CLIENT_SECRET || '',
 			authorization: {
 				params: {
-					scope: 'email, phone',
+					scope: 'email phone',
 				},
 			},
 
@@ -53,12 +53,12 @@ export const authOptions: AuthOptions = {
 	],
 	callbacks: {
 		async signIn({ user, account, profile }) {
-			console.log('Sign In Callback - User:', user)
-			console.log('Sign In Callback - Account:', account)
-			console.log(
-				'Sign In Callback - Profile:',
-				JSON.stringify(profile, null, 2),
-			)
+			// console.log('Sign In Callback - User:', user)
+			// console.log('Sign In Callback - Account:', account)
+			// console.log(
+			// 	'Sign In Callback - Profile:',
+			// 	JSON.stringify(profile, null, 2),
+			// )
 			try {
 				if (!user.email) {
 					return false

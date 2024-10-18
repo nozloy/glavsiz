@@ -1,5 +1,4 @@
 import { AuthOptions } from 'next-auth'
-import NextAuth from 'next-auth'
 import YandexProvider from 'next-auth/providers/yandex'
 import VkProvider from 'next-auth/providers/vk'
 import { prisma } from '@/prisma/prisma-client'
@@ -13,14 +12,19 @@ export const authOptions: AuthOptions = {
 		YandexProvider({
 			clientId: process.env.YANDEX_CLIENT_ID || '',
 			clientSecret: process.env.YANDEX_CLIENT_SECRET || '',
+			authorization: {
+				params: {
+					scope: 'login:email login:info login:avatar login:default_phone',
+				},
+			},
 			profile(profile) {
-				console.log('Yandex OAuth Profile Response:', profile)
 				return {
 					id: profile.id,
 					name: profile.real_name,
 					email: profile.default_email,
 					image: `https://avatars.yandex.net/get-yapic/${profile.default_avatar_id}/islands-68`,
 					role: 'USER' as UserRole,
+					phone: profile.default_phone?.number || '',
 				}
 			},
 		}),
@@ -29,15 +33,11 @@ export const authOptions: AuthOptions = {
 			clientSecret: process.env.VK_CLIENT_SECRET || '',
 			authorization: {
 				params: {
-					scope: 'email',
+					scope: 'email phone',
 				},
 			},
 
 			profile(profile, user) {
-				console.log(
-					'VK OAuth Full Profile Response:',
-					JSON.stringify(profile, null, 2),
-				)
 				const vkProfile = profile?.response?.[0]
 				return {
 					id: String(vkProfile.id),
@@ -45,12 +45,19 @@ export const authOptions: AuthOptions = {
 					email: user.email ? String(user.email) : null,
 					image: vkProfile.photo_100,
 					role: 'USER' as UserRole,
+					phone: '',
 				}
 			},
 		}),
 	],
 	callbacks: {
-		async signIn({ user, account }) {
+		async signIn({ user, account, profile }) {
+			// console.log('Sign In Callback - User:', user)
+			// console.log('Sign In Callback - Account:', account)
+			// console.log(
+			// 	'Sign In Callback - Profile:',
+			// 	JSON.stringify(profile, null, 2),
+			// )
 			try {
 				if (!user.email) {
 					return false
@@ -76,6 +83,8 @@ export const authOptions: AuthOptions = {
 						data: {
 							provider: account?.provider,
 							providerId: account?.providerAccountId,
+							phoneNumber: user?.phone,
+							verified: new Date(),
 						},
 					})
 
@@ -89,6 +98,7 @@ export const authOptions: AuthOptions = {
 						verified: new Date(),
 						image: user.image,
 						provider: account?.provider,
+						phoneNumber: user?.phone,
 						providerId: account?.providerAccountId,
 					},
 				})
@@ -129,6 +139,3 @@ export const authOptions: AuthOptions = {
 		},
 	},
 }
-const handler = NextAuth(authOptions)
-
-export { handler as GET, handler as POST }

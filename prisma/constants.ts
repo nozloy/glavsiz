@@ -1,21 +1,6 @@
 import { prisma } from './prisma-client'
 import { Role } from '@prisma/client'
 export default async function constants() {
-	await prisma.user.createMany({
-		data: [
-			{
-				email: 'user@glavsiz.com',
-				name: 'User',
-				role: Role.USER,
-			},
-			{
-				email: 'admin@glavsiz.com',
-				name: 'Admin',
-				role: Role.ADMIN,
-			},
-		],
-	})
-
 	// Создаем города
 	const ufa = await prisma.city.upsert({
 		where: { name: 'Уфа' },

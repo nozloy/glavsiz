@@ -7,7 +7,6 @@ import { Role as UserRole } from '@prisma/client'
 
 export const authOptions: AuthOptions = {
 	secret: process.env.NEXTAUTH_SECRET,
-
 	providers: [
 		YandexProvider({
 			clientId: process.env.YANDEX_CLIENT_ID || '',
@@ -33,7 +32,7 @@ export const authOptions: AuthOptions = {
 			clientSecret: process.env.VK_CLIENT_SECRET || '',
 			authorization: {
 				params: {
-					scope: 'email phone',
+					scope: 'email',
 				},
 			},
 
@@ -45,19 +44,19 @@ export const authOptions: AuthOptions = {
 					email: user.email ? String(user.email) : null,
 					image: vkProfile.photo_100,
 					role: 'USER' as UserRole,
-					phone: '',
+					phone: vkProfile.phone
+						? String(vkProfile.phone)
+						: user.phone
+						? String(user.phone)
+						: '',
 				}
 			},
 		}),
 	],
 	callbacks: {
-		async signIn({ user, account, profile }) {
+		async signIn({ user, account }) {
 			// console.log('Sign In Callback - User:', user)
 			// console.log('Sign In Callback - Account:', account)
-			// console.log(
-			// 	'Sign In Callback - Profile:',
-			// 	JSON.stringify(profile, null, 2),
-			// )
 			try {
 				if (!user.email) {
 					return false

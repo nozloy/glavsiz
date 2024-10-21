@@ -78,6 +78,9 @@ html {
 	.scrollbar::-webkit-scrollbar-thumb:hover {
 		background: #dbdadd;
 	}
+	.tabs-trigger-active {
+		color: var(--primary-color);
+	}
 }
 
 @layer base {

@@ -9,12 +9,17 @@ export default async function Home() {
 	const categories = await allCategories()
 	return (
 		<div className='bg-secondary'>
-			<Container className='flex flex-col items-center justify-center gap-6'>
-				<BannerCarousel />
-				{/* <BestSellers items={items} categories={categories} /> */}
-				<RecentArrivals items={items} categories={categories} />
-				<Benefits />
-			</Container>
+			<div className='block md:hidden'>
+				<h1>Для работы с сайтом используйте ПК или планшет</h1>
+			</div>
+			<div className='hidden md:block'>
+				<Container className='flex flex-col items-center justify-center gap-6'>
+					<BannerCarousel />
+					{/* <BestSellers items={items} categories={categories} /> */}
+					<RecentArrivals items={items} categories={categories} />
+					<Benefits />
+				</Container>
+			</div>
 		</div>
 	)
 }

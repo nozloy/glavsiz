@@ -20,7 +20,7 @@ interface Props {
 export const Header: React.FC<Props> = ({ className }) => {
 	const [openAuthModal, setOpenAuthModal] = React.useState(false)
 	return (
-		<header className={cn(' bg-background', className)}>
+		<header className={cn(' bg-background hidden md:block', className)}>
 			<Container className='flex flex-col gap-2 pb-0'>
 				<div className='flex items-center justify-between bg-secondary p-1 rounded-xl'>
 					{/* Левая сторона - город */}

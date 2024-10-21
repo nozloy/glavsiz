@@ -7,7 +7,9 @@ interface Props {
 
 export const DeliveryTab: React.FC<Props> = ({ className }) => {
 	return (
-		<div className={cn('h-[350px] p-4 bg-card rounded-xl', className)}>
+		<div
+			className={cn('h-[350px] p-4 bg-card rounded-xl shadow-lg', className)}
+		>
 			Быстрая и удобная доставка спецодежды от компании «Главсиз»
 			<p>
 				Компания «Главсиз» заботится о том, чтобы наши клиенты получали

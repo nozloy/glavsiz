@@ -9,7 +9,7 @@ interface Props {
 
 export const Footer: React.FC<Props> = ({ className }) => {
 	return (
-		<div className={cn('bg-background mt-auto', className)}>
+		<div className={cn('bg-background mt-auto hidden md:block', className)}>
 			<Container>
 				<div className='flex flex-row gap-2 justify-between items-center p-3 '>
 					<p className='text-base font-bold text-muted-foreground'>

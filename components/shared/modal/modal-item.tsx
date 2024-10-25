@@ -12,12 +12,11 @@ import {
 } from '@/components/ui/dialog'
 import { useRouter } from 'next/navigation'
 import Image from 'next/image'
-import { ItemMaterials } from '../item-materials'
-import { ItemColor } from '../item-color'
 import { ItemCode } from '../item-code'
 import { ItemCount } from '../item-count'
 import { ItemDescription } from '../item-description'
 import { ItemVariants } from '../item-variants'
+import { ItemProps } from '../item-props'
 
 interface Props {
 	className?: string
@@ -72,10 +71,12 @@ export const ModalItem: React.FC<Props> = ({
 							</DialogTitle>
 						</DialogHeader>
 						<div className='flex flex-col gap-3  pt-4'>
-							<ItemColor color={item.color ? item.color : 'Нет цвета'} />
-							<ItemMaterials
-								material={item.materials ? item.materials : 'Нет материала'}
-							/>
+							{item && item.color && (
+								<ItemProps propsName='Цвет' propsValue={item.color} />
+							)}
+							{item && item.materials && (
+								<ItemProps propsName='Материалы' propsValue={item.materials} />
+							)}
 							<div className='flex flex-row gap-5 items-center'>
 								{variants && variants[1] && (
 									<ItemVariants

@@ -15,7 +15,7 @@ export default function UserLayout({
 	modal: React.ReactNode
 }>) {
 	return (
-		<main className='flex flex-col min-h-screen'>
+		<main className='flex flex-col min-h-dvh md:min-h-screen'>
 			<Header />
 			<ParentCategoriesMenu />
 			{modal}

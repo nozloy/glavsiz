@@ -2,7 +2,6 @@ import { Product } from '@/components/shared/product'
 import { prisma } from '@/prisma/prisma-client'
 import { Item } from '@prisma/client'
 import { notFound } from 'next/navigation'
-import { Suspense } from 'react'
 
 export default async function ProductPage({
 	params: { id },

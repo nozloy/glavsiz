@@ -81,6 +81,10 @@ html {
 	.tabs-trigger-active {
 		color: var(--primary-color);
 	}
+	.neo {
+		background: #ffffff;
+		box-shadow: 30px 30px 60px #d6d6d6, -30px -30px 60px #ffffff;
+	}
 }
 
 @layer base {

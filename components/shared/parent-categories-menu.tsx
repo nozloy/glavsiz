@@ -50,7 +50,7 @@ export const ParentCategoriesMenu: React.FC<Props> = async ({ className }) => {
 	const parentCategories = await prisma.parentCategory.findMany()
 	const categories = await prisma.category.findMany()
 	return (
-		<div className='z-10 w-full pt-0 bg-background pb-2 pl-2 border-b sticky top-0'>
+		<div className='z-10 w-full pt-0 bg-background pb-2 pl-2 border-b sticky top-0 hidden md:block'>
 			<Container className='py-0'>
 				<NavigationMenu
 					className={cn(

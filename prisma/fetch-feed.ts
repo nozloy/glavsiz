@@ -62,14 +62,34 @@ export default async function fetchFeed() {
 								p.$.name.toLowerCase().includes('материал'),
 						  )?._ || '' // Ищем первый материал
 						: '',
-				season: offer.name.toLowerCase().includes('зим')
-					? Season.Winter // Если в названии есть 'зим', то Winter
-					: Season.Summer, // В любом другом случае Summer
+				season: offer.name.toLowerCase().includes('зим') //если в названии есть корень зим
+					? Season.Winter // то сезон летний
+					: offer.name.toLowerCase().includes('лет') //если в названии есть корень лет
+					? Season.Summer // то сезон зимний
+					: null,
 				color:
 					offer.param && Array.isArray(offer.param)
 						? offer.param.find((p: any) =>
 								p.$.name.toLowerCase().includes('цвет'),
 						  )?._ // Ищем цвет
+						: undefined,
+				brand:
+					offer.param && Array.isArray(offer.param)
+						? offer.param.find((p: any) =>
+								p.$.name.toLowerCase().includes('бренд'),
+						  )?._ // Ищем бренд
+						: undefined,
+				materialLiner:
+					offer.param && Array.isArray(offer.param)
+						? offer.param.find((p: any) =>
+								p.$.name.toLowerCase().includes('подкладка'),
+						  )?._ // Ищем подкладка
+						: undefined,
+				materialInsulation:
+					offer.param && Array.isArray(offer.param)
+						? offer.param.find((p: any) =>
+								p.$.name.toLowerCase().includes('утеплитель'),
+						  )?._ // Ищем утеплитель
 						: undefined,
 			}
 		})

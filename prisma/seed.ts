@@ -12,7 +12,6 @@ async function down() {
 	await prisma.$executeRaw`TRUNCATE TABLE "ParentCategory" RESTART IDENTITY CASCADE`
 	await prisma.$executeRaw`TRUNCATE TABLE "Category" RESTART IDENTITY CASCADE`
 	await prisma.$executeRaw`TRUNCATE TABLE "Item" RESTART IDENTITY CASCADE`
-	await prisma.$executeRaw`TRUNCATE TABLE "ItemVariant" RESTART IDENTITY CASCADE`
 	console.log('База данных очищена.')
 }
 
@@ -35,7 +34,7 @@ async function upItems(items: any[]) {
 		if (subcategoryMap.has(categoryId)) {
 			finalCategoryId = subcategoryMap.get(categoryId)!
 		}
-
+		console.log('Создаем товар: ', item.name, ' ', item.vendorCode)
 		await prisma.item.upsert({
 			where: { id: Number(item.id) },
 			update: {
@@ -50,6 +49,9 @@ async function upItems(items: any[]) {
 				materials: item.materials,
 				categoryId: finalCategoryId,
 				color: item.color,
+				brand: item.brand,
+				materialLiner: item.materialLiner,
+				materialInsulation: item.materialInsulation,
 			},
 			create: {
 				name: item.name,
@@ -63,6 +65,9 @@ async function upItems(items: any[]) {
 				materials: item.materials,
 				categoryId: finalCategoryId,
 				color: item.color,
+				brand: item.brand,
+				materialLiner: item.materialLiner,
+				materialInsulation: item.materialInsulation,
 			},
 		})
 	}

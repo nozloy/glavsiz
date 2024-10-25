@@ -25,18 +25,22 @@ export const ItemVariants: React.FC<Props> = ({
 		onVariantChange(selectedId)
 	}
 	return (
-		<div className={cn('flex flex-row gap-2 items-center', className)}>
-			<p className='text-md text-muted-foreground'>Вариант</p>
+		<div className={cn('flex flex-col gap-2 items-start py-6', className)}>
+			<p className='text-md text-muted-foreground'>Выберите размер</p>
 			<Select
 				defaultValue={variants[0].id.toString()}
 				onValueChange={handleSelectChange}
 			>
-				<SelectTrigger className='w-auto min-w-[80px] border-none bg-secondary'>
+				<SelectTrigger className='w-auto min-w-[200px] border-none bg-card text-lg'>
 					<SelectValue placeholder={variants[0].size} />
 				</SelectTrigger>
 				<SelectContent>
 					{variants.map(item => (
-						<SelectItem key={item.id} value={item.id.toString()}>
+						<SelectItem
+							className='text-lg'
+							key={item.id}
+							value={item.id.toString()}
+						>
 							{item.size}
 						</SelectItem>
 					))}

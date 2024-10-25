@@ -9,13 +9,13 @@ interface Props {
 
 export const Footer: React.FC<Props> = ({ className }) => {
 	return (
-		<div className={cn('bg-background mt-auto hidden md:block', className)}>
+		<div className={cn('bg-background mt-auto', className)}>
 			<Container>
-				<div className='flex flex-row gap-2 justify-between items-center p-3 '>
+				<div className='flex flex-col md:flex-row gap-2 justify-between items-center p-3 '>
 					<p className='text-base font-bold text-muted-foreground'>
 						2021-2024 © ООО ГЛАВСИЗ - Все права защищены их обладаетлями.
 					</p>
-					<Socials />
+					<Socials className='hidden md:flex' />
 				</div>
 			</Container>
 		</div>

@@ -48,30 +48,22 @@ model Subcategory {
 }
 
 model Item {
-  id          Int           @id @default(autoincrement())
-  name        String
-  description String?
-  vendorCode  String?
-  count       Int           @default(0)
-  size        String?
-  images      String[]
-  price       Int?
-  season      Season?
-  materials   String?
-  variants    ItemVariant[]
-  color       String?
-  category    Category?     @relation(fields: [categoryId], references: [id])
-  categoryId  Int
-}
-
-model ItemVariant {
-  id           Int      @id @default(autoincrement())
-  count        Int
-  specialPrice Int?
-  vendorCode   String?
-  itemId       Int
-  item         Item     @relation(fields: [itemId], references: [id])
-  size         String[]
+  id                 Int       @id @default(autoincrement())
+  name               String
+  description        String?
+  vendorCode         String?
+  brand              String?
+  count              Int       @default(0)
+  size               String?
+  images             String[]
+  price              Int?
+  season             Season?
+  materials          String?
+  materialLiner      String?
+  materialInsulation String?
+  color              String?
+  category           Category? @relation(fields: [categoryId], references: [id])
+  categoryId         Int
 }
 
 model City {

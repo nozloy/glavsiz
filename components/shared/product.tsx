@@ -12,6 +12,9 @@ import { ItemProps } from './item-props'
 import { Button } from '../ui/button'
 import { Heart } from 'lucide-react'
 import { ShareButton } from './share-button'
+import { useCartStore } from '@/store/cart-store'
+import { useSession } from 'next-auth/react'
+import { toast } from 'sonner'
 
 interface Props {
 	className?: string
@@ -26,13 +29,28 @@ export const Product: React.FC<Props> = ({
 	category,
 	variants,
 }) => {
+	const { addCartItem, loading } = useCartStore(state => state)
 	const [selectedItemId, setSelectedItemId] = useState<number>(item.id)
-
 	const selectedVariant = variants?.find(
 		variant => variant.id === selectedItemId,
 	)
 	const handleVariantChange = (itemId: number) => {
 		setSelectedItemId(itemId)
+	}
+	const { data: session } = useSession()
+	const handleAddCartItem = () => {
+		if (session && selectedVariant) {
+			addCartItem(Number(session.user.id), selectedVariant)
+			toast('Товар добавлен в корзину', {
+				icon: '🛒',
+				duration: 2000,
+			})
+		} else {
+			toast('Сначала необходимо авторизоваться', {
+				icon: '❗️',
+				duration: 2000,
+			})
+		}
 	}
 	return (
 		<Container>
@@ -70,12 +88,12 @@ export const Product: React.FC<Props> = ({
 							/>
 						</div>
 						{item?.season && item?.brand && item?.materials && item?.color && (
-							<p className='text-2xl font-bold'>О товаре</p>
+							<p className='text-2xl font-bold pt-4'>О товаре</p>
 						)}
 
-						{item?.brand && (
+						{/* {item?.brand && (
 							<ItemProps propsName='Бренд' propsValue={item.brand} />
-						)}
+						)} */}
 
 						{item?.season && (
 							<ItemProps
@@ -84,6 +102,18 @@ export const Product: React.FC<Props> = ({
 									item.season == Season.Summer ? 'Весна-Лето' : 'Осень-Зима'
 								}
 							/>
+						)}
+						{item?.composition && (
+							<ItemProps
+								propsName='Состав комплекта'
+								propsValue={item.composition}
+							/>
+						)}
+						{item?.sizes && (
+							<ItemProps propsName='Размерный ряд' propsValue={item.sizes} />
+						)}
+						{item?.heights && (
+							<ItemProps propsName='Рост' propsValue={item.heights} />
 						)}
 						{item?.color && (
 							<ItemProps propsName='Цвет' propsValue={item.color} />
@@ -127,9 +157,11 @@ export const Product: React.FC<Props> = ({
 						</div>
 						<div className='flex flex-row gap-2 justify-between pt-6'>
 							<Button
+								loading={loading}
+								onClick={() => handleAddCartItem()}
 								variant={'default'}
 								size={'lg'}
-								className='text-lg font-bold p-8 bg-primary text-secondary  drop-shadow-md hover:drop-shadow-lg hover:scale-105 transition-all delay-75'
+								className='w-[250px] text-lg font-bold p-8 bg-primary text-secondary  drop-shadow-md hover:drop-shadow-lg hover:scale-105 transition-all delay-75 active:scale-95'
 							>
 								Добавить в корзину
 							</Button>

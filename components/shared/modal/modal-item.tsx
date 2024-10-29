@@ -1,7 +1,7 @@
 'use client'
 import React, { useState } from 'react'
 import { cn } from '@/lib/utils'
-import { Item, Category } from '@prisma/client'
+import { Item, Category, Season } from '@prisma/client'
 import {
 	Dialog,
 	DialogContent,
@@ -9,14 +9,16 @@ import {
 	DialogDescription,
 	DialogHeader,
 	DialogTitle,
+	DialogFooter,
 } from '@/components/ui/dialog'
 import { useRouter } from 'next/navigation'
 import Image from 'next/image'
 import { ItemCode } from '../item-code'
 import { ItemCount } from '../item-count'
-import { ItemDescription } from '../item-description'
 import { ItemVariants } from '../item-variants'
 import { ItemProps } from '../item-props'
+import { Button } from '@/components/ui/button'
+import Link from 'next/link'
 
 interface Props {
 	className?: string
@@ -70,14 +72,8 @@ export const ModalItem: React.FC<Props> = ({
 								<ItemCode code={item.vendorCode || 'Нет артикула'} />
 							</DialogTitle>
 						</DialogHeader>
-						<div className='flex flex-col gap-3  pt-4'>
-							{item && item.color && (
-								<ItemProps propsName='Цвет' propsValue={item.color} />
-							)}
-							{item && item.materials && (
-								<ItemProps propsName='Материалы' propsValue={item.materials} />
-							)}
-							<div className='flex flex-row gap-5 items-center'>
+						<div className='flex flex-col gap-3'>
+							<div className='flex justify-between items-center'>
 								{variants && variants[1] && (
 									<ItemVariants
 										variants={variants}
@@ -85,18 +81,56 @@ export const ModalItem: React.FC<Props> = ({
 									/>
 								)}
 								<ItemCount
+									className='relative top-4'
 									id={selectedVariant?.id || item.id || 0}
 									count={selectedVariant?.count || item.count || 0}
 								/>
 							</div>
 
-							<ItemDescription
-								className='mt-auto'
-								description={
-									item.description ? item.description : 'Нет описания'
-								}
-							></ItemDescription>
+							{item?.season && (
+								<ItemProps
+									propsName='Сезон'
+									propsValue={
+										item.season == Season.Summer ? 'Весна-Лето' : 'Осень-Зима'
+									}
+								/>
+							)}
+							{item?.composition && (
+								<ItemProps
+									propsName='Состав комплекта'
+									propsValue={item.composition}
+								/>
+							)}
+							{item?.sizes && (
+								<ItemProps propsName='Размерный ряд' propsValue={item.sizes} />
+							)}
+							{item?.heights && (
+								<ItemProps propsName='Рост' propsValue={item.heights} />
+							)}
+							{item?.color && (
+								<ItemProps propsName='Цвет' propsValue={item.color} />
+							)}
+							{item?.materials && (
+								<ItemProps propsName='Материалы' propsValue={item.materials} />
+							)}
+							{item?.materialLiner && (
+								<ItemProps
+									propsName='Подкладка'
+									propsValue={item.materialLiner}
+								/>
+							)}
+							{item?.materialInsulation && (
+								<ItemProps
+									propsName='Утеплитель'
+									propsValue={item.materialInsulation}
+								/>
+							)}
 						</div>
+						<DialogFooter className='mt-auto'>
+							<Link href={'/item/' + item.id} target='_parent'>
+								<Button className='text-lg'>Подробнее</Button>
+							</Link>
+						</DialogFooter>
 					</div>
 				</DialogContent>
 			</DialogOverlay>

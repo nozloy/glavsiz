@@ -1,6 +1,4 @@
 import { PrismaClient } from '@prisma/client'
-import { constParentCategories } from './const-parent-categories'
-import constants from './constants'
 import fetchFeed from './fetch-feed'
 import makeParentCategories from './make-parent-categories'
 import makeCategories from './make-categories'
@@ -11,8 +9,8 @@ const prisma = new PrismaClient()
 async function down() {
 	await prisma.$executeRaw`TRUNCATE TABLE "ParentCategory" RESTART IDENTITY CASCADE`
 	await prisma.$executeRaw`TRUNCATE TABLE "Category" RESTART IDENTITY CASCADE`
-	await prisma.$executeRaw`TRUNCATE TABLE "Item" RESTART IDENTITY CASCADE`
-	console.log('База данных очищена.')
+	// await prisma.$executeRaw`TRUNCATE TABLE "Item" RESTART IDENTITY CASCADE`
+	// console.log('База данных очищена.')
 }
 
 async function upCategories(categories: any[]) {
@@ -34,7 +32,14 @@ async function upItems(items: any[]) {
 		if (subcategoryMap.has(categoryId)) {
 			finalCategoryId = subcategoryMap.get(categoryId)!
 		}
-		console.log('Создаем товар: ', item.name, ' ', item.vendorCode)
+		console.log(
+			'Создаем(обновляем) товар: ',
+			item.name,
+			' ',
+			item.vendorCode,
+			' ',
+			item.id,
+		)
 		await prisma.item.upsert({
 			where: { id: Number(item.id) },
 			update: {
@@ -52,6 +57,9 @@ async function upItems(items: any[]) {
 				brand: item.brand,
 				materialLiner: item.materialLiner,
 				materialInsulation: item.materialInsulation,
+				composition: item.composition,
+				sizes: item.sizes,
+				heights: item.heights,
 			},
 			create: {
 				name: item.name,
@@ -68,6 +76,9 @@ async function upItems(items: any[]) {
 				brand: item.brand,
 				materialLiner: item.materialLiner,
 				materialInsulation: item.materialInsulation,
+				composition: item.composition,
+				sizes: item.sizes,
+				heights: item.heights,
 			},
 		})
 	}

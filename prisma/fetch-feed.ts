@@ -91,6 +91,24 @@ export default async function fetchFeed() {
 								p.$.name.toLowerCase().includes('утеплитель'),
 						  )?._ // Ищем утеплитель
 						: undefined,
+				composition:
+					offer.param && Array.isArray(offer.param)
+						? offer.param.find((p: any) =>
+								p.$.name.toLowerCase().includes('состав комплекта'),
+						  )?._ // Ищем состав комплекта
+						: undefined,
+				sizes:
+					offer.param && Array.isArray(offer.param)
+						? offer.param.find((p: any) =>
+								p.$.name.toLowerCase().includes('размер'),
+						  )?._ // Ищем замерный ряд
+						: undefined,
+				heights:
+					offer.param && Array.isArray(offer.param)
+						? offer.param.find((p: any) =>
+								p.$.name.toLowerCase().includes('рост'),
+						  )?._ // Ищем варианты роста
+						: undefined,
 			}
 		})
 

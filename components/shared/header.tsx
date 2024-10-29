@@ -1,5 +1,5 @@
 'use client'
-import React from 'react'
+import React, { useEffect } from 'react'
 import { cn } from '@/lib/utils'
 import Image from 'next/image'
 import Link from 'next/link'
@@ -12,6 +12,8 @@ import {
 import { TelephoneLink } from './telephone-link'
 import { AuthButton } from './auth-button'
 import { ModalAuth } from '@/components/shared/modal/modal-auth'
+import { useSession } from 'next-auth/react'
+import { useCartStore } from '@/store/cart-store'
 
 interface Props {
 	className?: string
@@ -19,6 +21,17 @@ interface Props {
 
 export const Header: React.FC<Props> = ({ className }) => {
 	const [openAuthModal, setOpenAuthModal] = React.useState(false)
+	const { data: session, status } = useSession()
+
+	const fetchCartItems = useCartStore(state => state.fetchCartItems)
+
+	// Эффект для загрузки данных корзины при наличии сессии
+	useEffect(() => {
+		if (session && session.user) {
+			// Запускаем fetchCartItems с id пользователя
+			fetchCartItems(Number(session.user.id))
+		}
+	}, [session, fetchCartItems])
 	return (
 		<header className={cn(' bg-background hidden md:block', className)}>
 			<Container className='flex flex-col gap-2 pb-0'>
@@ -51,15 +64,16 @@ export const Header: React.FC<Props> = ({ className }) => {
 							onClose={() => setOpenAuthModal(false)}
 						/>
 
-						<AuthButton onClickSignIn={() => setOpenAuthModal(true)} />
+						<AuthButton
+							onClickSignIn={() => setOpenAuthModal(true)}
+							session={session || undefined}
+							status={status}
+						/>
 						<div>
-							<CartButton />
+							<CartButton session={session || undefined} />
 						</div>
 					</div>
 				</div>
-				{/* <div className='flex flex-row justify-between items-center pb-2 pl-2'>
-					<ParentCategoriesMenu />
-				</div> */}
 			</Container>
 		</header>
 	)

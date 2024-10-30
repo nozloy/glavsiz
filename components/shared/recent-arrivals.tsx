@@ -1,3 +1,4 @@
+'use client'
 import React from 'react'
 import { Item, Category } from '@prisma/client'
 import { cn } from '@/lib/utils'

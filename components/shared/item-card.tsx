@@ -8,12 +8,10 @@ import {
 	CardTitle,
 } from '@/components/ui/card'
 import { cn } from '@/lib/utils'
-import { Skeleton } from '../ui/skeleton'
 import { Button } from '../ui/button'
 import { Item, Category } from '@prisma/client'
 import Image from 'next/image'
 import Link from 'next/link'
-import { Suspense } from 'react'
 
 interface Props {
 	className?: string
@@ -33,6 +31,7 @@ export const ItemCard: React.FC<Props> = ({
 		<Link
 			className={cn('h-[440px] w-[255px]', className)}
 			href={'/item/' + item.id + '/'}
+			target='_parent'
 		>
 			<Card className='group relative flex flex-col justify-end h-full shadow-md hover:shadow-lg hover:scale-105 hover:shadow-primary/50 cursor-pointer select-none transition-all duration-300 bg-card'>
 				<CardHeader className='pb-0 pt-6 *:text-right *:drop-shadow-sm *:group-hover:drop-shadow-md *:group-hover:drop-shadow-primary'>

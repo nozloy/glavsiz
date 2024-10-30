@@ -7,7 +7,9 @@ interface Props {
 
 export const RefundTab: React.FC<Props> = ({ className }) => {
 	return (
-		<div className={cn('h-[350px] p-4 bg-card rounded-xl', className)}>
+		<div
+			className={cn('h-[300px] p-4 bg-card rounded-xl shadow-lg', className)}
+		>
 			Обмен и возврат товаров, купленных в интернет-магазине «Главсиз»,
 			осуществляется в соответствии с Законом РФ «О защите прав потребителей».
 			<br />

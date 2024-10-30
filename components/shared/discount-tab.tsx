@@ -7,7 +7,9 @@ interface Props {
 
 export const DiscountTab: React.FC<Props> = ({ className }) => {
 	return (
-		<div className={cn('h-[350px] p-4 bg-card rounded-xl', className)}>
+		<div
+			className={cn('h-[300px] p-4 bg-card rounded-xl shadow-lg', className)}
+		>
 			Компания “Главсиз” предлагает своим клиентам наиболее выгодные и гибкие
 			условия сотрудничества:
 			<br />

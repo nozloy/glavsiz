@@ -7,7 +7,9 @@ interface Props {
 
 export const BrandingTab: React.FC<Props> = ({ className }) => {
 	return (
-		<div className={cn('h-[350px] p-4 bg-card rounded-xl', className)}>
+		<div
+			className={cn('h-[300px] p-4 bg-card rounded-xl shadow-lg', className)}
+		>
 			Элементы фирменного стиля на спецодежде помогают выделить компанию и её
 			сотрудников. “Главсиз” предлагает несколько вариантов нанесения:
 			<br />

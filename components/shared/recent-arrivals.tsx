@@ -28,8 +28,8 @@ export const RecentArrivals: React.FC<Props> = ({
 				text={'Новые поступления'}
 				className='text-left text-muted-foreground'
 			/>
-			<div className='flex flex-row gap-3 justify-start items-center'>
-				{items?.slice(0, 5).map(item => (
+			<div className='w-full flex flex-row justify-between items-center'>
+				{items?.slice(0, 4).map(item => (
 					<ItemCard
 						key={item.id}
 						item={item}

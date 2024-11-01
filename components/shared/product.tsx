@@ -5,7 +5,6 @@ import { cn } from '@/lib/utils'
 import Image from 'next/image'
 import { ItemCode } from '@/components/shared/item-code'
 import { ItemCount } from '@/components/shared/item-count'
-import { ItemDescription } from '@/components/shared/item-description'
 import { ItemVariants } from '@/components/shared/item-variants'
 import { Container } from './container'
 import { ItemProps } from './item-props'
@@ -52,21 +51,37 @@ export const Product: React.FC<Props> = ({
 			})
 		}
 	}
+	const isDefaultImage = item.images[0].includes('default')
+	const infoAvailable = [
+		item?.season,
+		item?.materials,
+		item?.color,
+		item?.composition,
+		item?.sizes,
+		item?.heights,
+		item?.materialLiner,
+		item?.materialInsulation,
+	].some(Boolean)
+
 	return (
 		<Container>
 			<div
 				className={cn(
-					'grid grid-cols-[minmax(300px,300px)_minmax(0,400px)_minmax(400px,1fr)] w-full gap-10 bg-secondary p-4 rounded-2xl',
+					'grid grid-cols-[minmax(300px,300px)_minmax(0,400px)_minmax(400px,1fr)] w-full gap-10 bg-secondary p-4 rounded-2xl min-h-[500px]',
 					className,
 				)}
 			>
-				<div className='flex justify-center items-center '>
+				<div className='relative min-h-[300px] w-full flex justify-center items-center bg-background rounded-2xl'>
 					<Image
-						src={item.images[0]}
+						src={!isDefaultImage ? item.images[0] : '/logo_black.svg'}
 						alt={item.name}
-						width={300}
-						height={300}
-						className='rounded-xl border-white border-[10px]'
+						quality={5}
+						fill
+						sizes='(max-width: 100px) 100vw, (max-width: 200px) 50vw, 33vw'
+						className={cn('object-contain', {
+							' opacity-30': isDefaultImage,
+							'rounded-xl border-white border-[10px]': !isDefaultImage,
+						})}
 					/>
 				</div>
 
@@ -74,7 +89,7 @@ export const Product: React.FC<Props> = ({
 					<p className='text-3xl font-bold text-balance'>{item.name}</p>
 
 					<div className='flex flex-col gap-3'>
-						<div className='flex justify-between items-center'>
+						<div className='flex justify-between items-center pb-5'>
 							{variants && variants[1] && (
 								<ItemVariants
 									variants={variants}
@@ -87,9 +102,7 @@ export const Product: React.FC<Props> = ({
 								count={selectedVariant?.count || item.count || 0}
 							/>
 						</div>
-						{item?.season && item?.brand && item?.materials && item?.color && (
-							<p className='text-2xl font-bold pt-4'>О товаре</p>
-						)}
+						{infoAvailable && <p className='text-2xl font-bold'>О товаре</p>}
 
 						{/* {item?.brand && (
 							<ItemProps propsName='Бренд' propsValue={item.brand} />
@@ -133,11 +146,6 @@ export const Product: React.FC<Props> = ({
 								propsValue={item.materialInsulation}
 							/>
 						)}
-
-						{/* <ItemDescription
-							className='mt-auto'
-							description={item.description ? item.description : 'Нет описания'}
-						></ItemDescription> */}
 					</div>
 				</div>
 				<div className='flex flex-col items-end justify-start gap-5'>
@@ -148,20 +156,21 @@ export const Product: React.FC<Props> = ({
 
 					<div className='w-full neo rounded-2xl p-4'>
 						<div className='flex flex-row items-end gap-2'>
-							<p className='w-min text-3xl font-bold bg-primary text-secondary p-2 px-4 rounded-2xl drop-shadow-md select-none'>
-								{item.price}₽
+							<p className=' text-3xl font-bold bg-primary text-secondary p-2 px-4 rounded-2xl drop-shadow-md select-none'>
+								{item.price ? item.price + '₽' : 'Цена уточняется'}
 							</p>
 							<p className='relative bottom-3 text-muted-foreground text-md  '>
-								при заказе на сайте
+								{item.price ? 'при заказе на сайте' : ''}
 							</p>
 						</div>
 						<div className='flex flex-row gap-2 justify-between pt-6'>
 							<Button
+								disabled={item.price ? false : true}
 								loading={loading}
 								onClick={() => handleAddCartItem()}
 								variant={'default'}
 								size={'lg'}
-								className='w-[250px] text-lg font-bold p-8 bg-primary text-secondary  drop-shadow-md hover:drop-shadow-lg hover:scale-105 transition-all delay-75 active:scale-95'
+								className='w-[250px] text-lg font-bold p-8 bg-primary text-secondary  drop-shadow-md hover:drop-shadow-lg hover:scale-105 transition-all delay-75 active:scale-95 select-none'
 							>
 								Добавить в корзину
 							</Button>

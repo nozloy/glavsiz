@@ -1,3 +1,4 @@
+import { ItemDescription } from '@/components/shared/item-description'
 import { Product } from '@/components/shared/product'
 import { prisma } from '@/prisma/prisma-client'
 import { Item } from '@prisma/client'
@@ -33,5 +34,12 @@ export default async function ProductPage({
 		return notFound()
 	}
 
-	return <Product item={item} category={category} variants={variants} />
+	return (
+		<div>
+			<Product item={item} category={category} variants={variants} />
+			{item.description && (
+				<ItemDescription className='mt-auto' description={item.description} />
+			)}
+		</div>
+	)
 }

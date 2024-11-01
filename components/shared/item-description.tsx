@@ -1,5 +1,6 @@
 import React from 'react'
 import { cn } from '@/lib/utils'
+import { Container } from './container'
 
 interface Props {
 	className?: string
@@ -11,8 +12,14 @@ export const ItemDescription: React.FC<Props> = ({
 	description,
 }) => {
 	return (
-		<div className={cn('overflow-auto scrollbar h-[320px]', className)}>
+		<Container
+			className={cn(
+				'overflow-auto scrollbar min-h-[320px] bg-secondary rounded-2xl p-5 w-[1250px]',
+				className,
+			)}
+		>
+			<div className='text-2xl text-foreground py-2'>Описание:</div>
 			{description}
-		</div>
+		</Container>
 	)
 }

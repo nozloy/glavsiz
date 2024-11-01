@@ -1,3 +1,4 @@
+'use client'
 import React, { lazy, useState } from 'react'
 import {
 	Card,
@@ -29,29 +30,30 @@ export const ItemCard: React.FC<Props> = ({
 	const isDefaultImage = images[0].includes('default')
 	return (
 		<Link
-			className={cn('h-[440px] w-[255px]', className)}
+			className={cn('relative h-[460px] w-[290px]', className)}
 			href={'/item/' + item.id + '/'}
 			target='_parent'
 		>
 			<Card className='group relative flex flex-col justify-end h-full shadow-md hover:shadow-lg hover:scale-105 hover:shadow-primary/50 cursor-pointer select-none transition-all duration-300 bg-card'>
-				<CardHeader className='pb-0 pt-6 *:text-right *:drop-shadow-sm *:group-hover:drop-shadow-md *:group-hover:drop-shadow-primary'>
-					<CardTitle className='min-h-12 line-clamp-3'>
+				<CardHeader className='pb-6 pt-6 *:text-right *:drop-shadow-sm *:group-hover:drop-shadow-md *:group-hover:drop-shadow-primary'>
+					<CardTitle className='min-h-10 line-clamp-2'>
 						{item.name.charAt(0).toUpperCase() +
 							item.name.slice(1).toLowerCase()}
 					</CardTitle>
 				</CardHeader>
 				<CardContent className='pt-0 pb-4 mt-auto'>
 					<div
-						className={`relative w-[205px] h-[275px] overflow-hidden rounded-2xl p-0 flex items-center justify-center`}
+						className={`relative overflow-hidden rounded-2xl p-0 flex items-center justify-center h-[300px] w-full`}
 					>
 						<Image
 							src={!isDefaultImage ? images[0] : '/logo_black.svg'}
 							alt={item.name}
-							width={155}
-							height={275}
-							className={`${
-								isDefaultImage ? 'object-contain opacity-30' : 'object-cover'
-							}`}
+							quality={5}
+							sizes='(max-width: 768px) 50vw, (max-width: 1200px) 33vw, 25vw'
+							fill
+							className={cn('object-contain', {
+								'opacity-30': isDefaultImage,
+							})}
 						/>
 						{/* тут должен быть стикер */}
 						<div className='absolute inset-0 rounded-2xl'></div>
@@ -59,7 +61,7 @@ export const ItemCard: React.FC<Props> = ({
 				</CardContent>
 				<CardFooter className='mt-auto flex flex-row justify-between pb-5'>
 					<p className=' text-accent-foreground pl-1 text-xl font-bold'>
-						{item.price} ₽
+						{item.price ? item.price + '₽' : ''}
 					</p>
 					<Button
 						variant={'default'}

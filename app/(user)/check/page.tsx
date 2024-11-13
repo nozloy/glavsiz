@@ -1,3 +1,4 @@
+'use server'
 import { Check } from '@/components/shared/check'
 
 export default async function Page() {

@@ -3,7 +3,6 @@ import { BannerCarousel } from '@/components/shared/banner-carousel'
 import { Benefits } from '@/components/shared/benefits'
 import { MobileVersion } from '@/components/shared/mobile-version'
 import { uniqueItems, allCategories } from '@/lib/find-items'
-import { Suspense } from 'react'
 
 export default async function Home() {
 	const items = await uniqueItems()

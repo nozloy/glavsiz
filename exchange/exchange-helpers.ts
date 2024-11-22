@@ -2,10 +2,13 @@ import fs from 'fs'
 import path from 'path'
 import { parseStringPromise, Builder } from 'xml2js'
 import {
-	Goodies,
+	Items,
 	GroupInfo,
+	Offers,
 	PriceInfo,
+	Prices,
 	RelevantFiles,
+	Rests,
 	WarehouseInfo,
 } from './@types'
 
@@ -74,7 +77,10 @@ export function saveToXmlFile(
 	groups: GroupInfo[],
 	prices: PriceInfo[],
 	warehouses: WarehouseInfo[],
-	parsedGoodies: Goodies[],
+	parsedOffers: Offers[],
+	parsedPrices: Prices[],
+	parsedRests: Rests[],
+	parsedGoodies: Items[],
 	outputPath: string,
 ) {
 	// Подготовка данных с обёрткой для групп и цен
@@ -126,29 +132,47 @@ export function saveToXmlFile(
 // Функция для получения Классификатора и Каталога
 export async function getClassifierAndCatalog(importFiles: string[]) {
 	let classifier = null
-	let goodies = null
+	let items = null
+	let properties = null
 	for (const filePath of importFiles) {
 		const fileData = await parseXmlFile(filePath)
-		if (!classifier && fileData.КоммерческаяИнформация.Классификатор[0]) {
+		if (
+			!classifier &&
+			fileData.КоммерческаяИнформация.Классификатор &&
+			fileData.КоммерческаяИнформация.Классификатор[0].Группы &&
+			fileData.КоммерческаяИнформация.Классификатор[0].Склады
+		) {
 			classifier = fileData.КоммерческаяИнформация.Классификатор[0]
 		}
-		if (!goodies && fileData.КоммерческаяИнформация.Каталог[0].Товары) {
-			goodies = fileData.КоммерческаяИнформация.Каталог[0].Товары[0]
+		if (!items && fileData.КоммерческаяИнформация.Каталог[0].Товары) {
+			items = fileData.КоммерческаяИнформация.Каталог[0].Товары[0]
 		}
-		if (classifier && goodies) break
+		if (
+			!properties &&
+			fileData.КоммерческаяИнформация.Классификатор &&
+			fileData.КоммерческаяИнформация.Классификатор[0].Свойства &&
+			fileData.КоммерческаяИнформация.Классификатор[0].Свойства[0].Свойство[0]
+				.Ид[0] !== 'Бренд'
+		) {
+			properties = fileData.КоммерческаяИнформация.Классификатор[0].Свойства[0]
+		}
+
+		if (classifier && items && properties) break
+	}
+	if (!classifier) {
+		throw new Error('Не удалось найти данные классификатора в import файлах')
+	}
+	if (!items) {
+		throw new Error('Не удалось найти данные каталога в import файлах')
+	}
+	if (!properties) {
+		throw new Error('Не удалось найти данные свойств в import файлах')
 	}
 
-	// Проверка на наличие Классификатора и Каталога
-	if (!classifier || !goodies) {
-		throw new Error(
-			'Не удалось найти Классификатор или Каталог в import файлах',
-		)
-	}
-
-	return { classifier, goodies }
+	return { classifier, items, properties }
 }
 
 // Функция для очистки названий групп
 export function cleanGroupName(name: string): string {
-	return name.replace(/^\d+(\.\d+)*\s*/, '')
+	return name.replace(/^[\d.]*\s*|\s*\.+\s*$/g, '').trim()
 }

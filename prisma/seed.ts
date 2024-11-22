@@ -9,8 +9,8 @@ const prisma = new PrismaClient()
 async function down() {
 	await prisma.$executeRaw`TRUNCATE TABLE "ParentCategory" RESTART IDENTITY CASCADE`
 	await prisma.$executeRaw`TRUNCATE TABLE "Category" RESTART IDENTITY CASCADE`
-	// await prisma.$executeRaw`TRUNCATE TABLE "Item" RESTART IDENTITY CASCADE`
-	// console.log('База данных очищена.')
+	await prisma.$executeRaw`TRUNCATE TABLE "Item" RESTART IDENTITY CASCADE`
+	console.log('База данных очищена.')
 }
 
 async function upCategories(categories: any[]) {

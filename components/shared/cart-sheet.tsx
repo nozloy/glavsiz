@@ -20,14 +20,12 @@ import { CartSheetItem } from './cart-sheet-item'
 
 export const CartSheet: React.FC<React.PropsWithChildren> = ({ children }) => {
 	const {
-		fetchCartItems,
+		initializeCart,
 		addCartItem,
-		// removeCartItem,
-		emptyCart,
+		removeCartItem,
 		updateCartItemQuantity,
+		syncCart,
 		items,
-		totalAmount,
-		totalPrice,
 		loading,
 	} = useCartStore(state => state)
 	const { data: session } = useSession()
@@ -44,22 +42,24 @@ export const CartSheet: React.FC<React.PropsWithChildren> = ({ children }) => {
 	}
 
 	const onClickCountButton = (
-		id: number,
+		id: string,
 		quantity: number,
 		type: 'plus' | 'minus',
 	) => {
 		if (session) {
 			const newQuantity = type === 'plus' ? quantity + 1 : quantity - 1
-			updateCartItemQuantity(Number(session?.user.id), id, newQuantity)
+			updateCartItemQuantity(id, newQuantity)
 		}
 	}
+	const totalAmount = 100
+	const totalPrice = 100
 
 	return (
 		<Sheet>
 			<SheetTrigger asChild>{children}</SheetTrigger>
 			<SheetContent className='flex flex-col justify-between pb-0 bg-[#F4F1EE]'>
 				<div className={cn('flex flex-col h-full', !items && 'justify-center')}>
-					{totalAmount > 0 && (
+					{items && (
 						<SheetHeader>
 							<SheetTitle>
 								В корзине{' '}
@@ -69,7 +69,7 @@ export const CartSheet: React.FC<React.PropsWithChildren> = ({ children }) => {
 							</SheetTitle>
 						</SheetHeader>
 					)}
-					{!items.length && (
+					{!items && (
 						<div className='flex flex-col items-center justify-center w-72 mx-auto'>
 							<Image
 								src='/icon2.svg'
@@ -92,7 +92,7 @@ export const CartSheet: React.FC<React.PropsWithChildren> = ({ children }) => {
 							</SheetClose>
 						</div>
 					)}
-					{items.length > 0 && session && (
+					{items && items.length > 0 && session && (
 						<>
 							<div className='-mx-6 mt-5 overflow-auto flex-1'>
 								{items.map(item => (

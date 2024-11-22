@@ -19,6 +19,8 @@
 #uploads
 /uplaods
 /uploads/*
+/public/uplaods
+/public/uploads/*
 # misc
 .DS_Store
 *.pem

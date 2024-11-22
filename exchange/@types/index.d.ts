@@ -21,7 +21,17 @@ interface RelevantFiles {
 
 interface PriceInfo {
 	id: string
-	name: String
+	name: string
+}
+interface ParameterInfo {
+	id: string
+	name: string
+	values: Param[]
+}
+
+type Param = {
+	id: string
+	value: string
 }
 
 type Price = {
@@ -30,42 +40,43 @@ type Price = {
 }
 interface Prices {
 	offerId: string
-	goodId: string
+	itemId: string
 	values: Price[]
 }
 
 interface WarehouseInfo {
 	id: string
-	name: String
+	name: string
 }
 
 type Parameter = {
 	id: string
 	value: string
 }
-interface Goodies {
+interface Items {
 	id: string
-	name: String
-	vendorCode: String
-	groupID: String
-	manufacturer: String
-	weight: String
+	name: string
+	vendorCode: string
+	brand: string
+	groupID: string
+	manufacturer: string
+	weight: string
 	parameters: Parameter[]
-	images: String[]
+	images: string[]
+	description: string
 }
 
 interface Offers {
 	id: string
 	option: string
-	goodId: string
+	itemId: string
 }
 
-type quantites = {
-	warehouseID: string
-	quantity: string
+type warehouse = {
+	id: string
+	value: string
 }
 interface Rests {
 	offerId: string
-	goodId: string
-	warehouses: quantites[]
+	warehouses: warehouse[]
 }

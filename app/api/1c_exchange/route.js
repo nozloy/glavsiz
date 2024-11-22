@@ -1,14 +1,15 @@
 import crypto from 'crypto'
 import fs from 'fs'
-import { createWriteStream, promises as fsPromises } from 'fs'
+import { promises as fsPromises } from 'fs'
 import path from 'path'
 import unzipper from 'unzipper'
+import { uploadExtractedImages } from '@/exchange/s3-image-upload'
 
 const sessions = new Map()
 const UPLOAD_DIR = path.resolve('./uploads')
 
-const AUTH_USERNAME = 'admin'
-const AUTH_PASSWORD = '7fh843hf8erhf9843hf'
+const AUTH_USERNAME = process.env.EXCHANGE_LOGIN
+const AUTH_PASSWORD = process.env.EXCHANGE_PASSWORD
 
 // Функция генерации ID сессии
 function generateSessionID() {
@@ -181,6 +182,9 @@ export async function POST(req) {
 				}
 			}
 		}
+
+		// Загрузка разархивированных изображений в S3
+		await uploadExtractedImages(extractDir)
 
 		return new Response('success', {
 			status: 200,

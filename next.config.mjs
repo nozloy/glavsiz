@@ -4,11 +4,7 @@ const nextConfig = {
 		remotePatterns: [
 			{
 				protocol: 'https',
-				hostname: 'ir-2.ozone.ru',
-			},
-			{
-				protocol: 'https',
-				hostname: 'ufa.glavsiz.ru',
+				hostname: 'cdn.glavsiz.ru',
 			},
 			{
 				protocol: 'https',

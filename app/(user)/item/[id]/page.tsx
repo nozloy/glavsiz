@@ -11,32 +11,27 @@ export default async function ProductPage({
 }) {
 	const item = await prisma.item.findUnique({
 		where: {
-			id: Number(id),
+			id: id,
 		},
 	})
-	const vendorId = item?.vendorCode
-	let variants: Item[] = []
-	if (vendorId) {
-		variants = await prisma.item.findMany({
-			where: {
-				vendorCode: vendorId,
-			},
-		})
-	}
 
 	const category = await prisma.category.findFirst({
 		where: {
-			id: item?.categoryId,
+			id: item?.categoryId ?? '',
 		},
 	})
-
+	const offers = await prisma.offer.findMany({
+		where: {
+			itemId: item?.id,
+		},
+	})
 	if (!item || !category) {
 		return notFound()
 	}
 
 	return (
 		<div>
-			<Product item={item} category={category} variants={variants} />
+			<Product item={item} category={category} offers={offers} />
 			{item.description && (
 				<ItemDescription className='mt-auto' description={item.description} />
 			)}

@@ -15,7 +15,7 @@ export default async function Home() {
 			<div className='hidden md:block'>
 				<Container className='flex flex-col items-center justify-center gap-6'>
 					<BannerCarousel />
-					{/* <BestSellers items={items} categories={categories} /> */}
+					<BestSellers items={items} categories={categories} />
 					<RecentArrivals items={items} categories={categories} />
 					<Benefits />
 				</Container>

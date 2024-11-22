@@ -23,7 +23,7 @@ export const Header: React.FC<Props> = ({ className }) => {
 	const [openAuthModal, setOpenAuthModal] = React.useState(false)
 	const { data: session, status } = useSession()
 
-	const fetchCartItems = useCartStore(state => state.fetchCartItems)
+	const fetchCartItems = useCartStore(state => state.initializeCart)
 
 	// Эффект для загрузки данных корзины при наличии сессии
 	useEffect(() => {

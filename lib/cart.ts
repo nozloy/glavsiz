@@ -5,16 +5,20 @@ import { prisma } from '@/prisma/prisma-client'
 export const getCartItems = async (userId: number) => {
 	const cartItems = await prisma.cartItem.findMany({
 		where: { cart: { userId } },
-		include: { item: true },
+		include: { offer: true, item: true },
 	})
 	return cartItems
 }
-export const getItem = async (id: number) => {
-	const item = await prisma.item.findUnique({ where: { id } })
+export const getItem = async (offerId: string) => {
+	const item = await prisma.offer.findUnique({ where: { id: offerId } })
 	return item
 }
 // Добавление товара в корзину
-export const addItemToCart = async (userId: number, itemId: number) => {
+export const addItemToCart = async (
+	userId: number,
+	itemId: string,
+	offerId: string,
+) => {
 	const cart = await prisma.cart.upsert({
 		where: { userId },
 		update: {},
@@ -35,6 +39,7 @@ export const addItemToCart = async (userId: number, itemId: number) => {
 			data: {
 				cartId: cart.id,
 				itemId,
+				offerId,
 			},
 		})
 	}
@@ -43,7 +48,7 @@ export const addItemToCart = async (userId: number, itemId: number) => {
 // Обновление количества товара в корзине
 export const updateItemQuantity = async (
 	userId: number,
-	itemId: number,
+	itemId: string,
 	quantity: number,
 ) => {
 	const cart = await prisma.cart.findUnique({ where: { userId } })
@@ -56,7 +61,7 @@ export const updateItemQuantity = async (
 }
 
 // Удаление товара из корзины
-export const removeItemFromCart = async (userId: number, itemId: number) => {
+export const removeItemFromCart = async (userId: number, itemId: string) => {
 	const cart = await prisma.cart.findUnique({ where: { userId } })
 	if (!cart) return null
 

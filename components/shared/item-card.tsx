@@ -21,13 +21,8 @@ interface Props {
 	images: string[]
 }
 
-export const ItemCard: React.FC<Props> = ({
-	className,
-	item,
-	category,
-	images,
-}) => {
-	const isDefaultImage = images[0].includes('default')
+export const ItemCard: React.FC<Props> = ({ className, item, images }) => {
+	const isDefaultImage = images[0] ? false : true
 	return (
 		<Link
 			className={cn('relative h-[460px] w-[290px]', className)}
@@ -46,7 +41,11 @@ export const ItemCard: React.FC<Props> = ({
 						className={`relative overflow-hidden rounded-2xl p-0 flex items-center justify-center h-[300px] w-full`}
 					>
 						<Image
-							src={!isDefaultImage ? images[0] : '/logo_black.svg'}
+							src={
+								!isDefaultImage
+									? 'https://cdn.glavsiz.ru/images/' + images[0]
+									: '/logo_black.svg'
+							}
 							alt={item.name}
 							quality={5}
 							sizes='(max-width: 768px) 50vw, (max-width: 1200px) 33vw, 25vw'
@@ -61,7 +60,7 @@ export const ItemCard: React.FC<Props> = ({
 				</CardContent>
 				<CardFooter className='mt-auto flex flex-row justify-between pb-5'>
 					<p className=' text-accent-foreground pl-1 text-xl font-bold'>
-						{item.price ? item.price + '₽' : ''}
+						{'1000' + '₽'}
 					</p>
 					<Button
 						variant={'default'}

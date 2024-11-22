@@ -1,6 +1,6 @@
 import React from 'react'
 import { cn } from '@/lib/utils'
-import { Item } from '@prisma/client'
+import { Offer } from '@prisma/client'
 import {
 	Select,
 	SelectContent,
@@ -11,8 +11,8 @@ import {
 
 interface Props {
 	className?: string
-	variants: Item[]
-	onVariantChange: (id: number) => void
+	variants: Offer[]
+	onVariantChange: (id: string) => void
 }
 
 export const ItemVariants: React.FC<Props> = ({
@@ -21,7 +21,7 @@ export const ItemVariants: React.FC<Props> = ({
 	onVariantChange,
 }) => {
 	const handleSelectChange = (value: string) => {
-		const selectedId = parseInt(value)
+		const selectedId = value
 		onVariantChange(selectedId)
 	}
 	return (
@@ -32,18 +32,20 @@ export const ItemVariants: React.FC<Props> = ({
 				onValueChange={handleSelectChange}
 			>
 				<SelectTrigger className='w-auto min-w-[200px] border-none bg-card text-lg'>
-					<SelectValue placeholder={variants[0].size} />
+					<SelectValue placeholder={variants[0].name} />
 				</SelectTrigger>
 				<SelectContent>
-					{variants.map(item => (
-						<SelectItem
-							className='text-lg'
-							key={item.id}
-							value={item.id.toString()}
-						>
-							{item.size}
-						</SelectItem>
-					))}
+					{variants
+						.sort((a, b) => a.name.localeCompare(b.name))
+						.map(item => (
+							<SelectItem
+								className='text-lg'
+								key={item.id}
+								value={item.id.toString()}
+							>
+								{item.name}
+							</SelectItem>
+						))}
 				</SelectContent>
 			</Select>
 		</div>

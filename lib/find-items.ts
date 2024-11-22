@@ -21,30 +21,13 @@ export const findItems = async (params: GetSearchParams) => {
 	const maxPrice = Number(params.priceTo) || DEFAULT_MAX_PRICE
 
 	const items = await prisma.item.findMany({
-		distinct: ['vendorCode'],
-		where: {
-			...(categoryId_number && {
-				categoryId: {
-					in: [Number(categoryId_number)],
-				},
-			}),
-			name: {
-				contains: query_string,
-				mode: 'insensitive',
-			},
-			...(price && {
-				price: {
-					gte: minPrice,
-					lte: maxPrice,
-				},
-			}),
-		},
+		distinct: ['id'],
 	})
 	return items
 }
 export const uniqueItems = async () => {
 	const items = await prisma.item.findMany({
-		distinct: ['vendorCode'],
+		distinct: ['id'],
 	})
 	return items
 }

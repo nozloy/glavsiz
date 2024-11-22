@@ -14,14 +14,14 @@
 		"prisma:pull": "prisma db pull",
 		"prisma:studio": "prisma studio",
 		"prisma:seed": "prisma db seed",
-		"generate-yml": "node generateYml.mjs",
-		"generate-xml": "ts-node --project tsconfig.build.json ./exchange/generateXml.ts"
+		"parsedata": "ts-node --project tsconfig.build.json ./exchange/data-parsing.ts",
+		"updatedb": "ts-node --project tsconfig.build.json ./exchange/update-db.ts"
 	},
 	"prisma": {
 		"seed": "ts-node --compiler-options {\"module\":\"CommonJS\"} prisma/seed.ts"
 	},
 	"dependencies": {
-		"@aws-sdk/client-s3": "^3.682.0",
+		"@aws-sdk/client-s3": "^3.692.0",
 		"@hookform/resolvers": "^3.9.0",
 		"@radix-ui/react-alert-dialog": "^1.1.1",
 		"@radix-ui/react-avatar": "^1.1.0",
@@ -45,6 +45,7 @@
 		"axios": "^1.7.7",
 		"bcrypt": "^5.1.1",
 		"class-variance-authority": "^0.7.0",
+		"cli-progress": "^3.12.0",
 		"clsx": "^2.1.1",
 		"cmdk": "^1.0.0",
 		"embla-carousel-autoplay": "^8.2.0",
@@ -74,6 +75,7 @@
 	"devDependencies": {
 		"@prisma/client": "^5.19.0",
 		"@types/bcrypt": "^5.0.2",
+		"@types/cli-progress": "^3.11.6",
 		"@types/node": "^20",
 		"@types/react": "^18",
 		"@types/react-dom": "^18",

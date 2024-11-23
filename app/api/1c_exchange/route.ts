@@ -194,6 +194,7 @@ export async function POST(req: NextRequest) {
 		setTimeout(async () => {
 			await up() // Вызываем функцию с отложенным запуском
 		}, 30000)
+
 		// Загрузка разархивированных изображений в S3
 		await uploadExtractedImagesBatch(extractDir)
 		return new Response('success', {

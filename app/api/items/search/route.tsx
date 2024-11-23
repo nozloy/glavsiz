@@ -5,7 +5,6 @@ import { NextRequest, NextResponse } from 'next/server'
 export async function GET(req: NextRequest) {
 	const query = req.nextUrl.searchParams.get('query') || ''
 	const categoryId = req.nextUrl.searchParams.get('categoryId') || ''
-	console.log(query, categoryId)
 	const products = await prisma.item.findMany({
 		distinct: ['vendorCode'],
 		where: {
@@ -13,6 +12,7 @@ export async function GET(req: NextRequest) {
 				contains: query,
 				mode: 'insensitive',
 			},
+			categoryId: categoryId,
 		},
 		include: {
 			Offer: true,

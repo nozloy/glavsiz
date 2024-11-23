@@ -58,11 +58,9 @@ export const SheetCatalog: React.FC<Props> = ({
 					<TableRow>
 						<TableHead className='w-[10px]'>ID</TableHead>
 						<TableHead className='w-[100px]'>Артикул</TableHead>
-						<TableHead className='w-[15px]'>Остаток</TableHead>
+
 						<TableHead>Название</TableHead>
 						<TableHead>Изображение</TableHead>
-						<TableHead className='w-[150px]'>Размер</TableHead>
-						<TableHead className='text-right'>Стоимость</TableHead>
 					</TableRow>
 				</TableHeader>
 				<TableBody>
@@ -76,31 +74,13 @@ export const SheetCatalog: React.FC<Props> = ({
 								<ClipboardCopy size={16} className='ml-2' />
 								{item.vendorCode || 'Не указано'}
 							</TableCell>
-							<TableCell>{item.count}</TableCell>
+
 							<TableCell>{item.name || 'Не указано'}</TableCell>
 							<TableCell>
 								{isImage(item) ? (
 									'Есть'
 								) : (
 									<span className='underline text-red-500 font-bold'>Нет</span>
-								)}
-							</TableCell>
-							<TableCell>
-								{item.size ? (
-									item.size
-								) : (
-									<span className='underline text-red-500 font-bold'>
-										Не указано
-									</span>
-								)}
-							</TableCell>
-							<TableCell className='text-right'>
-								{item.price ? (
-									item.price
-								) : (
-									<span className='underline text-red-500 font-bold'>
-										Нет или 0
-									</span>
 								)}
 							</TableCell>
 						</TableRow>

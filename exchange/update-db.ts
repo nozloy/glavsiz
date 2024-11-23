@@ -1,8 +1,10 @@
+'use server'
 import { PrismaClient } from '@prisma/client'
 import { dataParsing } from './data-parsing'
 import { upCategories } from './up-categories'
 import { upItems } from './up-items'
 import { upOffers } from './up-offers'
+import upConstants from './up-constants'
 const prisma = new PrismaClient()
 
 async function main() {
@@ -34,7 +36,7 @@ async function down() {
 	console.log('База данных очищена.')
 }
 
-async function up() {
+export async function up() {
 	console.log('Получаем данные из выгрузки...')
 	const exchange = await dataParsing('./uploads').finally(() => {
 		console.log('Данные получены.')
@@ -42,7 +44,11 @@ async function up() {
 	if (!exchange) {
 		throw new Error('Данные не получены.')
 	} else {
-		await upCategories(exchange.parsedClassifierGroups, exchange.parsedItems)
+		await upCategories(
+			await exchange.parsedClassifierGroups,
+			exchange.parsedItems,
+		)
+		await upConstants()
 		await upItems(exchange.parsedItems)
 		await upOffers(
 			exchange.parsedOffers,

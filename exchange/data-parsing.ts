@@ -1,9 +1,11 @@
+'use server'
 import {
 	getLatestDirectory,
 	findXmlFiles,
 	parseXmlFile,
 	getClassifierAndCatalog,
 	cleanGroupName,
+	getOffersFile,
 } from './exchange-helpers'
 import {
 	Items,
@@ -19,15 +21,12 @@ import {
 export async function dataParsing(basePath: string) {
 	try {
 		const latestDirectory = getLatestDirectory(basePath)
-		const files = await findXmlFiles(latestDirectory)
-		const offers = files.offersFile
-			? await parseXmlFile(files.offersFile)
-			: null
+		const files = await findXmlFiles(await latestDirectory)
+		const offers = await getOffersFile(files.offersFiles)
 		const prices = files.pricesFile
 			? await parseXmlFile(files.pricesFile)
 			: null
 		const rests = files.restsFile ? await parseXmlFile(files.restsFile) : null
-
 		// Получение Классификатора и Каталога из import файлов
 		const { classifier, items, properties } = await getClassifierAndCatalog(
 			files.importFiles,
@@ -55,11 +54,11 @@ export async function dataParsing(basePath: string) {
 	}
 }
 
-function parseClassifierGroupsGroup(
+async function parseClassifierGroupsGroup(
 	group: any,
 	parentId: string | null = null,
-): GroupInfo[] {
-	const cleanedName = cleanGroupName(group.Наименование[0]) // использование cleanGroupName
+): Promise<GroupInfo[]> {
+	const cleanedName = await cleanGroupName(group.Наименование[0]) // использование cleanGroupName
 
 	const result: GroupInfo[] = [
 		{
@@ -72,19 +71,19 @@ function parseClassifierGroupsGroup(
 	// Рекурсивно обрабатываем подгруппы, если они есть
 	if (group.Группы) {
 		for (const subgroup of group.Группы[0].Группа) {
-			result.push(...parseClassifierGroupsGroup(subgroup, group.Ид[0]))
+			result.push(...(await parseClassifierGroupsGroup(subgroup, group.Ид[0])))
 		}
 	}
 
 	return result
 }
 
-function parseClassifierGroups(classifier: any): GroupInfo[] {
+async function parseClassifierGroups(classifier: any): Promise<GroupInfo[]> {
 	const parsedData: GroupInfo[] = []
 
 	// Обработка всех главных групп в classifier
 	for (const group of classifier.Группы[0].Группа) {
-		parsedData.push(...parseClassifierGroupsGroup(group, null))
+		parsedData.push(...(await parseClassifierGroupsGroup(group, null)))
 	}
 
 	return parsedData
@@ -157,7 +156,7 @@ function parseItems(items: any): Items[] {
 }
 
 function parseOffers(offers: any): Offers[] {
-	const parsedData: any[] = []
+	const parsedData: Offers[] = []
 	for (const offer of offers.КоммерческаяИнформация.ПакетПредложений[0]
 		.Предложения[0].Предложение) {
 		parsedData.push({

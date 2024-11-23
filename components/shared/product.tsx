@@ -20,6 +20,7 @@ import { useCityStore } from '@/store/city-store'
 import { PriceInfo } from '@/exchange/@types'
 import { OfferWithTypedJson } from '@/store/@types'
 import { motion } from 'framer-motion'
+import { ImageCarousel } from './image-carousel'
 
 interface Props {
 	className?: string
@@ -94,7 +95,6 @@ export const Product: React.FC<Props> = ({
 		}
 	}
 
-	const isDefaultImage = item.images[0] ? false : true
 	const infoAvailable = [
 		item?.season,
 		item?.materials,
@@ -109,28 +109,12 @@ export const Product: React.FC<Props> = ({
 		<Container>
 			<div
 				className={cn(
-					'grid grid-cols-[minmax(300px,300px)_minmax(0,400px)_minmax(400px,1fr)] w-full gap-10 bg-secondary p-4 rounded-2xl min-h-[500px]',
+					'grid grid-cols-[minmax(280px,280px)_minmax(0,400px)_minmax(400px,1fr)] w-full gap-10 bg-secondary p-4 rounded-2xl min-h-[500px]',
 					className,
 				)}
 			>
 				{/* Изображение */}
-				<div className='relative min-h-[300px] w-full flex justify-center items-center bg-background rounded-2xl'>
-					<Image
-						src={
-							!isDefaultImage
-								? 'https://cdn.glavsiz.ru/images/' + item.images[0]
-								: '/logo_black.svg'
-						}
-						alt={item.name}
-						quality={5}
-						fill
-						sizes='(max-width: 100px) 100vw, (max-width: 200px) 50vw, 33vw'
-						className={cn('object-contain', {
-							'opacity-30': isDefaultImage,
-							'rounded-xl border-white border-[10px]': !isDefaultImage,
-						})}
-					/>
-				</div>
+				<ImageCarousel images={item.images} name={item.name} />
 
 				{/* Детали товара */}
 				<div className='flex flex-col'>
@@ -138,7 +122,7 @@ export const Product: React.FC<Props> = ({
 
 					<div className='flex flex-col gap-3'>
 						<div className='flex justify-between items-center pb-5'>
-							{offers && (
+							{offers?.[1] && (
 								<ItemVariants
 									variants={offers}
 									onVariantChange={handleVariantChange}

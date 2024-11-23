@@ -37,6 +37,8 @@ export interface CartItem {
 export interface CartState {
 	items: CartItem[]
 	loading: boolean
+	totalAmount: number
+	totalPrice: number
 	initializeCart: (userId: number) => Promise<void>
 	addCartItem: (cartItem: CartItem) => Promise<void>
 	removeCartItem: (offerId: string) => Promise<void>

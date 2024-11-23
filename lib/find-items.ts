@@ -1,8 +1,10 @@
 'use server'
 import { prisma } from '@/prisma/prisma-client'
+import apiClient from '@/lib/axios'
 
 export interface GetSearchParams {
 	query?: string
+	count?: number
 	categoryId?: string
 	sortBy?: string
 	priceFrom?: string
@@ -25,6 +27,30 @@ export const findItems = async (params: GetSearchParams) => {
 	})
 	return items
 }
+
+//получение новых товаров (с количеством)
+export async function fetchNewItems(count: number) {
+	try {
+		const response = await apiClient.get('/items/new?count=' + count.toString())
+		return response.data
+	} catch (error) {
+		console.error('Ошибка получения новых товаров', error)
+		throw new Error('Ошибка получения товаров')
+	}
+}
+
+export async function filteredItems(params: GetSearchParams) {
+	try {
+		const response = await apiClient.get(
+			'/items/search?category=' + params.categoryId,
+		)
+		return response.data
+	} catch (error) {
+		console.error('Ошибка получения новых товаров', error)
+		throw new Error('Ошибка получения товаров')
+	}
+}
+
 export const uniqueItems = async () => {
 	const items = await prisma.item.findMany({
 		distinct: ['id'],

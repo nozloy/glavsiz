@@ -1,3 +1,4 @@
+'use server'
 import cliProgress from 'cli-progress'
 import { PrismaClient } from '@prisma/client'
 import { Offers, PriceInfo, Prices, Rests, WarehouseInfo } from './@types'

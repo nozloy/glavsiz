@@ -1,9 +1,11 @@
+'use server'
 import crypto from 'crypto'
 import fs from 'fs'
 import { promises as fsPromises } from 'fs'
 import path from 'path'
 import unzipper from 'unzipper'
-import { uploadExtractedImages } from '@/exchange/s3-image-upload'
+import { uploadExtractedImagesBatch } from '@/exchange/s3-image-upload'
+import { up } from '@/exchange/update-db'
 
 const sessions = new Map()
 const UPLOAD_DIR = path.resolve('./uploads')
@@ -145,10 +147,8 @@ export async function POST(req) {
 			.replace(/[:]/g, '-')
 			.split('.')[0]
 		const extractDir = path.join(UPLOAD_DIR, timestamp)
-
 		try {
 			await fsPromises.mkdir(extractDir, { recursive: true })
-			console.log(`Директория для разархивирования создана: ${extractDir}`)
 		} catch (err) {
 			console.log(
 				`Ошибка при создании директории для разархивирования: ${err.message}`,
@@ -166,7 +166,6 @@ export async function POST(req) {
 				const zipFilePath = path.join(UPLOAD_DIR, file)
 
 				try {
-					console.log(`Разархивирование файла: ${zipFilePath}`)
 					await fs
 						.createReadStream(zipFilePath)
 						.pipe(unzipper.Extract({ path: extractDir }))
@@ -182,10 +181,12 @@ export async function POST(req) {
 				}
 			}
 		}
-
+		//Запуск обновления в БД с задержкой
+		setTimeout(async () => {
+			await up() // Вызываем функцию с отложенным запуском
+		}, 30000)
 		// Загрузка разархивированных изображений в S3
-		await uploadExtractedImages(extractDir)
-
+		await uploadExtractedImagesBatch(extractDir)
 		return new Response('success', {
 			status: 200,
 			headers: { 'Content-Type': 'text/plain' },

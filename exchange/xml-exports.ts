@@ -1,7 +1,8 @@
+'use server'
 import path from 'path'
 import { saveToXmlFile } from './exchange-helpers'
 import {
-	Goodies,
+	Items,
 	GroupInfo,
 	Offers,
 	PriceInfo,
@@ -16,7 +17,7 @@ export async function mainFeed(
 	parsedOffers: Offers[],
 	parsedPrices: Prices[],
 	parsedRests: Rests[],
-	parsedGoodies: Goodies[],
+	parsedItems: Items[],
 	basePath: string,
 ) {
 	// Сохранение в файл XML
@@ -28,7 +29,7 @@ export async function mainFeed(
 		parsedOffers,
 		parsedPrices,
 		parsedRests,
-		parsedGoodies,
+		parsedItems,
 		outputPath,
 	)
 }

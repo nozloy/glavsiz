@@ -1,16 +1,15 @@
 import { CardboardCatalog } from '@/components/shared/cardboard-catalog'
-import { allCategories, findItems, GetSearchParams } from '@/lib/find-items'
-
+import { filteredItems, GetSearchParams } from '@/lib/find-items'
+export const dynamic = 'force-dynamic'
 export default async function Page({
 	searchParams,
 }: {
 	searchParams: GetSearchParams
 }) {
-	const items = await findItems(searchParams)
-	const categories = await allCategories()
+	const items = await filteredItems(searchParams)
 	return (
 		<div className='bg-secondary'>
-			<CardboardCatalog items={items} categories={categories} />
+			<CardboardCatalog items={items} />
 		</div>
 	)
 }

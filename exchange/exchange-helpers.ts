@@ -1,3 +1,4 @@
+'use server'
 import fs from 'fs'
 import path from 'path'
 import { parseStringPromise, Builder } from 'xml2js'
@@ -13,7 +14,7 @@ import {
 } from './@types'
 
 // Функция для поиска последнего созданного подкаталога
-export function getLatestDirectory(basePath: string) {
+export async function getLatestDirectory(basePath: string) {
 	const directories = fs
 		.readdirSync(basePath)
 		.map(dir => path.join(basePath, dir))
@@ -47,7 +48,7 @@ export async function findXmlFiles(directory: string): Promise<RelevantFiles> {
 	const files = fs.readdirSync(directory)
 	const relevantFiles: RelevantFiles = {
 		importFiles: [],
-		offersFile: null,
+		offersFiles: [],
 		pricesFile: null,
 		restsFile: null,
 	}
@@ -62,7 +63,7 @@ export async function findXmlFiles(directory: string): Promise<RelevantFiles> {
 			if (file.startsWith('import___')) {
 				relevantFiles.importFiles.push(filePath)
 			} else if (file.startsWith('offers___')) {
-				relevantFiles.offersFile = filePath
+				relevantFiles.offersFiles.push(filePath)
 			} else if (file.startsWith('prices___')) {
 				relevantFiles.pricesFile = filePath
 			} else if (file.startsWith('rests___')) {
@@ -73,14 +74,14 @@ export async function findXmlFiles(directory: string): Promise<RelevantFiles> {
 	return relevantFiles
 }
 // Общая функция для записи в один XML файл
-export function saveToXmlFile(
+export async function saveToXmlFile(
 	groups: GroupInfo[],
 	prices: PriceInfo[],
 	warehouses: WarehouseInfo[],
 	parsedOffers: Offers[],
 	parsedPrices: Prices[],
 	parsedRests: Rests[],
-	parsedGoodies: Items[],
+	parsedItems: Items[],
 	outputPath: string,
 ) {
 	// Подготовка данных с обёрткой для групп и цен
@@ -105,7 +106,7 @@ export function saveToXmlFile(
 			})),
 		},
 		Items: {
-			Item: parsedGoodies.map(good => ({
+			Item: parsedItems.map(good => ({
 				id: good.id,
 				name: good.name,
 				vendorCode: good.vendorCode,
@@ -128,7 +129,18 @@ export function saveToXmlFile(
 	fs.writeFileSync(outputPath, xmlContent, 'utf8')
 	console.log(`Файл сохранен по пути: ${outputPath}`)
 }
-
+//Функция для получения нужного файла с offers
+export async function getOffersFile(importFiles: string[]) {
+	for (const filePath of importFiles) {
+		const fileData = await parseXmlFile(filePath)
+		const data =
+			fileData.КоммерческаяИнформация.ПакетПредложений[0].Предложения[0]
+				.Предложение
+		if (data) {
+			return fileData
+		}
+	}
+}
 // Функция для получения Классификатора и Каталога
 export async function getClassifierAndCatalog(importFiles: string[]) {
 	let classifier = null
@@ -173,6 +185,6 @@ export async function getClassifierAndCatalog(importFiles: string[]) {
 }
 
 // Функция для очистки названий групп
-export function cleanGroupName(name: string): string {
+export async function cleanGroupName(name: string): Promise<string> {
 	return name.replace(/^[\d.]*\s*|\s*\.+\s*$/g, '').trim()
 }

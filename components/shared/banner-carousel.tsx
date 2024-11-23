@@ -20,7 +20,7 @@ export const BannerCarousel: React.FC<Props> = ({ className }) => {
 	const plugin = React.useRef(
 		Autoplay({ delay: 5000, stopOnInteraction: true }),
 	)
-	return (
+	https: return (
 		<div className={cn('pt-4', className)}>
 			<Carousel
 				plugins={[plugin.current]}
@@ -31,6 +31,17 @@ export const BannerCarousel: React.FC<Props> = ({ className }) => {
 			>
 				<CarouselContent>
 					<CarouselItem key={1}>
+						<Link href={'#'}>
+							<Image
+								className='rounded-3xl'
+								src='https://cdn.glavsiz.ru/banners/New_year.jpg'
+								alt='banner'
+								width={1300}
+								height={287}
+							/>
+						</Link>
+					</CarouselItem>
+					<CarouselItem key={2}>
 						<Link href={'/catalog?query=Ботинки%20мужские%2013%20ПУ'}>
 							<Image
 								className='rounded-3xl'
@@ -41,7 +52,7 @@ export const BannerCarousel: React.FC<Props> = ({ className }) => {
 							/>
 						</Link>
 					</CarouselItem>
-					<CarouselItem key={2}>
+					<CarouselItem key={3}>
 						<Link href={'/catalog?query=вест-ворк'}>
 							<Image
 								className='rounded-3xl'

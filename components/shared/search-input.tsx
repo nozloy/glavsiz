@@ -107,9 +107,7 @@ export const SearchInput: React.FC<Props> = ({ className }) => {
 								)}
 								href={`/item/${item.id}`}
 							>
-								<span>
-									{item.name} {item.size ? item.size : ''}
-								</span>
+								<span>{item.name}</span>
 							</Link>
 						))}
 					</div>

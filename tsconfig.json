@@ -27,7 +27,8 @@
 		"**/*.ts",
 		"**/*.tsx",
 		".next/types/**/*.ts",
-		"app/api/1c_exchange/route.js"
+		"app/api/1c_exchange/route.js",
+		"prisma/*.ts"
 	],
 	"exclude": ["node_modules"]
 }

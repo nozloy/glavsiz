@@ -4,18 +4,14 @@ import { Item, Category } from '@prisma/client'
 import { cn } from '@/lib/utils'
 import { Title } from './title'
 import { ItemCard } from './item-card'
-
+import { useNewItems } from '@/hooks/use-new-items'
 interface Props {
-	items: Item[]
-	categories: Category[]
 	className?: string
 }
 
-export const RecentArrivals: React.FC<Props> = ({
-	items,
-	categories,
-	className,
-}) => {
+export const RecentArrivals: React.FC<Props> = ({ className }) => {
+	const { items, loading, error } = useNewItems(4)
+
 	return (
 		<div
 			className={cn(
@@ -30,12 +26,7 @@ export const RecentArrivals: React.FC<Props> = ({
 			/>
 			<div className='w-full flex flex-row justify-between items-center'>
 				{items?.slice(0, 4).map(item => (
-					<ItemCard
-						key={item.id}
-						item={item}
-						category={categories.filter(cat => cat.id === item.categoryId)[0]}
-						images={item.images}
-					/>
+					<ItemCard key={item.id} item={item} />
 				))}
 			</div>
 		</div>

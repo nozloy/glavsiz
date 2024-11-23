@@ -14,7 +14,7 @@ export interface Classifier {
 }
 interface RelevantFiles {
 	importFiles: string[]
-	offersFile: string | null
+	offersFiles: string[]
 	pricesFile: string | null
 	restsFile: string | null
 }

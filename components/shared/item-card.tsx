@@ -10,19 +10,25 @@ import {
 } from '@/components/ui/card'
 import { cn } from '@/lib/utils'
 import { Button } from '../ui/button'
-import { Item, Category } from '@prisma/client'
 import Image from 'next/image'
 import Link from 'next/link'
+import { useCityStore } from '@/store/city-store'
+import { ItemWithOffer } from '@/@types'
 
 interface Props {
 	className?: string
-	item: Item
-	category: Category
-	images: string[]
+	item: ItemWithOffer
 }
+export const ItemCard: React.FC<Props> = ({ className, item }) => {
+	const isDefaultImage = item.images[0] ? false : true
+	const { activeCity } = useCityStore()
+	const priceArray = Array.isArray(item.Offer[0].price)
+		? item.Offer[0].price
+		: []
+	const price = priceArray.find(priceItem =>
+		priceItem?.name.includes(activeCity),
+	)?.value
 
-export const ItemCard: React.FC<Props> = ({ className, item, images }) => {
-	const isDefaultImage = images[0] ? false : true
 	return (
 		<Link
 			className={cn('relative h-[460px] w-[290px]', className)}
@@ -43,7 +49,7 @@ export const ItemCard: React.FC<Props> = ({ className, item, images }) => {
 						<Image
 							src={
 								!isDefaultImage
-									? 'https://cdn.glavsiz.ru/images/' + images[0]
+									? 'https://cdn.glavsiz.ru/images/' + item.images[0]
 									: '/logo_black.svg'
 							}
 							alt={item.name}
@@ -59,8 +65,11 @@ export const ItemCard: React.FC<Props> = ({ className, item, images }) => {
 					</div>
 				</CardContent>
 				<CardFooter className='mt-auto flex flex-row justify-between pb-5'>
-					<p className=' text-accent-foreground pl-1 text-xl font-bold'>
-						{'1000' + '₽'}
+					<p
+						key={item.id + activeCity}
+						className=' text-accent-foreground pl-1 text-xl font-bold'
+					>
+						{price}₽
 					</p>
 					<Button
 						variant={'default'}

@@ -67,6 +67,7 @@ model Item {
   categoryId         String?
   Offer              Offer[]
   CartItem           CartItem[]
+  createdAt          DateTime   @default(now())
 }
 
 model Offer {

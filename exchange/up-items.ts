@@ -1,3 +1,4 @@
+'use server'
 import { PrismaClient, Season } from '@prisma/client'
 import { Items } from './@types'
 import cliProgress from 'cli-progress'

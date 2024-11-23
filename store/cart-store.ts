@@ -8,6 +8,8 @@ export const useCartStore = create<CartState>()(
 		(set, get) => ({
 			items: [],
 			loading: false,
+			totalAmount: 0,
+			totalPrice: 0,
 
 			// Инициализация корзины из базы данных
 			initializeCart: async userId => {

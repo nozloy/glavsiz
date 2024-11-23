@@ -95,7 +95,7 @@ export const ParentCategoriesMenu: React.FC<Props> = async ({ className }) => {
 											)
 											.map(category => (
 												<NavigationMenuLink
-													href={'/category/' + category.id}
+													href={'/catalog?categoryId=' + category.id}
 													title={category.name}
 													key={category.name}
 													className={cn(

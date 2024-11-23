@@ -1,4 +1,3 @@
-'use server'
 import crypto from 'crypto'
 import fs from 'fs'
 import { promises as fsPromises } from 'fs'
@@ -6,6 +5,9 @@ import path from 'path'
 import unzipper from 'unzipper'
 import { uploadExtractedImagesBatch } from '@/exchange/s3-image-upload'
 import { up } from '@/exchange/update-db'
+import { NextRequest } from 'next/server'
+
+export const dynamic = 'force-dynamic'
 
 const sessions = new Map()
 const UPLOAD_DIR = path.resolve('./uploads')
@@ -19,7 +21,7 @@ function generateSessionID() {
 }
 
 // Проверка авторизации
-async function checkAuth(req) {
+async function checkAuth(req: NextRequest) {
 	console.log('Этап: Авторизация (checkauth)')
 	const authHeader = req.headers.get('authorization')
 	if (!authHeader || !authHeader.startsWith('Basic ')) {
@@ -52,7 +54,7 @@ async function checkAuth(req) {
 }
 
 // Проверка действительности сессии
-async function validateSession(req) {
+async function validateSession(req: NextRequest) {
 	const cookie = req.headers.get('cookie')
 	const sessionId = cookie?.split('PHPSESSID=')[1]
 	const isValid = sessionId && sessions.has(sessionId)
@@ -61,7 +63,7 @@ async function validateSession(req) {
 }
 
 // Обработчик запросов POST
-export async function POST(req) {
+export async function POST(req: NextRequest) {
 	const { searchParams } = new URL(req.url)
 	const type = searchParams.get('type')
 	const mode = searchParams.get('mode')
@@ -99,28 +101,35 @@ export async function POST(req) {
 		try {
 			await fsPromises.mkdir(UPLOAD_DIR, { recursive: true })
 			console.log(`Директория для загрузки создана: ${UPLOAD_DIR}`)
-		} catch (err) {
+		} catch (err: Error | any) {
 			console.log(`Ошибка при создании директории: ${err.message}`)
 			return new Response('failure\nОшибка при создании директории', {
 				status: 500,
 			})
 		}
 
-		const reader = req.body.getReader()
-		const fileStream = fs.createWriteStream(filePath, { flags: 'a' })
+		if (req.body !== null && req.body !== undefined) {
+			const reader = req.body.getReader()
+			const fileStream = fs.createWriteStream(filePath, { flags: 'a' })
 
-		try {
-			while (true) {
-				const { done, value } = await reader.read()
-				if (done) break
-				fileStream.write(value)
+			try {
+				while (true) {
+					const { done, value } = await reader.read()
+					if (done) break
+					fileStream.write(value)
+				}
+				fileStream.end()
+				console.log(`Файл успешно сохранен: ${filePath}`)
+			} catch (err: Error | any) {
+				console.log(`Ошибка при сохранении файла: ${err.message}`)
+				return new Response('failure\nОшибка при сохранении файла', {
+					status: 500,
+				})
 			}
-			fileStream.end()
-			console.log(`Файл успешно сохранен: ${filePath}`)
-		} catch (err) {
-			console.log(`Ошибка при сохранении файла: ${err.message}`)
-			return new Response('failure\nОшибка при сохранении файла', {
-				status: 500,
+		} else {
+			console.log('Ошибка: req.body is null or undefined')
+			return new Response('failure\nreq.body is null or undefined', {
+				status: 400,
 			})
 		}
 
@@ -149,7 +158,7 @@ export async function POST(req) {
 		const extractDir = path.join(UPLOAD_DIR, timestamp)
 		try {
 			await fsPromises.mkdir(extractDir, { recursive: true })
-		} catch (err) {
+		} catch (err: Error | any) {
 			console.log(
 				`Ошибка при создании директории для разархивирования: ${err.message}`,
 			)
@@ -173,7 +182,7 @@ export async function POST(req) {
 
 					await fsPromises.unlink(zipFilePath)
 					console.log(`Файл успешно разархивирован и удален: ${zipFilePath}`)
-				} catch (err) {
+				} catch (err: Error | any) {
 					console.log(`Ошибка при разархивировании файла: ${err.message}`)
 					return new Response('failure\nОшибка при разархивировании файла', {
 						status: 500,

@@ -40,9 +40,13 @@ export async function fetchNewItems(count: number) {
 }
 
 export async function filteredItems(params: GetSearchParams) {
+	let query = params.query || ''
+	let categoryId = params.categoryId || ''
 	try {
 		const response = await apiClient.get(
-			'/items/search?category=' + params.categoryId,
+			`/items/search?${query ? 'query=' + query : ''}${
+				categoryId ? '&categoryId=' + categoryId : ''
+			}`,
 		)
 		return response.data
 	} catch (error) {

@@ -22,7 +22,7 @@ interface Props {
 export const ItemCard: React.FC<Props> = ({ className, item }) => {
 	const isDefaultImage = item.images[0] ? false : true
 	const { activeCity } = useCityStore()
-	const priceArray = Array.isArray(item.Offer[0].price)
+	const priceArray = Array.isArray(item?.Offer[0]?.price)
 		? item.Offer[0].price
 		: []
 	const price = priceArray.find(priceItem =>

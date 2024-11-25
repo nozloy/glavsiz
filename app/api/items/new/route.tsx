@@ -18,6 +18,9 @@ export async function GET(req: NextRequest) {
 		const items = await prisma.item.findMany({
 			distinct: ['vendorCode'],
 			where: {
+				Offer: {
+					some: {}, // Проверяем наличие хотя бы одного связанного Offer
+				},
 				NOT: {
 					images: {
 						equals: null, // Исключаем записи, где images == null

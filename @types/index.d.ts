@@ -6,3 +6,6 @@ export interface OfferWithPrice extends Offer {
 export interface ItemWithOffer extends Item {
 	Offer: OfferWithPrice[]
 }
+export interface ItemWithOfferOnly extends Item {
+	Offer: Offer[]
+}

@@ -1,9 +1,8 @@
 'use client'
-import React, { lazy, useState } from 'react'
+import React from 'react'
 import {
 	Card,
 	CardContent,
-	CardDescription,
 	CardFooter,
 	CardHeader,
 	CardTitle,
@@ -25,10 +24,10 @@ export const ItemCard: React.FC<Props> = ({ className, item }) => {
 	const priceArray = Array.isArray(item?.Offer[0]?.price)
 		? item.Offer[0].price
 		: []
-	const price = priceArray.find(priceItem =>
+	const activeCityPrice = priceArray.find(priceItem =>
 		priceItem?.name.includes(activeCity),
 	)?.value
-
+	const price = activeCityPrice ? activeCityPrice : priceArray[0]?.value
 	return (
 		<Link
 			className={cn('relative h-[460px] w-[290px]', className)}
@@ -69,7 +68,7 @@ export const ItemCard: React.FC<Props> = ({ className, item }) => {
 						key={item.id + activeCity}
 						className=' text-accent-foreground pl-1 text-xl font-bold'
 					>
-						{price}₽
+						{price ? price + '₽' : '-'}
 					</p>
 					<Button
 						variant={'default'}

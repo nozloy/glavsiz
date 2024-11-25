@@ -1,7 +1,6 @@
 'use server'
 import { prisma } from '@/prisma/prisma-client'
 import apiClient from '@/lib/axios'
-
 export interface GetSearchParams {
 	query?: string
 	count?: number
@@ -29,7 +28,7 @@ export const findItems = async (params: GetSearchParams) => {
 }
 
 //получение новых товаров (с количеством)
-export async function fetchNewItems(count: number) {
+export const fetchNewItems = async (count: number) => {
 	try {
 		const response = await apiClient.get('/items/new?count=' + count.toString())
 		return response.data
@@ -39,13 +38,14 @@ export async function fetchNewItems(count: number) {
 	}
 }
 
-export async function filteredItems(params: GetSearchParams) {
+export const filteredItems = async (params: GetSearchParams) => {
 	let query = params.query || ''
 	let categoryId = params.categoryId || ''
+	let count = params.count || 20
 	try {
 		const response = await apiClient.get(
 			`/items/search?${query ? 'query=' + query : ''}${
-				categoryId ? '&categoryId=' + categoryId : ''
+				categoryId ? '&categoryId=' + categoryId : '' + `&count=${count}`
 			}`,
 		)
 		return response.data
@@ -55,14 +55,14 @@ export async function filteredItems(params: GetSearchParams) {
 	}
 }
 
-export const uniqueItems = async () => {
-	const items = await prisma.item.findMany({
-		distinct: ['id'],
-	})
-	return items
-}
+// export const uniqueItems = async () => {
+// 	const items = await prisma.item.findMany({
+// 		distinct: ['id'],
+// 	})
+// 	return items
+// }
 export const allItems = async () => {
-	const items = await prisma.item.findMany()
+	const items = await prisma.item.findMany({ include: { Offer: true } })
 	return items
 }
 export const allCategories = async () => {

@@ -8,17 +8,8 @@
 		"build": "next build",
 		"start": "next start",
 		"lint": "next lint",
-		"migrate": "prisma migrate dev",
-		"prisma:push": "prisma db push",
-		"prisma:generate": "prisma generate",
-		"prisma:pull": "prisma db pull",
-		"prisma:studio": "prisma studio",
-		"prisma:seed": "prisma db seed",
 		"parsedata": "ts-node --project tsconfig.build.json ./exchange/data-parsing.ts",
 		"updatedb": "ts-node --project tsconfig.build.json ./exchange/update-db.ts"
-	},
-	"prisma": {
-		"seed": "ts-node --compiler-options {\"module\":\"CommonJS\"} prisma/seed.ts"
 	},
 	"dependencies": {
 		"@aws-sdk/client-s3": "^3.692.0",

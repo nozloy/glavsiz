@@ -27,7 +27,7 @@ export const SearchInput: React.FC<Props> = ({ className }) => {
 		async () => {
 			try {
 				if (!searchQuery) return
-				const response = await Api.items.search(searchQuery)
+				const response = await Api.items.search(searchQuery, 10)
 				setItems(response)
 			} catch (error) {
 				console.log(error)
@@ -44,7 +44,7 @@ export const SearchInput: React.FC<Props> = ({ className }) => {
 			setFocused(false)
 			const param = searchQuery
 			if (param) {
-				window.location.href = `/catalog?query=${param}`
+				window.location.href = `/catalog?query=${param}&count=50`
 			}
 		} else if (event.key === 'Escape') {
 			setFocused(false)

@@ -31,7 +31,7 @@ export const BannerCarousel: React.FC<Props> = ({ className }) => {
 			>
 				<CarouselContent>
 					<CarouselItem key={1}>
-						<Link href={'#'}>
+						<Link href={'https://t.me/glavsiz/535'}>
 							<Image
 								className='rounded-3xl'
 								src='https://cdn.glavsiz.ru/banners/New_year.jpg'

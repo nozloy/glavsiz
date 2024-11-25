@@ -9,7 +9,7 @@ import {
 	NavigationMenuViewport,
 	navigationMenuTriggerStyle,
 } from '@/components/ui/navigation-menu'
-import { cn } from '@/lib/utils'
+import { capitalizeFirstLetter, cn } from '@/lib/utils'
 import { prisma } from '@/prisma/prisma-client'
 import { Prisma, ParentCategory } from '@prisma/client'
 import Image from 'next/image'
@@ -49,6 +49,7 @@ ListItem.displayName = 'ListItem'
 export const ParentCategoriesMenu: React.FC<Props> = async ({ className }) => {
 	const parentCategories = await prisma.parentCategory.findMany()
 	const categories = await prisma.category.findMany()
+
 	return (
 		<div className='z-10 w-full pt-0 bg-background pb-2 pl-2 border-b sticky top-0 hidden md:block'>
 			<Container className='py-0'>
@@ -78,6 +79,7 @@ export const ParentCategoriesMenu: React.FC<Props> = async ({ className }) => {
 														alt={'logo'}
 														width={192}
 														height={192}
+														priority
 													/>
 													<div className='mb-2 mt-4 text-lg font-medium'>
 														{parentCategory.name}
@@ -103,7 +105,7 @@ export const ParentCategoriesMenu: React.FC<Props> = async ({ className }) => {
 														'w-full h-full row-span-1 p-2 border rounded-xl shadow-md text-center cursor-pointer select-none hover:scale-105 hover:shadow-lg hover:shadow-primary/50 transition-all duration-300',
 													)}
 												>
-													{category.name}
+													{capitalizeFirstLetter(category.name)}
 												</NavigationMenuLink>
 											))}
 									</ul>

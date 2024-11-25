@@ -30,7 +30,7 @@ export const ItemCard: React.FC<Props> = ({ className, item }) => {
 	const price = activeCityPrice ? activeCityPrice : priceArray[0]?.value
 	return (
 		<Link
-			className={cn('relative h-[460px] w-[290px]', className)}
+			className={cn('relative h-[460px] w-[290px] ', className)}
 			href={'/item/' + item.id + '/'}
 			target='_parent'
 		>

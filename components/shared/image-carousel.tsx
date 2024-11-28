@@ -1,5 +1,5 @@
 'use client'
-import React from 'react'
+import React, { useState } from 'react'
 import {
 	Carousel,
 	CarouselContent,
@@ -7,10 +7,9 @@ import {
 	CarouselNext,
 	CarouselPrevious,
 } from '@/components/ui/carousel'
-import Autoplay from 'embla-carousel-autoplay'
 import { cn } from '@/lib/utils'
 import Image from 'next/image'
-import Link from 'next/link'
+import ModalImage from '@/components/shared/modal-image'
 
 interface Props {
 	className?: string
@@ -21,13 +20,29 @@ const imageBaseUrl = process.env.NEXT_PUBLIC_IMAGE_URL
 
 export const ImageCarousel: React.FC<Props> = ({ className, images, name }) => {
 	const isDefaultImage = images[0] ? false : true
-	const plugin = React.useRef(
-		Autoplay({ delay: 5000, stopOnInteraction: true, stopOnMouseEnter: true }),
-	)
+	const [isModalOpen, setIsModalOpen] = useState(false)
+	const [activeImage, setActiveImage] = useState<string | null>(null)
+
+	const [isLoading, setIsLoading] = useState(true)
+
+	const handleImageLoad = () => {
+		setIsLoading(false)
+	}
+
+	const openModal = (image: string) => {
+		setActiveImage(image)
+		setIsModalOpen(true)
+	}
+
+	const closeModal = () => {
+		setIsModalOpen(false)
+		setActiveImage(null)
+		setIsLoading(true)
+	}
+
 	return (
 		<div className={cn('pl-2', className)}>
 			<Carousel
-				plugins={[plugin.current]}
 				opts={{
 					align: 'start',
 					loop: true,
@@ -48,14 +63,15 @@ export const ImageCarousel: React.FC<Props> = ({ className, images, name }) => {
 						images.map((image, index) => (
 							<CarouselItem
 								key={index}
-								className='relative min-h-[300px] min-w-full w-full flex justify-center items-center bg-background rounded-2xl'
+								className='relative min-h-[300px] min-w-full w-full flex justify-center items-center bg-background rounded-2xl cursor-pointer'
+								onClick={() => openModal(image)} // Открыть модальное окно
 							>
 								<Image
 									src={imageBaseUrl + image}
 									alt={name}
 									quality={5}
 									fill
-									sizes='(max-width: 100px) 100vw, (max-width: 200px) 50vw, 33vw'
+									sizes='(max-width: 768px) 10vw, (max-width: 1200px) 15vw, 20vw'
 									className='object-contain rounded-xl border-white border-[10px]'
 								/>
 							</CarouselItem>
@@ -69,6 +85,28 @@ export const ImageCarousel: React.FC<Props> = ({ className, images, name }) => {
 					</>
 				)}
 			</Carousel>
+
+			{/* Модальное окно */}
+			{isModalOpen && activeImage && (
+				<ModalImage onClose={closeModal}>
+					<div className='relative w-full h-full flex justify-center items-center'>
+						{isLoading && (
+							<div className='absolute z-10 flex items-center justify-center bg-black bg-opacity-50 rounded-xl p-4'>
+								<div className='spinner border-4 border-t-transparent border-white rounded-full w-10 h-10 animate-spin'></div>
+							</div>
+						)}
+						<Image
+							src={imageBaseUrl + activeImage}
+							alt={name}
+							quality={100}
+							width={400}
+							height={400}
+							className='object-contain rounded-xl'
+							onLoadingComplete={handleImageLoad}
+						/>
+					</div>
+				</ModalImage>
+			)}
 		</div>
 	)
 }

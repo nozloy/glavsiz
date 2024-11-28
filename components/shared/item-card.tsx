@@ -1,5 +1,5 @@
 'use client'
-import React from 'react'
+import React, { useState } from 'react'
 import {
 	Card,
 	CardContent,
@@ -19,6 +19,7 @@ interface Props {
 	item: ItemWithOffer
 }
 export const ItemCard: React.FC<Props> = ({ className, item }) => {
+	const [isLoading, setIsLoading] = useState(true) // локальный state для загрузки изображения
 	const isDefaultImage = item.images[0] ? false : true
 	const { activeCity } = useCityStore()
 	const priceArray = Array.isArray(item?.Offer[0]?.price)
@@ -28,6 +29,7 @@ export const ItemCard: React.FC<Props> = ({ className, item }) => {
 		priceItem?.name.includes(activeCity),
 	)?.value
 	const price = activeCityPrice ? activeCityPrice : priceArray[0]?.value
+
 	return (
 		<Link
 			className={cn('relative h-[460px] w-[290px] ', className)}
@@ -45,6 +47,12 @@ export const ItemCard: React.FC<Props> = ({ className, item }) => {
 					<div
 						className={`relative overflow-hidden rounded-2xl p-0 flex items-center justify-center h-[300px] w-full`}
 					>
+						{/* Индикатор загрузки */}
+						{isLoading && (
+							<div className='absolute inset-0 flex items-center justify-center bg-gray-200'>
+								<div className='spinner border-4 border-t-transparent border-white rounded-full w-10 h-10 animate-spin'></div>
+							</div>
+						)}
 						<Image
 							src={
 								!isDefaultImage
@@ -52,15 +60,17 @@ export const ItemCard: React.FC<Props> = ({ className, item }) => {
 									: '/logo_black.svg'
 							}
 							alt={item.name}
-							quality={5}
-							sizes='(max-width: 768px) 50vw, (max-width: 1200px) 33vw, 25vw'
+							quality={10}
+							sizes='(max-width: 768px) 5vw, (max-width: 1200px) 10vw, 15vw'
 							fill
-							className={cn('object-contain', {
+							loading='lazy'
+							className={cn('object-contain transition-opacity', {
 								'opacity-30': isDefaultImage,
+								'opacity-0': isLoading,
+								'opacity-100': !isLoading,
 							})}
+							onLoad={() => setIsLoading(false)} // Когда изображение загрузилось
 						/>
-						{/* тут должен быть стикер */}
-						<div className='absolute inset-0 rounded-2xl'></div>
 					</div>
 				</CardContent>
 				<CardFooter className='mt-auto flex flex-row justify-between pb-5'>

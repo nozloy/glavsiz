@@ -21,6 +21,3 @@ export default async function Home() {
 		</div>
 	)
 }
-function newItems() {
-	throw new Error('Function not implemented.')
-}

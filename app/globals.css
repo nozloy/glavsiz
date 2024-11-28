@@ -85,6 +85,9 @@ html {
 		background: #ffffff;
 		box-shadow: 30px 30px 60px #d6d6d6, -30px -30px 60px #ffffff;
 	}
+	.spinner {
+		@apply border-4 border-solid border-t-transparent rounded-full w-10 h-10 animate-spin;
+	}
 }
 
 @layer base {

@@ -1,7 +1,6 @@
 import { ItemDescription } from '@/components/shared/item-description'
 import { Product } from '@/components/shared/product'
 import { prisma } from '@/prisma/prisma-client'
-import { Item } from '@prisma/client'
 import { notFound } from 'next/navigation'
 
 export default async function ProductPage({

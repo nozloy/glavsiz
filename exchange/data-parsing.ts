@@ -6,6 +6,7 @@ import {
 	getClassifierAndCatalog,
 	cleanGroupName,
 	getOffersFile,
+	saveToXmlFile,
 } from './exchange-helpers'
 import {
 	Items,
@@ -31,14 +32,25 @@ export async function dataParsing(basePath: string) {
 		const { classifier, items, properties } = await getClassifierAndCatalog(
 			files.importFiles,
 		)
-		const parsedClassifierGroups = parseClassifierGroups(classifier)
-		const parsedClassifierPrices = parseClassifierPrices(classifier)
-		const parsedClassifierWarehouse = parseClassifierWarehouse(classifier)
-		const parsedItems = parseItems(items)
-		const parsedOffers = parseOffers(offers)
-		const parsedPrices = parsePrices(prices)
-		const parsedRests = parseRests(rests)
-		const parsedProperties = parseProperties(properties)
+		const parsedClassifierGroups = await parseClassifierGroups(classifier)
+		const parsedClassifierPrices = await parseClassifierPrices(classifier)
+		const parsedClassifierWarehouse = await parseClassifierWarehouse(classifier)
+		const parsedItems = await parseItems(items)
+		const parsedOffers = await parseOffers(offers)
+		const parsedPrices = await parsePrices(prices)
+		const parsedRests = await parseRests(rests)
+		const parsedProperties = await parseProperties(properties)
+		saveToXmlFile(
+			parsedClassifierGroups,
+			parsedClassifierPrices,
+			parsedClassifierWarehouse,
+			parsedOffers,
+			parsedPrices,
+			parsedRests,
+			parsedItems,
+			parsedProperties,
+			basePath,
+		)
 		return {
 			parsedClassifierGroups,
 			parsedClassifierPrices,

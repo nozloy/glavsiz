@@ -8,9 +8,32 @@ const prisma = new PrismaClient()
 
 export const dynamic = 'force-dynamic'
 
+async function main() {
+	try {
+		await down()
+		await up()
+	} catch (e) {
+		console.error('Ошибка:', e)
+	} finally {
+		await prisma.$disconnect()
+	}
+}
+
+// Запуск основного процесса
+main()
+	.then(async () => {
+		await prisma.$disconnect()
+	})
+	.catch(async e => {
+		console.error(e)
+		await prisma.$disconnect()
+		process.exit(1)
+	})
+
 async function down() {
 	await prisma.$executeRaw`TRUNCATE TABLE "ParentCategory" RESTART IDENTITY CASCADE`
 	await prisma.$executeRaw`TRUNCATE TABLE "Category" RESTART IDENTITY CASCADE`
+	await prisma.$executeRaw`TRUNCATE TABLE "Subcategory" RESTART IDENTITY CASCADE`
 	await prisma.$executeRaw`TRUNCATE TABLE "Item" RESTART IDENTITY CASCADE`
 	console.log('База данных очищена.')
 }
@@ -27,14 +50,14 @@ export async function up() {
 			await exchange.parsedClassifierGroups,
 			exchange.parsedItems,
 		)
-		await upConstants()
-		await upItems(exchange.parsedItems)
-		await upOffers(
-			exchange.parsedOffers,
-			exchange.parsedRests,
-			exchange.parsedPrices,
-			exchange.parsedClassifierWarehouse,
-			exchange.parsedClassifierPrices,
-		)
+		// await upConstants()
+		// await upItems(exchange.parsedItems)
+		// await upOffers(
+		// 	exchange.parsedOffers,
+		// 	exchange.parsedRests,
+		// 	exchange.parsedPrices,
+		// 	exchange.parsedClassifierWarehouse,
+		// 	exchange.parsedClassifierPrices,
+		// )
 	}
 }

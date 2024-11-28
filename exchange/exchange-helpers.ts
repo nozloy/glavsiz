@@ -11,6 +11,7 @@ import {
 	RelevantFiles,
 	Rests,
 	WarehouseInfo,
+	ParameterInfo,
 } from './@types'
 
 // Функция для поиска последнего созданного подкаталога
@@ -82,6 +83,7 @@ export async function saveToXmlFile(
 	parsedPrices: Prices[],
 	parsedRests: Rests[],
 	parsedItems: Items[],
+	parsedProperties: ParameterInfo[],
 	outputPath: string,
 ) {
 	// Подготовка данных с обёрткой для групп и цен
@@ -126,8 +128,12 @@ export async function saveToXmlFile(
 	const xmlContent = builder.buildObject(data)
 
 	// Запись в файл
-	fs.writeFileSync(outputPath, xmlContent, 'utf8')
-	console.log(`Файл сохранен по пути: ${outputPath}`)
+	if (xmlContent) {
+		fs.writeFileSync(outputPath + '/base.xml', xmlContent, 'utf8')
+		console.log(`Файл сохранен по пути: ${outputPath}`)
+	} else {
+		console.log('XML-структура пуста.')
+	}
 }
 //Функция для получения нужного файла с offers
 export async function getOffersFile(importFiles: string[]) {

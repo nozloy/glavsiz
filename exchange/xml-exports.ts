@@ -9,6 +9,8 @@ import {
 	Prices,
 	Rests,
 	WarehouseInfo,
+	Param,
+	ParameterInfo,
 } from './@types'
 export async function mainFeed(
 	parsedClassifierGroups: GroupInfo[],
@@ -18,6 +20,7 @@ export async function mainFeed(
 	parsedPrices: Prices[],
 	parsedRests: Rests[],
 	parsedItems: Items[],
+	parsedProperties: ParameterInfo[],
 	basePath: string,
 ) {
 	// Сохранение в файл XML
@@ -30,6 +33,7 @@ export async function mainFeed(
 		parsedPrices,
 		parsedRests,
 		parsedItems,
-		outputPath,
+		parsedProperties,
+		basePath,
 	)
 }

@@ -1,4 +1,3 @@
-'use server'
 import { Items, GroupInfo } from './@types'
 import { PrismaClient } from '@prisma/client'
 import cliProgress from 'cli-progress'

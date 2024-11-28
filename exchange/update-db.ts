@@ -50,14 +50,14 @@ export async function up() {
 			await exchange.parsedClassifierGroups,
 			exchange.parsedItems,
 		)
-		// await upConstants()
-		// await upItems(exchange.parsedItems)
-		// await upOffers(
-		// 	exchange.parsedOffers,
-		// 	exchange.parsedRests,
-		// 	exchange.parsedPrices,
-		// 	exchange.parsedClassifierWarehouse,
-		// 	exchange.parsedClassifierPrices,
-		// )
+		await upConstants()
+		await upItems(exchange.parsedItems)
+		await upOffers(
+			exchange.parsedOffers,
+			exchange.parsedRests,
+			exchange.parsedPrices,
+			exchange.parsedClassifierWarehouse,
+			exchange.parsedClassifierPrices,
+		)
 	}
 }

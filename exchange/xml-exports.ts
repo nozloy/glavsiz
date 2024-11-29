@@ -16,11 +16,12 @@ export async function mainFeed(
 	parsedClassifierGroups: GroupInfo[],
 	parsedClassifierPrices: PriceInfo[],
 	parsedClassifierWarehouse: WarehouseInfo[],
+	parsedProperties: ParameterInfo[],
 	parsedOffers: Offers[],
 	parsedPrices: Prices[],
 	parsedRests: Rests[],
 	parsedItems: Items[],
-	parsedProperties: ParameterInfo[],
+
 	basePath: string,
 ) {
 	// Сохранение в файл XML
@@ -29,11 +30,12 @@ export async function mainFeed(
 		parsedClassifierGroups,
 		parsedClassifierPrices,
 		parsedClassifierWarehouse,
+		parsedProperties,
 		parsedOffers,
 		parsedPrices,
 		parsedRests,
 		parsedItems,
-		parsedProperties,
+
 		basePath,
 	)
 }

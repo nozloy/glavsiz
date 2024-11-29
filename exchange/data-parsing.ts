@@ -43,17 +43,17 @@ export async function dataParsing(basePath: string) {
 		const parsedPrices = await parsePrices(prices)
 		const parsedRests = await parseRests(rests)
 
-		saveToXmlFile(
-			parsedClassifierGroups,
-			parsedClassifierPrices,
-			parsedClassifierWarehouse,
-			parsedClassifierProperties,
-			parsedOffers,
-			parsedPrices,
-			parsedRests,
-			parsedItems,
-			basePath,
-		)
+		// saveToXmlFile(
+		// 	parsedClassifierGroups,
+		// 	parsedClassifierPrices,
+		// 	parsedClassifierWarehouse,
+		// 	parsedClassifierProperties,
+		// 	parsedOffers,
+		// 	parsedPrices,
+		// 	parsedRests,
+		// 	parsedItems,
+		// 	basePath,
+		// )
 		return {
 			parsedClassifierGroups,
 			parsedClassifierPrices,

@@ -2,7 +2,6 @@
 import React, { use, useEffect, useRef, useState } from 'react'
 import { Item, Category, Season, Offer } from '@prisma/client'
 import { cn } from '@/lib/utils'
-import Image from 'next/image'
 import {
 	ItemCode,
 	Container,
@@ -21,20 +20,14 @@ import { PriceInfo } from '@/exchange/@types'
 import { OfferWithTypedJson } from '@/store/@types'
 import { motion } from 'framer-motion'
 import { ImageCarousel } from './image-carousel'
+import { ItemWithOfferOnly } from '@/@types'
 
 interface Props {
 	className?: string
-	item: Item
-	category: Category
-	offers?: Offer[]
+	item: ItemWithOfferOnly
 }
 
-export const Product: React.FC<Props> = ({
-	className,
-	item,
-	category,
-	offers,
-}) => {
+export const Product: React.FC<Props> = ({ className, item }) => {
 	const { activeCity } = useCityStore()
 	const prevCityRef = useRef<string>()
 	useEffect(() => {
@@ -44,56 +37,59 @@ export const Product: React.FC<Props> = ({
 		}
 	}, [activeCity])
 
-	const { addCartItem, loading } = useCartStore(state => state)
+	// const { addCartItem, loading } = useCartStore(state => state)
 	const [selectedOfferId, setSelectedOfferId] = useState<string>(
-		offers?.[0]?.id || '',
+		item.Offer?.[0]?.id || '',
 	)
-	const selectedOffer: OfferWithTypedJson | undefined = offers?.find(
+	// const selectedOffer: OfferWithTypedJson | undefined = offers?.find(
+	// 	offer => offer.id === selectedOfferId,
+	// ) as OfferWithTypedJson | undefined
+	const selectedOffer: OfferWithTypedJson | undefined = item.Offer?.find(
 		offer => offer.id === selectedOfferId,
 	) as OfferWithTypedJson | undefined
 	const handleVariantChange = (offerId: string) => {
 		setSelectedOfferId(offerId)
 	}
 
-	const { data: session } = useSession()
-	const fetchCartId = async (): Promise<number> => {
-		const response = await fetch('/api/cart')
-		if (!response.ok) throw new Error('Не удалось получить корзину')
-		const data = await response.json()
-		return data.cartId // cartId будет передан сервером
-	}
-	const handleAddCartItem = async () => {
-		if (session && selectedOffer) {
-			const cartId = await fetchCartId()
+	// const { data: session } = useSession()
+	// const fetchCartId = async (): Promise<number> => {
+	// 	const response = await fetch('/api/cart')
+	// 	if (!response.ok) throw new Error('Не удалось получить корзину')
+	// 	const data = await response.json()
+	// 	return data.cartId // cartId будет передан сервером
+	// }
+	// const handleAddCartItem = async () => {
+	// 	if (session && selectedOffer) {
+	// 		const cartId = await fetchCartId()
 
-			if (!cartId) {
-				toast('Не удалось получить корзину пользователя', {
-					icon: '❗️',
-					duration: 2000,
-				})
-				return
-			}
+	// 		if (!cartId) {
+	// 			toast('Не удалось получить корзину пользователя', {
+	// 				icon: '❗️',
+	// 				duration: 2000,
+	// 			})
+	// 			return
+	// 		}
 
-			// Добавляем товар в Zustand
-			addCartItem({
-				id: String(Date.now()),
-				cartId: cartId,
-				offerId: selectedOffer.id,
-				itemId: item.id,
-				quantity: 1,
-			})
+	// 		// Добавляем товар в Zustand
+	// 		addCartItem({
+	// 			id: String(Date.now()),
+	// 			cartId: cartId,
+	// 			offerId: selectedOffer.id,
+	// 			itemId: item.id,
+	// 			quantity: 1,
+	// 		})
 
-			toast('Товар добавлен в корзину', {
-				icon: '🛒',
-				duration: 2000,
-			})
-		} else {
-			toast('Сначала необходимо авторизоваться', {
-				icon: '❗️',
-				duration: 2000,
-			})
-		}
-	}
+	// 		toast('Товар добавлен в корзину', {
+	// 			icon: '🛒',
+	// 			duration: 2000,
+	// 		})
+	// 	} else {
+	// 		toast('Сначала необходимо авторизоваться', {
+	// 			icon: '❗️',
+	// 			duration: 2000,
+	// 		})
+	// 	}
+	// }
 
 	const infoAvailable = [
 		item?.season,
@@ -103,6 +99,7 @@ export const Product: React.FC<Props> = ({
 		item?.heights,
 		item?.materialLiner,
 		item?.materialInsulation,
+		item?.sole,
 	].some(Boolean)
 
 	return (
@@ -122,9 +119,9 @@ export const Product: React.FC<Props> = ({
 
 					<div className='flex flex-col gap-3'>
 						<div className='flex justify-between items-center pb-5'>
-							{offers?.[1] && (
+							{item.Offer?.[1] && (
 								<ItemVariants
-									variants={offers}
+									variants={item.Offer}
 									onVariantChange={handleVariantChange}
 								/>
 							)}
@@ -167,6 +164,9 @@ export const Product: React.FC<Props> = ({
 								propsValue={item.materialInsulation}
 							/>
 						)}
+						{item?.sole && (
+							<ItemProps propsName='Подошва' propsValue={item.sole} />
+						)}
 					</div>
 				</div>
 
@@ -208,8 +208,8 @@ export const Product: React.FC<Props> = ({
 							<Button
 								// disabled={!session}
 								disabled={true}
-								loading={loading}
-								onClick={handleAddCartItem}
+								// loading={loading}
+								// onClick={handleAddCartItem}
 								variant={'default'}
 								size={'lg'}
 								className='w-[250px] text-lg font-bold p-8 bg-primary text-secondary drop-shadow-md hover:drop-shadow-lg hover:scale-105 transition-all delay-75 active:scale-95 select-none'

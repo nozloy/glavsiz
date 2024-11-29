@@ -73,14 +73,19 @@ export const ParentCategoriesMenu: React.FC<Props> = async ({ className }) => {
 													className='flex h-full w-full select-none flex-col justify-end rounded-md bg-gradient-to-b from-muted/50 to-muted p-6 no-underline outline-none focus:shadow-md transition-all duration-300'
 													href='/'
 												>
-													<Image
+													<img
+														className='h-48 w-48 mx-auto'
+														src={'/images/icons/' + parentCategory.icon}
+														alt={'logo'}
+													/>
+													{/* <Image
 														className='h-48 w-48 mx-auto'
 														src={'/images/icons/' + parentCategory.icon}
 														alt={'logo'}
 														width={192}
 														height={192}
 														priority
-													/>
+													/> */}
 													<div className='mb-2 mt-4 text-lg font-medium'>
 														{parentCategory.name}
 													</div>

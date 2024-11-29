@@ -76,35 +76,45 @@ export async function findXmlFiles(directory: string): Promise<RelevantFiles> {
 }
 // Общая функция для записи в один XML файл
 export async function saveToXmlFile(
-	groups: GroupInfo[],
-	prices: PriceInfo[],
-	warehouses: WarehouseInfo[],
+	parsedClassifierGroups: GroupInfo[],
+	parsedClassifierPrices: PriceInfo[],
+	parsedClassifierWarehouses: WarehouseInfo[],
+	parsedClassifierProperties: ParameterInfo[],
 	parsedOffers: Offers[],
 	parsedPrices: Prices[],
 	parsedRests: Rests[],
 	parsedItems: Items[],
-	parsedProperties: ParameterInfo[],
 	outputPath: string,
 ) {
 	// Подготовка данных с обёрткой для групп и цен
 	const data = {
 		Groups: {
-			Group: groups.map(group => ({
+			Group: parsedClassifierGroups.map(group => ({
 				id: group.id,
 				name: group.name,
 				parentId: group.parentId || '',
 			})),
 		},
 		Prices: {
-			Price: prices.map(price => ({
+			Price: parsedClassifierPrices.map(price => ({
 				id: price.id,
 				name: price.name,
 			})),
 		},
 		Warehouses: {
-			Warehouse: warehouses.map(warehouse => ({
+			Warehouse: parsedClassifierWarehouses.map(warehouse => ({
 				id: warehouse.id,
 				name: warehouse.name,
+			})),
+		},
+		Properties: {
+			Property: parsedClassifierProperties.map(property => ({
+				id: property.id,
+				name: property.name,
+				values: property.values.map(value => ({
+					id: value.id,
+					value: value.value,
+				})),
 			})),
 		},
 		Items: {
@@ -130,7 +140,7 @@ export async function saveToXmlFile(
 	// Запись в файл
 	if (xmlContent) {
 		fs.writeFileSync(outputPath + '/base.xml', xmlContent, 'utf8')
-		console.log(`Файл сохранен по пути: ${outputPath}`)
+		console.log(`Файл сохранен по пути: ${outputPath + '/base.xml'}`)
 	} else {
 		console.log('XML-структура пуста.')
 	}

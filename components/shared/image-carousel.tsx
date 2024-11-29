@@ -49,7 +49,7 @@ export const ImageCarousel: React.FC<Props> = ({ className, images, name }) => {
 				}}
 				className='h-full'
 			>
-				<CarouselContent className='h-full'>
+				<CarouselContent className='h-full bg-background rounded-xl'>
 					{isDefaultImage ? (
 						<Image
 							src={'/logo_black.svg'}
@@ -57,7 +57,7 @@ export const ImageCarousel: React.FC<Props> = ({ className, images, name }) => {
 							quality={5}
 							width={500}
 							height={500}
-							className='object-contain opacity-30'
+							className='object-contain'
 						/>
 					) : (
 						images.map((image, index) => (
@@ -91,8 +91,13 @@ export const ImageCarousel: React.FC<Props> = ({ className, images, name }) => {
 				<ModalImage onClose={closeModal}>
 					<div className='relative w-full h-full flex justify-center items-center'>
 						{isLoading && (
-							<div className='absolute z-10 flex items-center justify-center bg-black bg-opacity-50 rounded-xl p-4'>
-								<div className='spinner border-4 border-t-transparent border-white rounded-full w-10 h-10 animate-spin'></div>
+							<div className='absolute z-10 flex items-center justify-center bg-background bg-opacity-50 rounded-xl p-4 animate-pulse'>
+								<img
+									src='/logo_black.svg'
+									alt={name}
+									width={384}
+									height={384}
+								/>
 							</div>
 						)}
 						<Image

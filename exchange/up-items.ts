@@ -1,13 +1,17 @@
 'use server'
 import { PrismaClient, Season } from '@prisma/client'
-import { Items } from './@types'
+import { Items, ParameterInfo } from './@types'
 import cliProgress from 'cli-progress'
 import path from 'path'
 
 const prisma = new PrismaClient()
 
-export async function upItems(goods: Items[], batchSize = 100) {
-	if (!goods || goods.length === 0) return
+export async function upItems(
+	items: Items[],
+	propertiesClassifier: ParameterInfo[],
+	batchSize = 100,
+) {
+	if (!items || items.length === 0) return
 
 	console.log('Создание и обновление товаров...')
 
@@ -17,11 +21,11 @@ export async function upItems(goods: Items[], batchSize = 100) {
 	})
 	const categoryIds = new Set(categories.map(category => category.id))
 
-	// Собираем все уникальные groupID из goods, отсутствующие в categoryIds
+	// Собираем все уникальные groupID из items, отсутствующие в categoryIds
 	const missingGroupIds = [
 		...new Set(
-			goods
-				.map(good => good.groupID)
+			items
+				.map(item => item.groupID)
 				.filter(groupId => !categoryIds.has(groupId)),
 		),
 	]
@@ -42,67 +46,253 @@ export async function upItems(goods: Items[], batchSize = 100) {
 		{},
 		cliProgress.Presets.shades_classic,
 	)
-	progressBar.start(goods.length, 0)
+	progressBar.start(items.length, 0)
 
 	// Ошибки
 	const errors: { itemId: string; error: any }[] = []
 
 	// Обработка товаров пакетами
-	for (let i = 0; i < goods.length; i += batchSize) {
-		const batch = goods.slice(i, i + batchSize)
+	for (let i = 0; i < items.length; i += batchSize) {
+		const batch = items.slice(i, i + batchSize)
 
 		try {
 			await Promise.all(
-				batch.map(async good => {
-					const validGroupId = categoryIds.has(good.groupID)
-						? good.groupID
-						: subcategoryMap.get(good.groupID)
+				batch.map(async item => {
+					const validGroupId = categoryIds.has(item.groupID)
+						? item.groupID
+						: subcategoryMap.get(item.groupID)
 
 					// Преобразуем строку изображений в массив имён файлов
-					const imageArray = Array.isArray(good.images)
-						? good.images.map(imagePath => path.basename(imagePath))
+					const imageArray = Array.isArray(item.images)
+						? item.images.map(imagePath => path.basename(imagePath))
 						: []
 
-					const season = good.name.toLowerCase().includes('зим')
+					const season = item.name.toLowerCase().includes('зим')
 						? Season.Winter
-						: good.name.toLowerCase().includes('лет')
+						: item.name.toLowerCase().includes('лет')
 						? Season.Summer
 						: null
 
+					const material = item.parameters
+						.filter(
+							parameter =>
+								parameter.value !== '00000000-0000-0000-0000-000000000000',
+						) // Исключаем пустые значения
+						.map(parameter => {
+							// Находим все свойства, название которых содержит "материал"
+							const matchingProperties = propertiesClassifier.filter(
+								property =>
+									property.name[0]?.toLowerCase().includes('материал'), // Проверяем наличие name и корректно сравниваем
+							)
+
+							// Перебираем все найденные свойства
+							for (const matchingProperty of matchingProperties) {
+								// Если найдено соответствие по id
+								if (parameter.id === matchingProperty.id[0]) {
+									// Ищем соответствующее значение по id параметра
+									const matchedValue = matchingProperty.values.find(
+										value => value.id[0] === parameter.value,
+									)?.value[0] // Проверяем первое значение в массиве
+
+									// Если значение найдено, возвращаем его
+									if (matchedValue) {
+										return matchedValue
+									}
+								}
+							}
+
+							return null // Возвращаем null, если ничего не найдено
+						})
+						.find(Boolean) // Возвращаем первое непустое значение
+
+					const materialLiner = item.parameters
+						.filter(
+							parameter =>
+								parameter.value !== '00000000-0000-0000-0000-000000000000',
+						) // Исключаем пустые значения
+						.map(parameter => {
+							// Находим все свойства, название которых содержит "подклад"
+							const matchingProperties = propertiesClassifier.filter(
+								property => property.name[0]?.toLowerCase().includes('подклад'), // Проверяем наличие name и корректно сравниваем
+							)
+
+							// Перебираем все найденные свойства
+							for (const matchingProperty of matchingProperties) {
+								// Если найдено соответствие по id
+								if (parameter.id === matchingProperty.id[0]) {
+									// Ищем соответствующее значение по id параметра
+									const matchedValue = matchingProperty.values.find(
+										value => value.id[0] === parameter.value,
+									)?.value[0] // Проверяем первое значение в массиве
+
+									// Если значение найдено, возвращаем его
+									if (matchedValue) {
+										return matchedValue
+									}
+								}
+							}
+
+							return null // Возвращаем null, если ничего не найдено
+						})
+						.find(Boolean) // Возвращаем первое непустое значение
+
+					const materialInsulation = item.parameters
+						.filter(
+							parameter =>
+								parameter.value !== '00000000-0000-0000-0000-000000000000',
+						) // Исключаем пустые значения
+						.map(parameter => {
+							// Находим все свойства с названием, содержащим "утепл"
+							const matchingProperties = propertiesClassifier.filter(property =>
+								property.name[0]?.toLowerCase().includes('утепл'),
+							)
+
+							// Ищем соответствие по ID параметра
+							for (const property of matchingProperties) {
+								if (property.id[0] === parameter.id) {
+									// Ищем значение, соответствующее ID значения параметра
+									const matchedValue = property.values.find(
+										value => value.id[0] === parameter.value,
+									)?.value[0]
+
+									if (matchedValue) {
+										return matchedValue // Возвращаем найденное значение
+									}
+								}
+							}
+
+							return null // Если ничего не найдено
+						})
+						.find(Boolean) // Возвращаем первое найденное значение
+
+					const color = item.parameters
+						.filter(
+							parameter =>
+								parameter.value !== '00000000-0000-0000-0000-000000000000',
+						) // Исключаем пустые значения
+						.map(parameter => {
+							// Находим все свойства, название которых содержит "цвет"
+							const matchingProperties = propertiesClassifier.filter(
+								property => property.name[0]?.toLowerCase().includes('цвет'), // Проверяем наличие name и корректно сравниваем
+							)
+
+							// Перебираем все найденные свойства
+							for (const matchingProperty of matchingProperties) {
+								// Если найдено соответствие по id
+								if (parameter.id === matchingProperty.id[0]) {
+									// Ищем соответствующее значение по id параметра
+									const matchedValue = matchingProperty.values.find(
+										value => value.id[0] === parameter.value,
+									)?.value[0] // Проверяем первое значение в массиве
+
+									// Если значение найдено, возвращаем его
+									if (matchedValue) {
+										return matchedValue
+									}
+								}
+							}
+
+							return null // Возвращаем null, если ничего не найдено
+						})
+						.find(Boolean) // Возвращаем первое непустое значение
+
+					const composition = item.parameters
+						.map(parameter => {
+							// Найти свойство с названием, содержащим "комплект"
+							const matchingProperty = propertiesClassifier.find(property =>
+								property.name[0].toLowerCase().includes('комплект'),
+							)
+							// Найти соответствующее значение материала по ID
+							if (matchingProperty && parameter.id === matchingProperty.id[0]) {
+								return matchingProperty.values.find(
+									value => value.id[0] === parameter.value,
+								)?.value[0]
+							}
+							return null
+						})
+						.find(Boolean) // Возвращаем первый непустой результат
+
+					const heights = item.parameters
+						.map(parameter => {
+							// Найти свойство с названием, содержащим "размер"
+							const matchingProperty = propertiesClassifier.find(
+								property =>
+									property.id[0] === '777c553f-910f-11ef-aa21-9418826e94b3',
+							)
+							// Найти соответствующее значение материала по ID
+							if (matchingProperty && parameter.id === matchingProperty.id[0]) {
+								return matchingProperty.values.find(
+									value => value.id[0] === parameter.value,
+								)?.value[0]
+							}
+							return null
+						})
+						.find(Boolean) // Возвращаем первый непустой результат
+
+					const sole = item.parameters
+						.map(parameter => {
+							// Найти свойство с названием, содержащим "подошв"
+							const matchingProperty = propertiesClassifier.find(property =>
+								property.name[0].toLowerCase().includes('подошв'),
+							)
+							// Найти соответствующее значение материала по ID
+							if (matchingProperty && parameter.id === matchingProperty.id[0]) {
+								return matchingProperty.values.find(
+									value => value.id[0] === parameter.value,
+								)?.value[0]
+							}
+							return null
+						})
+						.find(Boolean) // Возвращаем первый непустой результат
+
 					try {
 						await prisma.item.upsert({
-							where: { id: good.id },
+							where: { id: item.id },
 							update: {
-								name: good.name,
-								description: good.description,
+								name: item.name,
+								description: item.description,
 								categoryId: validGroupId,
-								vendorCode: good.vendorCode,
-								brand: good.brand,
+								vendorCode: item.vendorCode,
+								brand: item.brand,
 								images: imageArray,
 								season: season,
+								materials: material || null,
+								materialLiner: materialLiner || null,
+								materialInsulation: materialInsulation || null,
+								color: color || null,
+								composition: composition || null,
+								heights: heights || null,
+								sole: sole || null,
 							},
 							create: {
-								id: good.id,
-								name: good.name,
-								description: good.description,
+								id: item.id,
+								name: item.name,
+								description: item.description,
 								categoryId: validGroupId,
-								vendorCode: good.vendorCode,
-								brand: good.brand,
+								vendorCode: item.vendorCode,
+								brand: item.brand,
 								images: imageArray,
 								season: season,
+								materials: material || null,
+								materialLiner: materialLiner || null,
+								materialInsulation: materialInsulation || null,
+								color: color || null,
+								composition: composition || null,
+								heights: heights || null,
+								sole: sole || null,
 							},
 						})
 					} catch (error) {
-						errors.push({ itemId: good.id, error })
+						errors.push({ itemId: item.id, error })
 					}
 				}),
 			)
 
 			// Обновление прогресса после обработки батча
-			progressBar.update(Math.min(i + batchSize, goods.length))
+			progressBar.update(Math.min(i + batchSize, items.length))
 		} catch (batchError) {
 			console.error(
-				`Ошибка в батче с ${i} по ${Math.min(i + batchSize, goods.length)}:`,
+				`Ошибка в батче с ${i} по ${Math.min(i + batchSize, items.length)}:`,
 				batchError,
 			)
 		}

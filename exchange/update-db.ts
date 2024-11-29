@@ -10,7 +10,7 @@ export const dynamic = 'force-dynamic'
 
 async function main() {
 	try {
-		await down()
+		//await down()
 		await up()
 	} catch (e) {
 		console.error('Ошибка:', e)
@@ -51,7 +51,7 @@ export async function up() {
 			exchange.parsedItems,
 		)
 		await upConstants()
-		await upItems(exchange.parsedItems)
+		await upItems(exchange.parsedItems, exchange.parsedClassifierProperties)
 		await upOffers(
 			exchange.parsedOffers,
 			exchange.parsedRests,

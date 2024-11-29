@@ -35,31 +35,34 @@ export async function dataParsing(basePath: string) {
 		const parsedClassifierGroups = await parseClassifierGroups(classifier)
 		const parsedClassifierPrices = await parseClassifierPrices(classifier)
 		const parsedClassifierWarehouse = await parseClassifierWarehouse(classifier)
+		const parsedClassifierProperties = await parseClassifierProperties(
+			properties,
+		)
 		const parsedItems = await parseItems(items)
 		const parsedOffers = await parseOffers(offers)
 		const parsedPrices = await parsePrices(prices)
 		const parsedRests = await parseRests(rests)
-		const parsedProperties = await parseProperties(properties)
+
 		saveToXmlFile(
 			parsedClassifierGroups,
 			parsedClassifierPrices,
 			parsedClassifierWarehouse,
+			parsedClassifierProperties,
 			parsedOffers,
 			parsedPrices,
 			parsedRests,
 			parsedItems,
-			parsedProperties,
 			basePath,
 		)
 		return {
 			parsedClassifierGroups,
 			parsedClassifierPrices,
 			parsedClassifierWarehouse,
+			parsedClassifierProperties,
 			parsedItems,
 			parsedOffers,
 			parsedPrices,
 			parsedRests,
-			parsedProperties,
 		}
 	} catch (error) {
 		console.error('Ошибка обработки файлов:', error)
@@ -221,7 +224,7 @@ function parseRests(rests: any): Rests[] {
 	return parsedData
 }
 
-function parseProperties(properties: any): ParameterInfo[] {
+function parseClassifierProperties(properties: any): ParameterInfo[] {
 	const parsedData: ParameterInfo[] = []
 
 	for (const property of properties.Свойство) {

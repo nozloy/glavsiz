@@ -60,6 +60,7 @@ model Item {
   materials          String?
   materialLiner      String?
   materialInsulation String?
+  sole               String?
   color              String?
   composition        String?
   heights            String?

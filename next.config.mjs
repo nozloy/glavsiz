@@ -16,15 +16,36 @@ const nextConfig = {
 			},
 		],
 	},
-	//Все изображения, обработанные через Next.js (/_next/image), будут иметь заголовок Cache-Control с долгосрочным кэшированием.
+	// Заголовки для изображений в папке public/images и ее подпапках, а также для всех .svg файлов в public/
 	async headers() {
 		return [
+			// Для всех изображений в папке /public/images и ее подпапках
+			{
+				source: '/images/(.*)', // Для изображений в папке images
+				headers: [
+					{
+						key: 'Cache-Control',
+						value: 'public, max-age=604800, immutable', // Кеширование на 7 дней
+					},
+				],
+			},
+			// Для всех .svg файлов в public/ и ее подпапках
+			{
+				source: '/(.*.svg)', // Для всех .svg файлов в public/
+				headers: [
+					{
+						key: 'Cache-Control',
+						value: 'public, max-age=604800, immutable', // Кеширование на 7 дней
+					},
+				],
+			},
+			// Для изображений, обработанных Next.js
 			{
 				source: '/_next/image(.*)', // Для изображений, оптимизированных Next.js
 				headers: [
 					{
 						key: 'Cache-Control',
-						value: 'public, max-age=31536000, immutable',
+						value: 'public, max-age=604800, immutable',
 					},
 				],
 			},

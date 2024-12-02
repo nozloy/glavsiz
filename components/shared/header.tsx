@@ -47,6 +47,7 @@ export const Header: React.FC<Props> = ({ className }) => {
 						<Image
 							src='/logo.svg'
 							alt='logo'
+							priority
 							width={288}
 							height={80}
 							className='w-72 h-20 mb-5'

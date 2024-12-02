@@ -3,9 +3,14 @@ import { prisma } from '@/prisma/prisma-client'
 import { NextRequest, NextResponse } from 'next/server'
 
 export async function GET(req: NextRequest) {
-	const count = req.nextUrl.searchParams.get('count') || 100
-	const query = req.nextUrl.searchParams.get('query') || ''
-	const categoryId = req.nextUrl.searchParams.get('categoryId') || ''
+	const searchParams = req.nextUrl.searchParams
+
+	// Извлекаем параметры и преобразуем их в числа
+	const count = parseInt(searchParams.get('count') || '100', 10)
+	const query = searchParams.get('query') || ''
+	const categoryId = searchParams.get('categoryId') || ''
+
+	// Формируем запрос к базе
 	const products = await prisma.item.findMany({
 		distinct: ['vendorCode'],
 		where: {
@@ -13,10 +18,20 @@ export async function GET(req: NextRequest) {
 				some: {},
 			},
 			...(query && {
-				name: {
-					contains: query,
-					mode: 'insensitive',
-				},
+				OR: [
+					{
+						name: {
+							contains: query,
+							mode: 'insensitive',
+						},
+					},
+					{
+						vendorCode: {
+							contains: query,
+							mode: 'insensitive',
+						},
+					},
+				],
 			}),
 			...(categoryId && {
 				categoryId: categoryId,
@@ -25,7 +40,7 @@ export async function GET(req: NextRequest) {
 		include: {
 			Offer: true,
 		},
-		take: Number(count),
+		take: count,
 	})
 
 	return NextResponse.json(products)

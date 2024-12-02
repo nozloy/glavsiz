@@ -30,6 +30,7 @@ export const ItemCard: React.FC<Props> = ({ className, item }) => {
 	)?.value
 	const price = activeCityPrice ? activeCityPrice : priceArray[0]?.value
 
+	const imageBaseUrl = process.env.NEXT_PUBLIC_IMAGE_URL
 	return (
 		<Link
 			className={cn('relative h-[460px] w-[290px] ', className)}
@@ -56,11 +57,11 @@ export const ItemCard: React.FC<Props> = ({ className, item }) => {
 						<Image
 							src={
 								!isDefaultImage
-									? 'https://cdn.glavsiz.ru/images/' + item.images[0]
+									? imageBaseUrl + item.images[0]
 									: '/logo_black.svg'
 							}
 							alt={item.name}
-							quality={10}
+							quality={35}
 							sizes='(max-width: 768px) 5vw, (max-width: 1200px) 10vw, 15vw'
 							fill
 							loading='lazy'

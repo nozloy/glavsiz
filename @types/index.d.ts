@@ -9,3 +9,7 @@ export interface ItemWithOffer extends Item {
 export interface ItemWithOfferOnly extends Item {
 	Offer: Offer[]
 }
+export type PriceFromDB = {
+	name: string
+	value: number
+}

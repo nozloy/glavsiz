@@ -14,6 +14,10 @@ const nextConfig = {
 				protocol: 'https',
 				hostname: '*.userapi.com',
 			},
+			{
+				protocol: 'https',
+				hostname: '54e5fb9cafb5-data.s3.ru1.storage.beget.cloud',
+			},
 		],
 	},
 	// Заголовки для изображений в папке public/images и ее подпапках, а также для всех .svg файлов в public/

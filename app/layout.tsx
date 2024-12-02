@@ -14,13 +14,19 @@ export default function RootLayout({
 	children: React.ReactNode
 }>) {
 	return (
-		<html lang='en'>
+		<html lang='ru'>
 			<head>
 				<link
 					rel='icon'
 					href='/icon?<generated>'
 					type='image/<generated>'
 					sizes='<generated>'
+				/>
+				<link
+					rel='search'
+					type='application/opensearchdescription+xml'
+					title='Glavsiz.ru'
+					href='/opensearch'
 				/>
 			</head>
 			<body

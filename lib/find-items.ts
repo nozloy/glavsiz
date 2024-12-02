@@ -1,6 +1,7 @@
 'use server'
 import { prisma } from '@/prisma/prisma-client'
 import apiClient from '@/lib/axios'
+import { ItemWithOffer } from '@/@types'
 export interface GetSearchParams {
 	query?: string
 	count?: number
@@ -10,21 +11,21 @@ export interface GetSearchParams {
 	priceTo?: string
 }
 
-const DEFAULT_MIN_PRICE = 0
-const DEFAULT_MAX_PRICE = 5000
+// const DEFAULT_MIN_PRICE = 0
+// const DEFAULT_MAX_PRICE = 50000
 
-export const findItems = async (params: GetSearchParams) => {
-	const query_string = params.query || ''
-	const categoryId_number = params.categoryId || ''
-	const price = params.priceFrom || params.priceTo
-	const minPrice = Number(params.priceFrom) || DEFAULT_MIN_PRICE
-	const maxPrice = Number(params.priceTo) || DEFAULT_MAX_PRICE
+// export const findItems = async (params: GetSearchParams) => {
+// 	const query_string = params.query || ''
+// 	const categoryId_number = params.categoryId || ''
+// 	const price = params.priceFrom || params.priceTo
+// 	const minPrice = Number(params.priceFrom) || DEFAULT_MIN_PRICE
+// 	const maxPrice = Number(params.priceTo) || DEFAULT_MAX_PRICE
 
-	// const items = await prisma.item.findMany({
-	// 	distinct: ['id'],
-	// })
-	// return items
-}
+// 	// const items = await prisma.item.findMany({
+// 	// 	distinct: ['id'],
+// 	// })
+// 	// return items
+// }
 //Получение данных по одному товару с offer
 export const findItem = async (id: string) => {
 	try {
@@ -48,14 +49,16 @@ export const fetchNewItems = async (count: number) => {
 	}
 }
 //Получение товаров по фильтрам
-export const filteredItems = async (params: GetSearchParams) => {
+export const filteredItems = async (
+	params: GetSearchParams,
+): Promise<ItemWithOffer[]> => {
 	let query = params.query || ''
 	let categoryId = params.categoryId || ''
 	let count = params.count || 20
 	try {
 		const response = await apiClient.get(
-			`/items/search?${query ? 'query=' + query : ''}${
-				categoryId ? '&categoryId=' + categoryId : '' + `&count=${count}`
+			`/items/search?${query ? 'query=' + query : '' + `&count=${count} `}${
+				categoryId ? '&categoryId=' + categoryId : ''
 			}`,
 		)
 		return response.data

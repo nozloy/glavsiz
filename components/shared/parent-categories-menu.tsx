@@ -47,7 +47,11 @@ const ListItem = React.forwardRef<
 ListItem.displayName = 'ListItem'
 
 export const ParentCategoriesMenu: React.FC<Props> = async ({ className }) => {
-	const parentCategories = await prisma.parentCategory.findMany()
+	const parentCategories = await prisma.parentCategory.findMany({
+		orderBy: {
+			order: 'asc', // По возрастанию
+		},
+	})
 	const categories = await prisma.category.findMany()
 
 	return (

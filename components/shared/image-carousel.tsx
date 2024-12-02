@@ -69,9 +69,9 @@ export const ImageCarousel: React.FC<Props> = ({ className, images, name }) => {
 								<Image
 									src={imageBaseUrl + image}
 									alt={name}
-									quality={5}
+									quality={50}
 									fill
-									sizes='(max-width: 768px) 10vw, (max-width: 1200px) 15vw, 20vw'
+									sizes='(max-width: 768px) 15vw, (max-width: 1200px) 25vw, 30vw'
 									className='object-contain rounded-xl border-white border-[10px]'
 								/>
 							</CarouselItem>
@@ -89,7 +89,7 @@ export const ImageCarousel: React.FC<Props> = ({ className, images, name }) => {
 			{/* Модальное окно */}
 			{isModalOpen && activeImage && (
 				<ModalImage onClose={closeModal}>
-					<div className='relative w-full h-full flex justify-center items-center'>
+					<div className='relative p-0 overflow-hidden flex justify-center items-center lg:h-[650px] lg:w-[650px] xl:w-[700px] xl:h-[700px] 2xl:w-[800px] 2xl:h-[800px]'>
 						{isLoading && (
 							<div className='absolute z-10 flex items-center justify-center bg-background bg-opacity-50 rounded-xl p-4 animate-pulse'>
 								<img
@@ -104,10 +104,11 @@ export const ImageCarousel: React.FC<Props> = ({ className, images, name }) => {
 							src={imageBaseUrl + activeImage}
 							alt={name}
 							quality={100}
-							width={400}
-							height={400}
+							// width={340}
+							// height={340}
+							fill
 							className='object-contain rounded-xl'
-							onLoadingComplete={handleImageLoad}
+							onLoad={handleImageLoad}
 						/>
 					</div>
 				</ModalImage>

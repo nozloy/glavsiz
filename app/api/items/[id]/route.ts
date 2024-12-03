@@ -1,3 +1,4 @@
+import { Category } from '@prisma/client'
 import { prisma } from '@/prisma/prisma-client'
 import { NextRequest, NextResponse } from 'next/server'
 
@@ -21,7 +22,7 @@ export async function GET(
 		// Запрашиваем данные из базы
 		const item = await prisma.item.findUnique({
 			where: { id: params.id },
-			include: { Offer: true }, // Включаем связанные Offer
+			include: { Offer: true, category: true }, // Включаем связанные Offer
 		})
 
 		if (!item) {

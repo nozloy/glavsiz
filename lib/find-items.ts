@@ -28,7 +28,7 @@ export interface GetSearchParams {
 // 	// return items
 // }
 //Получение данных по одному товару с offer
-export const findItem = async (id: string) => {
+export const findItem = async (id: string): Promise<ItemWithOffer> => {
 	try {
 		// Отправляем запрос к API для получения товара
 		const response = await apiClient.get(`/items/${id}`)

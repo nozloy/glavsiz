@@ -39,6 +39,7 @@ export async function GET(req: NextRequest) {
 		},
 		include: {
 			Offer: true,
+			category: true,
 		},
 		take: count,
 	})

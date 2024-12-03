@@ -17,6 +17,7 @@ const AUTH_PASSWORD = process.env.EXCHANGE_PASSWORD
 
 // Функция генерации ID сессии
 function generateSessionID() {
+	console.log('Генерация нового Session ID')
 	return crypto.randomBytes(16).toString('hex')
 }
 
@@ -71,6 +72,7 @@ export async function POST(req: NextRequest) {
 
 	// Авторизация
 	if (type === 'catalog' && mode === 'checkauth') {
+		console.log('Запрос: Авторизация (checkauth)')
 		return await checkAuth(req)
 	}
 
@@ -82,7 +84,7 @@ export async function POST(req: NextRequest) {
 
 	// Инициализация
 	if (type === 'catalog' && mode === 'init') {
-		console.log('Этап: Инициализация (init)')
+		console.log('Запрос: Инициализация (init)')
 		return new Response(
 			'zip=yes\nfile_limit=1048576000\nsessid=your_session_id\nversion=3.1',
 			{
@@ -94,7 +96,7 @@ export async function POST(req: NextRequest) {
 
 	// Загрузка файла
 	if (type === 'catalog' && mode === 'file' && filename) {
-		console.log(`Этап: Загрузка файла (file), Filename: ${filename}`)
+		console.log(`Запрос: Загрузка файла (file), Filename: ${filename}`)
 		const uniqueFilename = `${Date.now()}-${filename}`
 		const filePath = path.join(UPLOAD_DIR, uniqueFilename)
 
@@ -113,6 +115,7 @@ export async function POST(req: NextRequest) {
 			const fileStream = fs.createWriteStream(filePath, { flags: 'a' })
 
 			try {
+				console.log('Начало записи файла...')
 				while (true) {
 					const { done, value } = await reader.read()
 					if (done) break
@@ -141,7 +144,7 @@ export async function POST(req: NextRequest) {
 
 	// Импорт файла
 	if (type === 'catalog' && mode === 'import') {
-		console.log('Этап: Импорт файла (import)')
+		console.log('Запрос: Импорт файла (import)')
 		return new Response('success', {
 			status: 200,
 			headers: { 'Content-Type': 'text/plain' },
@@ -150,7 +153,7 @@ export async function POST(req: NextRequest) {
 
 	// Завершение передачи файлов
 	if (type === 'catalog' && mode === 'complete') {
-		console.log('Этап: Завершение передачи файлов (complete)')
+		console.log('Запрос: Завершение передачи файлов (complete)')
 		const timestamp = new Date()
 			.toISOString()
 			.replace(/[:]/g, '-')
@@ -158,6 +161,7 @@ export async function POST(req: NextRequest) {
 		const extractDir = path.join(UPLOAD_DIR, timestamp)
 		try {
 			await fsPromises.mkdir(extractDir, { recursive: true })
+			console.log(`Директория для разархивирования создана: ${extractDir}`)
 		} catch (err: Error | any) {
 			console.log(
 				`Ошибка при создании директории для разархивирования: ${err.message}`,
@@ -175,6 +179,7 @@ export async function POST(req: NextRequest) {
 				const zipFilePath = path.join(UPLOAD_DIR, file)
 
 				try {
+					console.log(`Начало разархивирования: ${zipFilePath}`)
 					await fs
 						.createReadStream(zipFilePath)
 						.pipe(unzipper.Extract({ path: extractDir }))
@@ -190,13 +195,25 @@ export async function POST(req: NextRequest) {
 				}
 			}
 		}
-		//Запуск обновления в БД с задержкой
+
+		// Запуск обновления в БД с задержкой
 		setTimeout(async () => {
+			console.log('Запуск обновления базы данных (up) через 30 секунд')
 			await up() // Вызываем функцию с отложенным запуском
 		}, 30000)
 
 		// Загрузка разархивированных изображений в S3
-		await uploadExtractedImagesBatch(extractDir)
+		try {
+			console.log(`Загрузка разархивированных изображений в S3: ${extractDir}`)
+			await uploadExtractedImagesBatch(extractDir)
+			console.log(`Изображения успешно загружены в S3`)
+		} catch (err: Error | any) {
+			console.log(`Ошибка при загрузке изображений в S3: ${err.message}`)
+			return new Response('failure\nОшибка при загрузке изображений в S3', {
+				status: 500,
+			})
+		}
+
 		return new Response('success', {
 			status: 200,
 			headers: { 'Content-Type': 'text/plain' },

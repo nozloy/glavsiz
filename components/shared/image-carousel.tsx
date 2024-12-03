@@ -1,4 +1,5 @@
 'use client'
+
 import React, { useState } from 'react'
 import {
 	Carousel,
@@ -10,6 +11,7 @@ import {
 import { cn } from '@/lib/utils'
 import Image from 'next/image'
 import ModalImage from '@/components/shared/modal-image'
+import { Card, CardContent } from '../ui/card'
 
 interface Props {
 	className?: string
@@ -21,76 +23,119 @@ const imageBaseUrl = process.env.NEXT_PUBLIC_IMAGE_URL
 export const ImageCarousel: React.FC<Props> = ({ className, images, name }) => {
 	const isDefaultImage = images[0] ? false : true
 	const [isModalOpen, setIsModalOpen] = useState(false)
-	const [activeImage, setActiveImage] = useState<string | null>(null)
-
+	const [activeImage, setActiveImage] = useState<string | null>(
+		images[0] || null,
+	)
+	const [isModalLoading, setIsModalLoading] = useState(true)
 	const [isLoading, setIsLoading] = useState(true)
 
+	const handleImageSet = (image: string) => {
+		setActiveImage(image)
+		setIsLoading(true)
+	}
+	const handleModalImageLoad = () => {
+		setIsModalLoading(false)
+	}
 	const handleImageLoad = () => {
 		setIsLoading(false)
 	}
 
-	const openModal = (image: string) => {
-		setActiveImage(image)
+	const openModal = () => {
 		setIsModalOpen(true)
 	}
 
 	const closeModal = () => {
 		setIsModalOpen(false)
-		setActiveImage(null)
-		setIsLoading(true)
+		setIsModalLoading(true)
 	}
 
 	return (
 		<div className={cn('pl-2', className)}>
-			<Carousel
-				opts={{
-					align: 'start',
-					loop: true,
-				}}
-				className='h-full'
-			>
-				<CarouselContent className='h-full bg-background rounded-xl'>
-					{isDefaultImage ? (
-						<Image
-							src={'/logo_black.svg'}
-							alt={name}
-							quality={5}
-							width={500}
-							height={500}
-							className='object-contain'
-						/>
-					) : (
-						images.map((image, index) => (
-							<CarouselItem
-								key={index}
-								className='relative min-h-[300px] min-w-full w-full flex justify-center items-center bg-background rounded-2xl cursor-pointer'
-								onClick={() => openModal(image)} // Открыть модальное окно
-							>
-								<Image
-									src={imageBaseUrl + image}
-									alt={name}
-									quality={50}
-									fill
-									sizes='(max-width: 768px) 15vw, (max-width: 1200px) 25vw, 30vw'
-									className='object-contain rounded-xl border-white border-[10px]'
-								/>
-							</CarouselItem>
-						))
+			{/* Основное изображение */}
+			{isDefaultImage ? (
+				<Image
+					src={'/logo_black.svg'}
+					alt={name}
+					quality={5}
+					width={500}
+					height={500}
+					className='object-contain'
+				/>
+			) : (
+				<div className='relative mb-2 '>
+					{/* Обернут в отдельный контейнер с relative */}
+					{isLoading && (
+						<div className='absolute z-10 flex items-center justify-center bg-background min-h-[450px] w-full bg-opacity-50 rounded-xl p-4 animate-pulse'>
+							<div className='w-8 h-8 border-4 border-primary border-t-transparent rounded-full animate-spin'></div>
+						</div>
 					)}
-				</CarouselContent>
-				{!isDefaultImage && (
-					<>
-						<CarouselPrevious className='absolute -left-4 text-foreground hover:bg-primary bg-background' />
-						<CarouselNext className='absolute -right-4 text-foreground hover:bg-primary bg-background' />
-					</>
-				)}
-			</Carousel>
+					<Image
+						src={imageBaseUrl + activeImage!}
+						alt={name}
+						quality={40}
+						width={500}
+						height={500}
+						className={cn(
+							'object-contain rounded-xl border-white border-[10px] cursor-pointer shadow-sm hover:shadow-md transition-all duration-300',
+
+							{
+								'opacity-0': isLoading,
+								'opacity-100': !isLoading,
+							},
+						)}
+						onClick={() => openModal()} // Открыть модальное окно
+						onLoad={() => handleImageLoad()}
+					/>
+				</div>
+			)}
+
+			{/* Карусель */}
+			{images.length > 1 && (
+				<div className='relative'>
+					<Carousel
+						opts={{
+							align: 'start',
+							loop: true,
+						}}
+					>
+						<CarouselContent className='p-1'>
+							{images.map((image, index) => (
+								<CarouselItem key={index} className='basis-1/3'>
+									<div>
+										<Card className='shadow-sm cursor-pointer hover:scale-105 hover:shadow-md transition-all duration-300 my-4'>
+											<CardContent
+												className='flex aspect-square items-center justify-center p-1'
+												onClick={() => handleImageSet(image)}
+											>
+												<Image
+													src={imageBaseUrl + image}
+													alt={name}
+													height={70}
+													width={70}
+													quality={1}
+													className=' rounded-xl'
+												/>
+											</CardContent>
+										</Card>
+									</div>
+								</CarouselItem>
+							))}
+						</CarouselContent>
+						{!isDefaultImage && images.length > 3 && (
+							<>
+								<CarouselPrevious className='absolute -left-4 text-foreground hover:bg-primary bg-background' />
+								<CarouselNext className='absolute -right-4 text-foreground hover:bg-primary bg-background' />
+							</>
+						)}
+					</Carousel>
+				</div>
+			)}
 
 			{/* Модальное окно */}
 			{isModalOpen && activeImage && (
 				<ModalImage onClose={closeModal}>
-					<div className='relative p-0 overflow-hidden flex justify-center items-center lg:h-[650px] lg:w-[650px] xl:w-[700px] xl:h-[700px] 2xl:w-[800px] 2xl:h-[800px]'>
-						{isLoading && (
+					<div className='relative p-0 overflow-hidden flex justify-center items-center lg:h-[650px] lg:w-[650px] xl:w-[650px] xl:h-[650px] 2xl:w-[800px] 2xl:h-[800px]'>
+						{isModalLoading && (
 							<div className='absolute z-10 flex items-center justify-center bg-background bg-opacity-50 rounded-xl p-4 animate-pulse'>
 								{/* eslint-disable-next-line @next/next/no-img-element */}
 								<img
@@ -105,11 +150,9 @@ export const ImageCarousel: React.FC<Props> = ({ className, images, name }) => {
 							src={imageBaseUrl + activeImage}
 							alt={name}
 							quality={100}
-							// width={340}
-							// height={340}
 							fill
 							className='object-contain rounded-xl'
-							onLoad={handleImageLoad}
+							onLoad={() => handleModalImageLoad()}
 						/>
 					</div>
 				</ModalImage>

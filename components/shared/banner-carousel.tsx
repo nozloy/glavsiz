@@ -29,7 +29,7 @@ export const BannerCarousel: React.FC<Props> = ({ className }) => {
 					loop: true,
 				}}
 			>
-				<CarouselContent>
+				<CarouselContent className='rounded-3xl'>
 					<CarouselItem key={1}>
 						<Link href={'https://t.me/glavsiz/535'}>
 							<Image

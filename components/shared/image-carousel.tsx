@@ -28,6 +28,7 @@ export const ImageCarousel: React.FC<Props> = ({ className, images, name }) => {
 	)
 	const [isModalLoading, setIsModalLoading] = useState(true)
 	const [isLoading, setIsLoading] = useState(true)
+	const [isCarouselLoaded, setIsCarouselLoaded] = useState(false)
 
 	const handleImageSet = (image: string) => {
 		setActiveImage(image)
@@ -38,6 +39,7 @@ export const ImageCarousel: React.FC<Props> = ({ className, images, name }) => {
 	}
 	const handleImageLoad = () => {
 		setIsLoading(false)
+		setIsCarouselLoaded(true)
 	}
 
 	const openModal = () => {
@@ -59,13 +61,13 @@ export const ImageCarousel: React.FC<Props> = ({ className, images, name }) => {
 					quality={5}
 					width={500}
 					height={500}
-					className='object-contain'
+					className='object-contain relative'
 				/>
 			) : (
 				<div className='relative mb-2 '>
 					{/* Обернут в отдельный контейнер с relative */}
 					{isLoading && (
-						<div className='absolute z-10 flex items-center justify-center bg-background min-h-[450px] w-full bg-opacity-50 rounded-xl p-4 animate-pulse'>
+						<div className='absolute flex items-center justify-center bg-background min-h-[450px] h-full w-full bg-opacity-50 rounded-xl p-4 animate-pulse'>
 							<div className='w-8 h-8 border-4 border-primary border-t-transparent rounded-full animate-spin'></div>
 						</div>
 					)}
@@ -91,7 +93,12 @@ export const ImageCarousel: React.FC<Props> = ({ className, images, name }) => {
 
 			{/* Карусель */}
 			{images.length > 1 && (
-				<div className='relative'>
+				<div
+					className={cn('relative transition-all duration-300', {
+						'opacity-0': !isCarouselLoaded,
+						'opacity-100': isCarouselLoaded,
+					})}
+				>
 					<Carousel
 						opts={{
 							align: 'start',

@@ -106,7 +106,7 @@ export const Product: React.FC<Props> = ({ className, item }) => {
 		<Container>
 			<div
 				className={cn(
-					'grid grid-cols-[minmax(280px,280px)_minmax(0,400px)_minmax(400px,1fr)] w-full gap-10 bg-secondary p-4 rounded-2xl min-h-[500px]',
+					'grid grid-cols-[minmax(280px,280px)_minmax(0,400px)_minmax(400px,1fr)] w-full gap-10 bg-secondary p-4 rounded-2xl min-h-[700px]',
 					className,
 				)}
 			>

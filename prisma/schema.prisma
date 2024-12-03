@@ -70,6 +70,7 @@ model Item {
   Offer              Offer[]
   CartItem           CartItem[]
   createdAt          DateTime   @default(now())
+  BestItem           BestItem?
 }
 
 model Offer {
@@ -80,6 +81,11 @@ model Offer {
   warehouse Json
   price     Json
   CartItem  CartItem[]
+}
+
+model BestItem {
+  itemId String @id @unique
+  Item   Item   @relation(fields: [itemId], references: [id])
 }
 
 model Cart {

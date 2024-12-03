@@ -2,6 +2,7 @@
 import { prisma } from '@/prisma/prisma-client'
 import apiClient from '@/lib/axios'
 import { ItemWithOffer } from '@/@types'
+import { BestItem } from '@prisma/client'
 export interface GetSearchParams {
 	query?: string
 	count?: number
@@ -42,6 +43,16 @@ export const findItem = async (id: string) => {
 export const fetchNewItems = async (count: number) => {
 	try {
 		const response = await apiClient.get('/items/new?count=' + count.toString())
+		return response.data
+	} catch (error) {
+		console.error('Ошибка получения новых товаров', error)
+		throw new Error('Ошибка получения товаров')
+	}
+}
+
+export const fetchBestItems = async (): Promise<ItemWithOffer[]> => {
+	try {
+		const response = await apiClient.get('/items/best')
 		return response.data
 	} catch (error) {
 		console.error('Ошибка получения новых товаров', error)

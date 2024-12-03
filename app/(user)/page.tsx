@@ -1,4 +1,4 @@
-import { Container, RecentArrivals } from '@/components/shared'
+import { Container, RecentArrivals, BestSellers } from '@/components/shared'
 import { BannerCarousel } from '@/components/shared/banner-carousel'
 import { Benefits } from '@/components/shared/benefits'
 import { MobileVersion } from '@/components/shared/mobile-version'
@@ -15,6 +15,7 @@ export default async function Home() {
 				<Container className='flex flex-col items-center justify-center gap-6'>
 					<BannerCarousel />
 					<RecentArrivals />
+					<BestSellers />
 					<Benefits />
 				</Container>
 			</div>

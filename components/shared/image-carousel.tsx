@@ -61,7 +61,7 @@ export const ImageCarousel: React.FC<Props> = ({ className, images, name }) => {
 					quality={5}
 					width={500}
 					height={500}
-					className='object-contain relative'
+					className='h-[450px] object-contain relative bg-background rounded-xl'
 				/>
 			) : (
 				<div className='relative mb-2 '>

@@ -54,7 +54,7 @@ export const filteredItems = async (
 ): Promise<ItemWithOffer[]> => {
 	let query = params.query || ''
 	let categoryId = params.categoryId || ''
-	let count = params.count || 20
+	let count = params.count || 50
 	try {
 		const response = await apiClient.get(
 			`/items/search?${query ? 'query=' + query : '' + `&count=${count} `}${

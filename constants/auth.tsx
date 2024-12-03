@@ -21,7 +21,7 @@ export const authOptions: AuthOptions = {
 					id: profile.id,
 					name: profile.real_name,
 					email: profile.default_email,
-					image: `https://avatars.yandex.net/get-yapic/${profile.default_avatar_id}/islands-68`,
+					image: `https://avatars.yandex.net/get-yapic/${profile.default_avatar_id}/islands-retina-50`,
 					role: 'USER' as UserRole,
 					phone: profile.default_phone?.number || '',
 				}

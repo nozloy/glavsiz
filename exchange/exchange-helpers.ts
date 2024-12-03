@@ -149,11 +149,18 @@ export async function saveToXmlFile(
 export async function getOffersFile(importFiles: string[]) {
 	for (const filePath of importFiles) {
 		const fileData = await parseXmlFile(filePath)
-		const data =
+		if (
+			fileData.КоммерческаяИнформация.ПакетПредложений &&
+			fileData.КоммерческаяИнформация.ПакетПредложений[0].Предложения &&
 			fileData.КоммерческаяИнформация.ПакетПредложений[0].Предложения[0]
 				.Предложение
-		if (data) {
-			return fileData
+		) {
+			const data =
+				fileData.КоммерческаяИнформация.ПакетПредложений[0].Предложения[0]
+					.Предложение
+			if (data) {
+				return fileData
+			}
 		}
 	}
 }

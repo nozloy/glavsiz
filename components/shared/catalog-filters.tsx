@@ -18,11 +18,11 @@ export const CatalogFilters: React.FC<Props> = ({ className }) => {
 	// Локальное состояние для диапазона цен
 	const [priceRange, setPriceRange] = React.useState<number[]>([
 		Number(searchParams.get('priceFrom') || 0),
-		Number(searchParams.get('priceTo') || 10000),
+		Number(searchParams.get('priceTo') || 20000),
 	])
 
-	// Дебаунс изменения диапазона цен
-	const debouncedPriceRange = useDebounce(
+	// Дебаунс значения диапазона цен
+	useDebounce(
 		() => {
 			const params = new URLSearchParams(searchParams.toString())
 			params.set('priceFrom', priceRange[0].toString())
@@ -40,7 +40,7 @@ export const CatalogFilters: React.FC<Props> = ({ className }) => {
 
 	return (
 		<div className={cn('min-w-[300px] m-2', className)}>
-			<div className='h-full w-full bg-background rounded-xl shadow-md p-4'>
+			<div className='h-[400px] w-full bg-background rounded-xl shadow-md p-4'>
 				<Title
 					size='md'
 					className='text-center text-foreground'
@@ -54,8 +54,8 @@ export const CatalogFilters: React.FC<Props> = ({ className }) => {
 				<div className='w-full py-4 pr-2'>
 					<RangeSlider
 						min={0}
-						max={10000}
-						step={10}
+						max={20000}
+						step={1000}
 						value={priceRange}
 						onValueChange={handlePriceChange}
 					/>

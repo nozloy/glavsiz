@@ -10,6 +10,7 @@ export default async function upConstants() {
 			data: {
 				icon: constCategory.icon,
 				description: constCategory.description,
+				order: constCategory.order,
 			},
 		})
 	}

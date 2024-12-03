@@ -28,7 +28,10 @@ export const Check: React.FC<Props> = ({ className }) => {
 			try {
 				const itemsData = await allItems()
 				const errorItemsData = itemsData.filter(
-					(item: ItemWithOfferOnly) => !item.images?.[0] || !item.Offer?.[0],
+					(item: ItemWithOfferOnly) =>
+						!item.images?.[0] ||
+						!item.Offer?.[0] ||
+						(item.Offer?.[1] && item.Offer.some(offer => !offer.name)),
 				)
 				setItems(itemsData)
 				setErrorItems(errorItemsData)

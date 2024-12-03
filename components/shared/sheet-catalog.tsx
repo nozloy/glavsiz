@@ -11,7 +11,7 @@ import {
 } from '@/components/ui/table'
 import { cn } from '@/lib/utils'
 import { toast } from 'sonner'
-import { ClipboardCopy } from 'lucide-react'
+import { BadgeMinus, BadgeCheck, ClipboardCopy } from 'lucide-react'
 import { Container } from './container'
 import { Category } from '@prisma/client'
 import Link from 'next/link'
@@ -55,8 +55,10 @@ export const SheetCatalog: React.FC<Props> = ({ className, items }) => {
 					<TableRow>
 						<TableHead className='w-[100px]'>Артикул</TableHead>
 						<TableHead>Название</TableHead>
-						<TableHead>Изображение</TableHead>
-						<TableHead>Наличие оффера</TableHead>
+						<TableHead className='w-[100px]'>Изображение</TableHead>
+						<TableHead className='w-[100px]'>Описание</TableHead>
+						<TableHead className='w-[80px]'>Оффер</TableHead>
+						<TableHead className='w-[130px]'>Имя оффера</TableHead>
 					</TableRow>
 				</TableHeader>
 				<TableBody>
@@ -71,27 +73,37 @@ export const SheetCatalog: React.FC<Props> = ({ className, items }) => {
 									{item.vendorCode || 'Не указано'}
 								</TableCell>
 
-								<TableCell>
-									<Link href={`/item/${item.id}/`}>
+								<TableCell className='text-left'>
+									<Link href={`/item/${item.id}/`} target='_blank'>
 										{item.name || 'Не указано'}
 									</Link>
 								</TableCell>
 								<TableCell>
 									{isImage(item) ? (
-										'Есть'
+										<BadgeCheck className='mx-auto text-muted-foreground/30' />
 									) : (
-										<span className='underline text-red-500 font-bold'>
-											Нет
-										</span>
+										<BadgeMinus className='mx-auto text-red-500' />
+									)}
+								</TableCell>
+								<TableCell>
+									{item.description ? (
+										<BadgeCheck className='mx-auto text-muted-foreground/30' />
+									) : (
+										<BadgeMinus className='mx-auto text-red-500' />
 									)}
 								</TableCell>
 								<TableCell>
 									{item.Offer[0] ? (
-										'Есть'
+										<BadgeCheck className='mx-auto text-muted-foreground/30' />
 									) : (
-										<span className='underline text-red-500 font-bold'>
-											Нет
-										</span>
+										<BadgeMinus className='mx-auto text-red-500' />
+									)}
+								</TableCell>
+								<TableCell>
+									{item.Offer.some(offer => !offer.name) ? (
+										<BadgeMinus className='mx-auto text-red-500' />
+									) : (
+										<BadgeCheck className='mx-auto text-muted-foreground/30' />
 									)}
 								</TableCell>
 							</TableRow>

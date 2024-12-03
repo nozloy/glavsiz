@@ -92,6 +92,7 @@ export const ImageCarousel: React.FC<Props> = ({ className, images, name }) => {
 					<div className='relative p-0 overflow-hidden flex justify-center items-center lg:h-[650px] lg:w-[650px] xl:w-[700px] xl:h-[700px] 2xl:w-[800px] 2xl:h-[800px]'>
 						{isLoading && (
 							<div className='absolute z-10 flex items-center justify-center bg-background bg-opacity-50 rounded-xl p-4 animate-pulse'>
+								{/* eslint-disable-next-line @next/next/no-img-element */}
 								<img
 									src='/logo_black.svg'
 									alt={name}

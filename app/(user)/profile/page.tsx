@@ -35,6 +35,7 @@ export default async function ProfilePage() {
 				<Image
 					width={80}
 					height={80}
+					quality={100}
 					className='rounded-full w-20 shadow-md shadow-black'
 					src={user.image!}
 					alt={'avatar'}
@@ -51,6 +52,10 @@ export default async function ProfilePage() {
 			</div>
 			<div className='w-96  rounded-lg p-4 flex flex-col gap-1 items-end justify-start shadow-md text-muted-foreground text-lg'>
 				<p className='text-foreground font-bold text-xl pt-2'>Заказы</p>
+				<Separator />
+			</div>
+			<div className='w-96  rounded-lg p-4 flex flex-col gap-1 items-end justify-start shadow-md text-muted-foreground text-lg'>
+				<p className='text-foreground font-bold text-xl pt-2'>Привелегии</p>
 				<Separator />
 			</div>
 		</Container>

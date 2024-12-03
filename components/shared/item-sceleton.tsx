@@ -11,6 +11,7 @@ export const ItemSceleton: React.FC<Props> = ({ className }) => {
 	return (
 		<div className={cn('', className)}>
 			<Skeleton className=' h-[460px] w-[290px] bg-primary/5 flex drop-shadow-md shadow-lg'>
+				{/* eslint-disable-next-line @next/next/no-img-element */}
 				<img
 					className='opacity-70 mx-auto my-auto h-52 w-52'
 					src={'/logo_black.svg'}

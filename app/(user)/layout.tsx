@@ -4,6 +4,9 @@ import { ParentCategoriesMenu } from '@/components/shared/parent-categories-menu
 export const metadata = {
 	title: 'Главсиз',
 	description: 'сеть магазинов спецодежды',
+	metadataBase: new URL(
+		process.env.NEXT_PUBLIC_API_URL || 'https://glavsiz.ru',
+	),
 	openGraph: {
 		images: [
 			'/images/icons/cover_material.png',

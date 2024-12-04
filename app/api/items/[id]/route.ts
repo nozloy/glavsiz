@@ -1,4 +1,3 @@
-import { Category } from '@prisma/client'
 import { prisma } from '@/prisma/prisma-client'
 import { NextRequest, NextResponse } from 'next/server'
 

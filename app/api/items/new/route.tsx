@@ -1,14 +1,28 @@
 import { prisma } from '@/prisma/prisma-client'
 import { NextRequest, NextResponse } from 'next/server'
 
-export async function GET(req: NextRequest) {
-	// Получаем параметр count и преобразуем его в число с безопасной обработкой
-	const count = Number(req.nextUrl.searchParams.get('count')) || 1
+// Функция для проверки API-ключа
+function validateApiKey(req: NextRequest): boolean {
+	const apiKey = req.headers.get('x-api-key')
+	const expectedApiKey = process.env.API_SECRET_KEY
+	return apiKey === expectedApiKey
+}
 
-	// Проверяем, что count — корректное число
-	if (isNaN(count) || count <= 0) {
+// Функция для обработки GET запроса
+export async function GET(req: NextRequest) {
+	// Проверка API-ключа
+	if (!validateApiKey(req)) {
+		return NextResponse.json({ error: 'Неверный API ключ' }, { status: 403 })
+	}
+
+	// Получаем параметр count
+	const countParam = req.nextUrl.searchParams.get('count')
+	const count = Number(countParam)
+
+	// Валидация параметра count
+	if (!countParam || isNaN(count) || count <= 0) {
 		return NextResponse.json(
-			{ error: 'Неправильное значение количества' },
+			{ error: 'Параметр count должен быть положительным числом' },
 			{ status: 400 },
 		)
 	}
@@ -35,9 +49,9 @@ export async function GET(req: NextRequest) {
 		// Возвращаем результат
 		return NextResponse.json(items)
 	} catch (error) {
-		console.error('Error fetching items:', error)
+		console.error('Ошибка при получении данных:', error)
 		return NextResponse.json(
-			{ error: 'Internal Server Error' },
+			{ error: 'Внутренняя ошибка сервера' },
 			{ status: 500 },
 		)
 	}

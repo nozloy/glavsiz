@@ -73,6 +73,23 @@ export async function upItems(
 						? Season.Summer
 						: null
 
+					const itemType = item.parameters
+						.map(parameter => {
+							// Найти свойство с id, соответствующему id Вид изделия
+							const matchingProperty = propertiesClassifier.find(
+								property =>
+									property.id[0] === '71f28efc-254e-11ee-8129-00d8619a33d0',
+							)
+							// Найти соответствующее значение материала по ID
+							if (matchingProperty && parameter.id === matchingProperty.id[0]) {
+								return matchingProperty.values.find(
+									value => value.id[0] === parameter.value,
+								)?.value[0]
+							}
+							return null
+						})
+						.find(Boolean) // Возвращаем первый непустой результат
+
 					const material = item.parameters
 						.filter(
 							parameter =>
@@ -214,7 +231,7 @@ export async function upItems(
 
 					const heights = item.parameters
 						.map(parameter => {
-							// Найти свойство с названием, содержащим "размер"
+							// Найти свойство с id, соответствующему id размеру
 							const matchingProperty = propertiesClassifier.find(
 								property =>
 									property.id[0] === '777c553f-910f-11ef-aa21-9418826e94b3',
@@ -263,6 +280,7 @@ export async function upItems(
 								composition: composition || null,
 								heights: heights || null,
 								sole: sole || null,
+								itemType: itemType || null,
 							},
 							create: {
 								id: item.id,
@@ -280,6 +298,7 @@ export async function upItems(
 								composition: composition || null,
 								heights: heights || null,
 								sole: sole || null,
+								itemType: itemType || null,
 							},
 						})
 					} catch (error) {

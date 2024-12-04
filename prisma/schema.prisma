@@ -63,6 +63,7 @@ model Item {
   materialInsulation String?
   sole               String?
   color              String?
+  itemType           String?
   composition        String?
   heights            String?
   category           Category?  @relation(fields: [categoryId], references: [id])

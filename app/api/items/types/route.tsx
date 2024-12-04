@@ -1,5 +1,5 @@
-import { prisma } from '@/prisma/prisma-client'
 import { NextRequest, NextResponse } from 'next/server'
+import { prisma } from '@/prisma/prisma-client'
 
 export async function GET(req: NextRequest) {
 	// Получаем API-ключ из заголовков запроса
@@ -14,23 +14,22 @@ export async function GET(req: NextRequest) {
 	}
 
 	try {
-		// Запрашиваем данные из базы
-		const bestItems = await prisma.bestItem.findMany({
-			include: {
-				Item: {
-					include: {
-						Offer: true, // Включение связанных Offer
-					},
-				},
+		// Запрашиваем уникальные значения itemType
+		const itemTypes = await prisma.item.findMany({
+			distinct: ['itemType'],
+			select: {
+				itemType: true,
 			},
 		})
-		// Преобразуем результат в массив Item[]
-		const items = bestItems.map(bestItem => bestItem.Item)
 
-		// Возвращаем результат
-		return NextResponse.json(items)
+		// Возвращаем результат, исключая null
+		return NextResponse.json(
+			itemTypes
+				.filter(item => item.itemType !== null) // Убираем элементы с null
+				.map(item => item.itemType), // Преобразуем в массив значений
+		)
 	} catch (error) {
-		console.error('Ошибка получения лучших товаров:', error)
+		console.error('Ошибка получения itemTypes:', error)
 		return NextResponse.json(
 			{ error: 'Internal Server Error' },
 			{ status: 500 },

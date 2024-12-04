@@ -10,6 +10,7 @@ export interface GetSearchParams {
 	sortBy?: string
 	priceFrom?: string
 	priceTo?: string
+	types?: string
 }
 
 // const DEFAULT_MIN_PRICE = 0
@@ -36,6 +37,16 @@ export const findItem = async (id: string): Promise<ItemWithOffer> => {
 	} catch (error: any) {
 		console.error('Ошибка получения товара:', error)
 		throw new Error('Ошибка получения товара') // Кидаем ошибку, если не удалось получить товар
+	}
+}
+
+export const getItemTypes = async () => {
+	try {
+		const response = await apiClient.get('/items/types')
+		return response.data
+	} catch (error) {
+		console.error('Ошибка получения типов:', error)
+		throw new Error('Ошибка получения типов')
 	}
 }
 
@@ -66,11 +77,12 @@ export const filteredItems = async (
 	let query = params.query || ''
 	let categoryId = params.categoryId || ''
 	let count = params.count || 50
+	let itemTypes = params.types || ''
 	try {
 		const response = await apiClient.get(
 			`/items/search?${query ? 'query=' + query : '' + `&count=${count} `}${
 				categoryId ? '&categoryId=' + categoryId : ''
-			}`,
+			}${itemTypes ? '&types=' + itemTypes : ''}`,
 		)
 		return response.data
 	} catch (error) {

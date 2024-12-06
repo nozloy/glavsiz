@@ -65,6 +65,8 @@ async function validateSession(req: NextRequest) {
 
 // Обработчик запросов POST
 export async function POST(req: NextRequest) {
+	const cookie = req.headers.get('cookie')
+	const sessionId = cookie?.split('PHPSESSID=')[1]
 	const { searchParams } = new URL(req.url)
 	const type = searchParams.get('type')
 	const mode = searchParams.get('mode')
@@ -86,7 +88,7 @@ export async function POST(req: NextRequest) {
 	if (type === 'catalog' && mode === 'init') {
 		console.log('Запрос: Инициализация (init)')
 		return new Response(
-			'zip=yes\nfile_limit=1048576000\nsessid=your_session_id\nversion=3.1',
+			`zip=yes\nfile_limit=1048576000\nsessid=${sessionId}\nversion=3.1`,
 			{
 				status: 200,
 				headers: { 'Content-Type': 'text/plain' },

@@ -18,9 +18,9 @@ interface Props {
 
 export const BannerCarousel: React.FC<Props> = ({ className }) => {
 	const plugin = React.useRef(
-		Autoplay({ delay: 5000, stopOnInteraction: true }),
+		Autoplay({ delay: 5000, stopOnInteraction: true, stopOnMouseEnter: true }),
 	)
-	https: return (
+	return (
 		<div className={cn('pt-4', className)}>
 			<Carousel
 				plugins={[plugin.current]}

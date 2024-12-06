@@ -3,11 +3,11 @@ import React, { useEffect, useState } from 'react'
 import { cn } from '@/lib/utils'
 import { allItems } from '@/lib/find-items'
 import { SheetCatalog } from './sheet-catalog'
-import { Container } from './container'
-import { Separator } from '../ui/separator'
+import { Container } from '../container'
+import { Separator } from '../../ui/separator'
 import { ItemWithOfferOnly } from '@/@types'
 import { ErrorItemsCheck } from './error-items-check'
-import { Loading } from './loading'
+import { Loading } from '../loading'
 
 interface Props {
 	className?: string
@@ -44,8 +44,8 @@ export const Check: React.FC<Props> = ({ className }) => {
 	}, []) // Пустой массив зависимостей, чтобы вызвать useEffect один раз при монтировании
 
 	return (
-		<Container className={cn('bg-secondary flex flex-col gap-4 ', className)}>
-			<div className='flex flex-col gap-4 rounded-xl bg-background p-5 shadow-xl'>
+		<div className={cn('bg-secondary flex flex-col gap-4 p-4', className)}>
+			<div className='flex flex-col gap-4 rounded-xl bg-background p-5 shadow-xl '>
 				<div className='text-xl'>Опции отображения</div>
 				<Separator />
 				<ErrorItemsCheck checked={checked} onChange={changeCheckbox} />
@@ -54,6 +54,6 @@ export const Check: React.FC<Props> = ({ className }) => {
 			{items.length > 0 && (
 				<SheetCatalog items={checked ? errorItems : items} />
 			)}
-		</Container>
+		</div>
 	)
 }

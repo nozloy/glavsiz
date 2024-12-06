@@ -2,6 +2,8 @@ import type { Metadata } from 'next'
 import { getUserSession } from '@/lib/get-session'
 import { prisma } from '@/prisma/prisma-client'
 import { Role } from '@prisma/client'
+import { SidebarProvider, SidebarTrigger } from '@/components/ui/sidebar'
+import { AppSidebar } from '@/components/shared/app-sidebar'
 
 export const metadata: Metadata = {
 	title: 'Панель администратора - Главсиз',
@@ -33,5 +35,13 @@ Readonly<{
 		return <div>У Вас недостаточно прав для просмотра этой страницы</div>
 	}
 
-	return <main className='min-h-screen'>{children}</main>
+	return (
+		<SidebarProvider>
+			<AppSidebar />
+			<main className='w-full'>
+				<SidebarTrigger />
+				{children}
+			</main>
+		</SidebarProvider>
+	)
 }

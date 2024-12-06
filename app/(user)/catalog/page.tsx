@@ -14,7 +14,12 @@ export default async function Page({
 	const maxPrice = Number(searchParams.priceTo) || 10000
 
 	const items = await filteredItems(searchParams)
-	const itemTypes = await getItemTypes()
+	// const itemTypes = await getItemTypes()
+	const itemTypes = [
+		...new Set(
+			items.filter(item => item.itemType !== null).map(item => item.itemType),
+		),
+	] as string[]
 	const categoryId = searchParams.categoryId
 	return (
 		<div className='bg-secondary'>

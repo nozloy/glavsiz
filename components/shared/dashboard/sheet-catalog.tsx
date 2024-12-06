@@ -12,7 +12,6 @@ import {
 import { cn } from '@/lib/utils'
 import { toast } from 'sonner'
 import { BadgeMinus, BadgeCheck, ClipboardCopy } from 'lucide-react'
-import { Container } from './container'
 import { Category } from '@prisma/client'
 import Link from 'next/link'
 import { ItemWithOfferOnly } from '@/@types'
@@ -53,11 +52,11 @@ export const SheetCatalog: React.FC<Props> = ({ className, items }) => {
 				<TableCaption>Каталог товаров выгрузки.</TableCaption>
 				<TableHeader>
 					<TableRow>
-						<TableHead className='w-[100px]'>Артикул</TableHead>
+						<TableHead className='w-auto'>Артикул</TableHead>
 						<TableHead>Название</TableHead>
-						<TableHead className='w-[100px]'>Изображение</TableHead>
-						<TableHead className='w-[100px]'>Описание</TableHead>
-						<TableHead className='w-[80px]'>Оффер</TableHead>
+						<TableHead className='w-auto'>Изображение</TableHead>
+						<TableHead className='w-auto'>Описание</TableHead>
+						<TableHead className='w-auto'>Оффер</TableHead>
 						<TableHead className='w-[130px]'>Имя оффера</TableHead>
 					</TableRow>
 				</TableHeader>

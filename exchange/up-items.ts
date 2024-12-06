@@ -78,7 +78,7 @@ export async function upItems(
 							// Найти свойство с id, соответствующему id Вид изделия
 							const matchingProperty = propertiesClassifier.find(
 								property =>
-									property.id[0] === '71f28efc-254e-11ee-8129-00d8619a33d0',
+									property.id[0] === '8d8b655b-b2e3-11ef-aa25-9418826e94b3',
 							)
 							// Найти соответствующее значение материала по ID
 							if (matchingProperty && parameter.id === matchingProperty.id[0]) {

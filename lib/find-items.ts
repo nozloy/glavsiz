@@ -13,21 +13,6 @@ export interface GetSearchParams {
 	types?: string
 }
 
-// const DEFAULT_MIN_PRICE = 0
-// const DEFAULT_MAX_PRICE = 50000
-
-// export const findItems = async (params: GetSearchParams) => {
-// 	const query_string = params.query || ''
-// 	const categoryId_number = params.categoryId || ''
-// 	const price = params.priceFrom || params.priceTo
-// 	const minPrice = Number(params.priceFrom) || DEFAULT_MIN_PRICE
-// 	const maxPrice = Number(params.priceTo) || DEFAULT_MAX_PRICE
-
-// 	// const items = await prisma.item.findMany({
-// 	// 	distinct: ['id'],
-// 	// })
-// 	// return items
-// }
 //Получение данных по одному товару с offer
 export const findItem = async (id: string): Promise<ItemWithOffer> => {
 	try {
@@ -91,24 +76,8 @@ export const filteredItems = async (
 	}
 }
 
-// export const uniqueItems = async () => {
-// 	const items = await prisma.item.findMany({
-// 		distinct: ['id'],
-// 	})
-// 	return items
-// }
-
 //Получение всех товаров c offer
 export const allItems = async () => {
 	const items = await prisma.item.findMany({ include: { Offer: true } })
 	return items
 }
-// export const allCategories = async () => {
-// 	const categories = await prisma.category.findMany()
-
-// 	return categories
-// }
-// export const allSubcategories = async () => {
-// 	const subcategories = await prisma.subcategory.findMany()
-// 	return subcategories
-// }

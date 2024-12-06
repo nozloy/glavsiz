@@ -88,7 +88,7 @@ export async function POST(req: NextRequest) {
 	if (type === 'catalog' && mode === 'init') {
 		console.log('Запрос: Инициализация (init)')
 		return new Response(
-			`zip=yes\nfile_limit=1048576000\nsessid=${sessionId}\nversion=3.1`,
+			`zip=yes\nfile_limit=104857600\nsessid=${sessionId}\nversion=3.1`,
 			{
 				status: 200,
 				headers: { 'Content-Type': 'text/plain' },

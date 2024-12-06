@@ -123,6 +123,10 @@ export async function POST(req: NextRequest) {
 				}
 				fileStream.end()
 				console.log(`Файл успешно сохранен: ${filePath}`)
+				return new Response('success', {
+					status: 200,
+					headers: { 'Content-Type': 'text/plain' },
+				})
 			} catch (err: Error | any) {
 				console.log(`Ошибка при сохранении файла: ${err.message}`)
 				return new Response('failure\nОшибка при сохранении файла', {
@@ -135,11 +139,6 @@ export async function POST(req: NextRequest) {
 				status: 400,
 			})
 		}
-
-		return new Response('success', {
-			status: 200,
-			headers: { 'Content-Type': 'text/plain' },
-		})
 	}
 
 	// Импорт файла
@@ -195,13 +194,6 @@ export async function POST(req: NextRequest) {
 				}
 			}
 		}
-
-		// Запуск обновления в БД с задержкой
-		setTimeout(async () => {
-			console.log('Запуск обновления базы данных (up) через 30 секунд')
-			await up() // Вызываем функцию с отложенным запуском
-		}, 30000)
-
 		// Загрузка разархивированных изображений в S3
 		try {
 			console.log(`Загрузка разархивированных изображений в S3: ${extractDir}`)

@@ -69,7 +69,9 @@ export async function POST(req: NextRequest) {
 	const type = searchParams.get('type')
 	const mode = searchParams.get('mode')
 	const filename = searchParams.get('filename')
-
+	console.log(`[${new Date().toISOString()}] ${req.method} ${req.url}`)
+	req.headers.forEach((value, key) => console.log(`Header: ${key} = ${value}`))
+	console.log('Текущие сессии:', Array.from(sessions.keys()))
 	// Авторизация
 	if (type === 'catalog' && mode === 'checkauth') {
 		console.log('Запрос: Авторизация (checkauth)')
@@ -123,6 +125,13 @@ export async function POST(req: NextRequest) {
 				}
 				fileStream.end()
 				console.log(`Файл успешно сохранен: ${filePath}`)
+				if (!fs.existsSync(filePath)) {
+					console.log(`Ошибка: Файл не найден после записи: ${filePath}`)
+					return new Response('failure\nФайл не найден после записи', {
+						status: 500,
+					})
+				}
+				console.log(`Файл доступен: ${filePath}`)
 			} catch (err: Error | any) {
 				console.log(`Ошибка при сохранении файла: ${err.message}`)
 				return new Response('failure\nОшибка при сохранении файла', {

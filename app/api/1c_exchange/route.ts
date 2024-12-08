@@ -4,7 +4,6 @@ import { promises as fsPromises } from 'fs'
 import path from 'path'
 import unzipper from 'unzipper'
 import { uploadExtractedImagesBatch } from '@/exchange/s3-image-upload'
-import { up } from '@/exchange/update-db'
 import { NextRequest } from 'next/server'
 
 export const dynamic = 'force-dynamic'
@@ -94,17 +93,33 @@ export async function POST(req: NextRequest) {
 		)
 	}
 
+	// Для хранения состояния загрузки
+	const uploadsInProgress = new Map<string, boolean>()
+
 	// Загрузка файла
 	if (type === 'catalog' && mode === 'file' && filename) {
 		console.log(`Запрос: Загрузка файла (file), Filename: ${filename}`)
 		const uniqueFilename = `${Date.now()}-${filename}`
 		const filePath = path.join(UPLOAD_DIR, uniqueFilename)
 
+		// Если файл уже загружается, возвращаем 'progress'
+		if (uploadsInProgress.has(filename)) {
+			console.log(`Файл ${filename} еще загружается...`)
+			return new Response('progress', {
+				status: 200,
+				headers: { 'Content-Type': 'text/plain' },
+			})
+		}
+
+		// Устанавливаем флаг загрузки
+		uploadsInProgress.set(filename, true)
+
 		try {
 			await fsPromises.mkdir(UPLOAD_DIR, { recursive: true })
 			console.log(`Директория для загрузки создана: ${UPLOAD_DIR}`)
 		} catch (err: Error | any) {
 			console.log(`Ошибка при создании директории: ${err.message}`)
+			uploadsInProgress.delete(filename)
 			return new Response('failure\nОшибка при создании директории', {
 				status: 500,
 			})
@@ -123,18 +138,24 @@ export async function POST(req: NextRequest) {
 				}
 				fileStream.end()
 				console.log(`Файл успешно сохранен: ${filePath}`)
-				return new Response('success', {
-					status: 200,
-					headers: { 'Content-Type': 'text/plain' },
-				})
 			} catch (err: Error | any) {
 				console.log(`Ошибка при сохранении файла: ${err.message}`)
+				uploadsInProgress.delete(filename)
 				return new Response('failure\nОшибка при сохранении файла', {
 					status: 500,
 				})
+			} finally {
+				// Убираем флаг загрузки
+				uploadsInProgress.delete(filename)
 			}
+
+			return new Response('success', {
+				status: 200,
+				headers: { 'Content-Type': 'text/plain' },
+			})
 		} else {
 			console.log('Ошибка: req.body is null or undefined')
+			uploadsInProgress.delete(filename)
 			return new Response('failure\nreq.body is null or undefined', {
 				status: 400,
 			})

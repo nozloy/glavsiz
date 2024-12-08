@@ -4,6 +4,7 @@ import { promises as fsPromises } from 'fs'
 import path from 'path'
 import unzipper from 'unzipper'
 import { uploadExtractedImagesBatch } from '@/exchange/s3-image-upload'
+import { up } from '@/exchange/update-db'
 import { NextRequest } from 'next/server'
 
 export const dynamic = 'force-dynamic'
@@ -85,7 +86,7 @@ export async function POST(req: NextRequest) {
 	if (type === 'catalog' && mode === 'init') {
 		console.log('Запрос: Инициализация (init)')
 		return new Response(
-			'zip=yes\nfile_limit=1048576000\nsessid=\nversion=3.1',
+			'zip=yes\nfile_limit=1548576000\nsessid=your_session_id\nversion=3.1',
 			{
 				status: 200,
 				headers: { 'Content-Type': 'text/plain' },
@@ -93,33 +94,17 @@ export async function POST(req: NextRequest) {
 		)
 	}
 
-	// Для хранения состояния загрузки
-	const uploadsInProgress = new Map<string, boolean>()
-
 	// Загрузка файла
 	if (type === 'catalog' && mode === 'file' && filename) {
 		console.log(`Запрос: Загрузка файла (file), Filename: ${filename}`)
 		const uniqueFilename = `${Date.now()}-${filename}`
 		const filePath = path.join(UPLOAD_DIR, uniqueFilename)
 
-		// Если файл уже загружается, возвращаем 'progress'
-		if (uploadsInProgress.has(filename)) {
-			console.log(`Файл ${filename} еще загружается...`)
-			return new Response('progress', {
-				status: 200,
-				headers: { 'Content-Type': 'text/plain' },
-			})
-		}
-
-		// Устанавливаем флаг загрузки
-		uploadsInProgress.set(filename, true)
-
 		try {
 			await fsPromises.mkdir(UPLOAD_DIR, { recursive: true })
 			console.log(`Директория для загрузки создана: ${UPLOAD_DIR}`)
 		} catch (err: Error | any) {
 			console.log(`Ошибка при создании директории: ${err.message}`)
-			uploadsInProgress.delete(filename)
 			return new Response('failure\nОшибка при создании директории', {
 				status: 500,
 			})
@@ -140,26 +125,21 @@ export async function POST(req: NextRequest) {
 				console.log(`Файл успешно сохранен: ${filePath}`)
 			} catch (err: Error | any) {
 				console.log(`Ошибка при сохранении файла: ${err.message}`)
-				uploadsInProgress.delete(filename)
 				return new Response('failure\nОшибка при сохранении файла', {
 					status: 500,
 				})
-			} finally {
-				// Убираем флаг загрузки
-				uploadsInProgress.delete(filename)
 			}
-
-			return new Response('success', {
-				status: 200,
-				headers: { 'Content-Type': 'text/plain' },
-			})
 		} else {
 			console.log('Ошибка: req.body is null or undefined')
-			uploadsInProgress.delete(filename)
 			return new Response('failure\nreq.body is null or undefined', {
 				status: 400,
 			})
 		}
+
+		return new Response('success', {
+			status: 200,
+			headers: { 'Content-Type': 'text/plain' },
+		})
 	}
 
 	// Импорт файла
@@ -215,6 +195,7 @@ export async function POST(req: NextRequest) {
 				}
 			}
 		}
+
 		// Загрузка разархивированных изображений в S3
 		try {
 			console.log(`Загрузка разархивированных изображений в S3: ${extractDir}`)

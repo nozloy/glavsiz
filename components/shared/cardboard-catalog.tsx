@@ -22,8 +22,17 @@ export const CardboardCatalog: React.FC<Props> = ({
 }) => {
 	const activeCity = useCityStore(state => state.activeCity)
 
-	// Клиентская фильтрация
-	const pricedItems = items.filter(item =>
+	//Фильтруем товары только для с ценами по текущему городу
+	const cityItems = items.filter(item =>
+		item.Offer.some(offer =>
+			offer.price.some(
+				price => price.name === activeCity && Number(price.value) > 0,
+			),
+		),
+	)
+
+	// Фильтруем по заданному диапазоу цен
+	const pricedItems = cityItems.filter(item =>
 		item.Offer.some(offer =>
 			offer.price.some(
 				price =>
@@ -33,43 +42,32 @@ export const CardboardCatalog: React.FC<Props> = ({
 			),
 		),
 	)
+
+	// Сортируем по возрастанию цены
+	const sortedByPriceUp = [...pricedItems].sort((a, b) => {
+		const aPrice = Math.min(
+			...a.Offer.flatMap(offer =>
+				offer.price
+					.filter(price => price.name === activeCity && Number(price.value) > 0)
+					.map(price => Number(price.value)),
+			),
+		)
+		const bPrice = Math.min(
+			...b.Offer.flatMap(offer =>
+				offer.price
+					.filter(price => price.name === activeCity && Number(price.value) > 0)
+					.map(price => Number(price.value)),
+			),
+		)
+		return aPrice - bPrice // По возрастанию
+	})
+
+	// Определяем итоговый список с учетом сортировки
 	const filteredItems =
-		sortBy === 'priceDown'
-			? [...pricedItems].sort((a, b) => {
-					const aPrice = Math.max(
-						...a.Offer.flatMap(offer =>
-							offer.price
-								.filter(price => price.name === activeCity)
-								.map(price => Number(price.value)),
-						),
-					)
-					const bPrice = Math.max(
-						...b.Offer.flatMap(offer =>
-							offer.price
-								.filter(price => price.name === activeCity)
-								.map(price => Number(price.value)),
-						),
-					)
-					return bPrice - aPrice // По убыванию
-			  })
-			: sortBy === 'priceUp'
-			? [...pricedItems].sort((a, b) => {
-					const aPrice = Math.min(
-						...a.Offer.flatMap(offer =>
-							offer.price
-								.filter(price => price.name === activeCity)
-								.map(price => Number(price.value)),
-						),
-					)
-					const bPrice = Math.min(
-						...b.Offer.flatMap(offer =>
-							offer.price
-								.filter(price => price.name === activeCity)
-								.map(price => Number(price.value)),
-						),
-					)
-					return aPrice - bPrice // По возрастанию
-			  })
+		sortBy === 'priceUp'
+			? sortedByPriceUp
+			: sortBy === 'priceDown'
+			? [...sortedByPriceUp].reverse() // Реверсируем список
 			: pricedItems // Без сортировки, если sortBy не задан
 
 	return (

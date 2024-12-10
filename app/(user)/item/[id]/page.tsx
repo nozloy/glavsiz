@@ -1,3 +1,4 @@
+import { Container } from '@/components/shared'
 import { ItemBreadcrumb } from '@/components/shared/item-breadcrumb'
 import { ItemDescription } from '@/components/shared/item-description'
 import { Product } from '@/components/shared/product'
@@ -16,7 +17,9 @@ export default async function ProductPage({
 	}
 	return (
 		<div>
-			<ItemBreadcrumb category={item.category} />
+			<Container className='pl-10 pt-6'>
+				<ItemBreadcrumb category={item.category} />
+			</Container>
 			<Product item={item} />
 			{item.description && (
 				<ItemDescription className='mt-auto' description={item.description} />

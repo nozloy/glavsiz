@@ -1,6 +1,6 @@
 'use client'
 
-import React, { useState } from 'react'
+import React, { useEffect, useState } from 'react'
 import { cn } from '@/lib/utils'
 import { useRouter, useSearchParams } from 'next/navigation'
 import { useDebounce } from 'react-use'
@@ -11,6 +11,7 @@ import {
 	SelectTrigger,
 	SelectValue,
 } from '../ui/select'
+
 interface Props {
 	className?: string
 }
@@ -18,9 +19,19 @@ interface Props {
 export const SortBy: React.FC<Props> = ({ className }) => {
 	const router = useRouter()
 	const searchParams = useSearchParams()
-	let [sortBy, setSortBy] = useState<string>('priceUp')
 
-	// Дебаунс значения диапазона цен
+	// Состояние для сортировки
+	const [sortBy, setSortBy] = useState<string>('priceUp')
+
+	// Синхронизация состояния `sortBy` с URL параметрами
+	useEffect(() => {
+		const sortParam = searchParams.get('sortBy')
+		if (sortParam) {
+			setSortBy(sortParam)
+		}
+	}, [searchParams])
+
+	// Дебаунс обновления URL параметров
 	useDebounce(
 		() => {
 			const params = new URLSearchParams(searchParams.toString())

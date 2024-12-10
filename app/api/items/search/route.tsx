@@ -10,6 +10,7 @@ export async function GET(req: NextRequest) {
 	const query = searchParams.get('query') || ''
 	const categoryId = searchParams.get('categoryId') || ''
 	const itemTypes = searchParams.get('types') || ''
+	const sortBy = searchParams.get('sortBy') || ''
 	// Формируем запрос к базе
 	const products = await prisma.item.findMany({
 		distinct: ['vendorCode'],

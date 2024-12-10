@@ -10,6 +10,7 @@ interface Props {
 	className?: string
 	minPrice: number
 	maxPrice: number
+	sortBy: string
 }
 
 export const CardboardCatalog: React.FC<Props> = ({
@@ -17,11 +18,12 @@ export const CardboardCatalog: React.FC<Props> = ({
 	className,
 	minPrice,
 	maxPrice,
+	sortBy,
 }) => {
 	const activeCity = useCityStore(state => state.activeCity)
 
 	// Клиентская фильтрация
-	const filteredItems = items.filter(item =>
+	const pricedItems = items.filter(item =>
 		item.Offer.some(offer =>
 			offer.price.some(
 				price =>
@@ -31,6 +33,44 @@ export const CardboardCatalog: React.FC<Props> = ({
 			),
 		),
 	)
+	const filteredItems =
+		sortBy === 'priceDown'
+			? [...pricedItems].sort((a, b) => {
+					const aPrice = Math.max(
+						...a.Offer.flatMap(offer =>
+							offer.price
+								.filter(price => price.name === activeCity)
+								.map(price => Number(price.value)),
+						),
+					)
+					const bPrice = Math.max(
+						...b.Offer.flatMap(offer =>
+							offer.price
+								.filter(price => price.name === activeCity)
+								.map(price => Number(price.value)),
+						),
+					)
+					return bPrice - aPrice // По убыванию
+			  })
+			: sortBy === 'priceUp'
+			? [...pricedItems].sort((a, b) => {
+					const aPrice = Math.min(
+						...a.Offer.flatMap(offer =>
+							offer.price
+								.filter(price => price.name === activeCity)
+								.map(price => Number(price.value)),
+						),
+					)
+					const bPrice = Math.min(
+						...b.Offer.flatMap(offer =>
+							offer.price
+								.filter(price => price.name === activeCity)
+								.map(price => Number(price.value)),
+						),
+					)
+					return aPrice - bPrice // По возрастанию
+			  })
+			: pricedItems // Без сортировки, если sortBy не задан
 
 	return (
 		<div className={cn('grid grid-cols-3', className)}>

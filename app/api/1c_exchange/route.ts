@@ -69,9 +69,9 @@ export async function POST(req: NextRequest) {
 	const type = searchParams.get('type')
 	const mode = searchParams.get('mode')
 	const filename = searchParams.get('filename')
-	console.log(`[${new Date().toISOString()}] ${req.method} ${req.url}`)
-	req.headers.forEach((value, key) => console.log(`Header: ${key} = ${value}`))
-	console.log('Текущие сессии:', Array.from(sessions.keys()))
+	// console.log(`[${new Date().toISOString()}] ${req.method} ${req.url}`)
+	// req.headers.forEach((value, key) => console.log(`Header: ${key} = ${value}`))
+	// console.log('Текущие сессии:', Array.from(sessions.keys()))
 	// Авторизация
 	if (type === 'catalog' && mode === 'checkauth') {
 		console.log('Запрос: Авторизация (checkauth)')

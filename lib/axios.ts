@@ -18,8 +18,8 @@ apiClient.interceptors.response.use(
 		// Обработка ошибок
 		if (!error.response) {
 			// Нет ответа от сервера
-			console.error('Ошибка сети или сервер не доступен:', error)
-			throw new Error('Нет ответа от сервера')
+			console.error('API:Ошибка сети или сервер не доступен:', error)
+			throw new Error('API:Нет ответа от бд')
 		}
 
 		// Если ошибка от API
@@ -28,13 +28,13 @@ apiClient.interceptors.response.use(
 			error.response.data?.message || 'Неизвестная ошибка от API'
 
 		if (status === 404) {
-			throw new Error('Запрашиваемый ресурс не найден')
+			return new Error('API:Запрашиваемый ресурс не найден')
 		} else if (status === 500) {
-			throw new Error('Ошибка на сервере')
+			throw new Error('API:Ошибка на сервере')
 		}
 
 		// Для других ошибок от API
-		throw new Error(`Ошибка от сервера: ${status} - ${errorMessage}`)
+		throw new Error(`API:Ошибка бд: ${status} - ${errorMessage}`)
 	},
 )
 

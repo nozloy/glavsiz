@@ -1,6 +1,7 @@
 import { Container } from '@/components/shared'
 import { ItemBreadcrumb } from '@/components/shared/item-breadcrumb'
 import { ItemDescription } from '@/components/shared/item-description'
+import { ItemNotFound } from '@/components/shared/item-not-found'
 import { Product } from '@/components/shared/product'
 import { findItem } from '@/lib/find-items'
 import { Item } from '@radix-ui/react-select'
@@ -12,8 +13,10 @@ export default async function ProductPage({
 	params: { id: string }
 }) {
 	const item = await findItem(id)
+
+	// Если товар не найден, показываем страницу 404
 	if (!item) {
-		return notFound()
+		return <ItemNotFound /> // Рендерим страницу 404
 	}
 	return (
 		<div>

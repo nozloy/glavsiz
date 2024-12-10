@@ -14,14 +14,33 @@ export interface GetSearchParams {
 }
 
 //Получение данных по одному товару с offer
-export const findItem = async (id: string): Promise<ItemWithOffer> => {
+export const findItem = async (id: string): Promise<ItemWithOffer | null> => {
 	try {
 		// Отправляем запрос к API для получения товара
 		const response = await apiClient.get(`/items/${id}`)
-		return response.data // Возвращаем данные товара
+
+		// Если ответ успешный (200), возвращаем данные товара
+		return response.data
 	} catch (error: any) {
-		console.error('Ошибка получения товара:', error)
-		throw new Error('Ошибка получения товара') // Кидаем ошибку, если не удалось получить товар
+		// Логируем ошибку для диагностики
+		console.error('Ошибка при запросе к API:', error)
+
+		if (error.response) {
+			// Логируем саму ошибку и статус
+			console.error('API Error Response:', error.response)
+
+			if (error.response.status === 404) {
+				console.log(`Товар с id ${id} не найден`)
+				return null // Возвращаем null, чтобы корректно обработать отсутствие товара
+			}
+
+			// Обработка других ошибок (например, 500)
+			console.error('Ошибка API:', error.response?.data)
+			throw new Error(`Ошибка API: ${error.response?.status}`)
+		}
+
+		// В случае других ошибок выбрасываем общее исключение
+		throw new Error('Неизвестная ошибка при получении товара')
 	}
 }
 

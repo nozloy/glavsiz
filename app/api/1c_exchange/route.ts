@@ -198,10 +198,11 @@ export async function POST(req: NextRequest) {
 		// Загрузка разархивированных изображений в S3
 		try {
 			console.log(`Загрузка разархивированных изображений в S3: ${extractDir}`)
-			await uploadExtractedImagesBatch(extractDir).finally(() => {
-				up()
-			})
+			await uploadExtractedImagesBatch(extractDir)
 			console.log(`Изображения успешно загружены в S3`)
+			if (process.env.NODE_ENV === 'production') {
+				up()
+			}
 		} catch (err: Error | any) {
 			console.log(`Ошибка при загрузке изображений в S3: ${err.message}`)
 			return new Response('failure\nОшибка при загрузке изображений в S3', {

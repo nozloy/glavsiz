@@ -8,27 +8,27 @@ const prisma = new PrismaClient()
 
 export const dynamic = 'force-dynamic'
 
-async function main() {
-	try {
-		//await down()
-		await up()
-	} catch (e) {
-		console.error('Ошибка:', e)
-	} finally {
-		await prisma.$disconnect()
-	}
-}
+// async function main() {
+// 	try {
+// 		//await down()
+// 		await up()
+// 	} catch (e) {
+// 		console.error('Ошибка:', e)
+// 	} finally {
+// 		await prisma.$disconnect()
+// 	}
+// }
 
-// Запуск основного процесса
-main()
-	.then(async () => {
-		await prisma.$disconnect()
-	})
-	.catch(async e => {
-		console.error(e)
-		await prisma.$disconnect()
-		process.exit(1)
-	})
+// // Запуск основного процесса
+// main()
+// 	.then(async () => {
+// 		await prisma.$disconnect()
+// 	})
+// 	.catch(async e => {
+// 		console.error(e)
+// 		await prisma.$disconnect()
+// 		process.exit(1)
+// 	})
 
 async function down() {
 	await prisma.$executeRaw`TRUNCATE TABLE "ParentCategory" RESTART IDENTITY CASCADE`

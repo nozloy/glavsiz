@@ -69,9 +69,6 @@ export async function POST(req: NextRequest) {
 	const type = searchParams.get('type')
 	const mode = searchParams.get('mode')
 	const filename = searchParams.get('filename')
-	// console.log(`[${new Date().toISOString()}] ${req.method} ${req.url}`)
-	// req.headers.forEach((value, key) => console.log(`Header: ${key} = ${value}`))
-	// console.log('Текущие сессии:', Array.from(sessions.keys()))
 	// Авторизация
 	if (type === 'catalog' && mode === 'checkauth') {
 		console.log('Запрос: Авторизация (checkauth)')
@@ -105,23 +102,6 @@ export async function POST(req: NextRequest) {
 		try {
 			await fsPromises.mkdir(UPLOAD_DIR, { recursive: true })
 			console.log(`Директория для загрузки создана: ${UPLOAD_DIR}`)
-			// Получаем UID и GID для пользователя www-data
-			const { uid, gid } = await fs.promises
-				.readFile('/etc/passwd', 'utf-8')
-				.then(data => {
-					const userLine = data
-						.split('\n')
-						.find(line => line.includes('www-data'))
-					if (!userLine) throw new Error('Пользователь www-data не найден')
-					const [, , userId, groupId] = userLine.split(':')
-					return { uid: parseInt(userId), gid: parseInt(groupId) }
-				})
-
-			// Меняем владельца и группу директории на www-data
-			await fs.promises.chown(UPLOAD_DIR, uid, gid)
-
-			// Меняем права доступа к директории (например, 775 — доступ владельцу и группе, но не другим)
-			await fs.promises.chmod(UPLOAD_DIR, 0o775)
 		} catch (err: Error | any) {
 			console.log(`Ошибка при создании директории: ${err.message}`)
 			return new Response('failure\nОшибка при создании директории', {
@@ -142,26 +122,6 @@ export async function POST(req: NextRequest) {
 				}
 				fileStream.end()
 				console.log(`Файл успешно сохранен: ${filePath}`)
-
-				const stats = await fs.promises.stat(filePath)
-
-				// Получаем UID и GID пользователя www-data
-				const { uid, gid } = await fs.promises
-					.readFile('/etc/passwd', 'utf-8')
-					.then(data => {
-						const userLine = data
-							.split('\n')
-							.find(line => line.includes('www-data'))
-						if (!userLine) throw new Error('Пользователь www-data не найден')
-						const [, , userId, groupId] = userLine.split(':')
-						return { uid: parseInt(userId), gid: parseInt(groupId) }
-					})
-
-				// Меняем владельца и группу на www-data
-				await fs.promises.chown(filePath, uid, gid)
-
-				// Изменяем права доступа к файлу (например, 777 — полный доступ)
-				await fs.promises.chmod(filePath, 0o777)
 			} catch (err: Error | any) {
 				console.log(`Ошибка при сохранении файла: ${err.message}`)
 				return new Response('failure\nОшибка при сохранении файла', {
@@ -238,7 +198,9 @@ export async function POST(req: NextRequest) {
 		// Загрузка разархивированных изображений в S3
 		try {
 			console.log(`Загрузка разархивированных изображений в S3: ${extractDir}`)
-			await uploadExtractedImagesBatch(extractDir)
+			await uploadExtractedImagesBatch(extractDir).finally(() => {
+				up()
+			})
 			console.log(`Изображения успешно загружены в S3`)
 		} catch (err: Error | any) {
 			console.log(`Ошибка при загрузке изображений в S3: ${err.message}`)

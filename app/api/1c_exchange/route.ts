@@ -105,6 +105,23 @@ export async function POST(req: NextRequest) {
 		try {
 			await fsPromises.mkdir(UPLOAD_DIR, { recursive: true })
 			console.log(`Директория для загрузки создана: ${UPLOAD_DIR}`)
+			// Получаем UID и GID для пользователя www-data
+			const { uid, gid } = await fs.promises
+				.readFile('/etc/passwd', 'utf-8')
+				.then(data => {
+					const userLine = data
+						.split('\n')
+						.find(line => line.includes('www-data'))
+					if (!userLine) throw new Error('Пользователь www-data не найден')
+					const [, , userId, groupId] = userLine.split(':')
+					return { uid: parseInt(userId), gid: parseInt(groupId) }
+				})
+
+			// Меняем владельца и группу директории на www-data
+			await fs.promises.chown(UPLOAD_DIR, uid, gid)
+
+			// Меняем права доступа к директории (например, 775 — доступ владельцу и группе, но не другим)
+			await fs.promises.chmod(UPLOAD_DIR, 0o775)
 		} catch (err: Error | any) {
 			console.log(`Ошибка при создании директории: ${err.message}`)
 			return new Response('failure\nОшибка при создании директории', {

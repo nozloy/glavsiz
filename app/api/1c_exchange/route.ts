@@ -125,13 +125,26 @@ export async function POST(req: NextRequest) {
 				}
 				fileStream.end()
 				console.log(`Файл успешно сохранен: ${filePath}`)
-				if (!fs.existsSync(filePath)) {
-					console.log(`Ошибка: Файл не найден после записи: ${filePath}`)
-					return new Response('failure\nФайл не найден после записи', {
-						status: 500,
+
+				const stats = await fs.promises.stat(filePath)
+
+				// Получаем UID и GID пользователя www-data
+				const { uid, gid } = await fs.promises
+					.readFile('/etc/passwd', 'utf-8')
+					.then(data => {
+						const userLine = data
+							.split('\n')
+							.find(line => line.includes('www-data'))
+						if (!userLine) throw new Error('Пользователь www-data не найден')
+						const [, , userId, groupId] = userLine.split(':')
+						return { uid: parseInt(userId), gid: parseInt(groupId) }
 					})
-				}
-				console.log(`Файл доступен: ${filePath}`)
+
+				// Меняем владельца и группу на www-data
+				await fs.promises.chown(filePath, uid, gid)
+
+				// Изменяем права доступа к файлу (например, 777 — полный доступ)
+				await fs.promises.chmod(filePath, 0o777)
 			} catch (err: Error | any) {
 				console.log(`Ошибка при сохранении файла: ${err.message}`)
 				return new Response('failure\nОшибка при сохранении файла', {

@@ -13,7 +13,7 @@ export default async function Page({
 }) {
 	const minPrice = Number(searchParams.priceFrom) || 0
 	const maxPrice = Number(searchParams.priceTo) || 10000
-	const sortBy = searchParams.sortBy || 'priceDown'
+	const sortBy = searchParams.sortBy || 'priceUp'
 
 	const items = await filteredItems(searchParams)
 	const itemAllTypes = await getItemTypes()

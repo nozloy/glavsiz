@@ -14,7 +14,6 @@ export default function robots(): MetadataRoute.Robots {
 	// Настройка для продакшена
 	return {
 		rules: [
-			{ userAgent: '*', allow: '/' },
 			{
 				userAgent: '*',
 				disallow: [

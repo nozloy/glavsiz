@@ -1,4 +1,5 @@
 import { Header, Footer } from '@/components/shared/'
+import Metrica from '@/components/shared/layout/metrica'
 import { ParentCategoriesMenu } from '@/components/shared/parent-categories-menu'
 
 export const metadata = {
@@ -31,6 +32,7 @@ export default function UserLayout({
 }>) {
 	return (
 		<main className='flex flex-col min-h-dvh md:min-h-screen'>
+			<Metrica />
 			<Header />
 			<ParentCategoriesMenu />
 			{modal}

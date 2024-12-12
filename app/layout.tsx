@@ -17,7 +17,7 @@ export default function RootLayout({
 	return (
 		<html lang='ru'>
 			<head>
-				<link rel='icon' href='/favicon_black.ico' />
+				<link rel='icon' href='/icon.svg' />
 				<link
 					rel='search'
 					type='application/opensearchdescription+xml'

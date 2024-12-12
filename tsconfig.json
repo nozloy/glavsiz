@@ -28,7 +28,8 @@
 		"**/*.tsx",
 		".next/types/**/*.ts",
 		"app/api/1c_exchange/route.ts",
-		"prisma/*.ts"
+		"prisma/*.ts",
+		"components/shared/layout/metrica.tsx"
 	],
 	"exclude": ["node_modules"]
 }

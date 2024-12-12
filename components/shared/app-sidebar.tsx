@@ -15,7 +15,12 @@ import {
 	SidebarMenu,
 	SidebarMenuButton,
 	SidebarMenuItem,
+	SidebarFooter,
 } from '@/components/ui/sidebar'
+import { getUserSession } from '@/lib/get-session'
+import Image from 'next/image'
+import Link from 'next/link'
+import { Badge } from '../ui/badge'
 
 // Menu items.
 const items = [
@@ -46,7 +51,8 @@ const items = [
 	},
 ]
 
-export function AppSidebar() {
+export async function AppSidebar() {
+	const user = await getUserSession()
 	return (
 		<Sidebar>
 			<SidebarContent>
@@ -68,6 +74,36 @@ export function AppSidebar() {
 					</SidebarGroupContent>
 				</SidebarGroup>
 			</SidebarContent>
+			<SidebarFooter>
+				<Link
+					className='flex flex-row gap-2 items-center justify-start bg-secondary rounded-xl p-3 select-none cursor-pointer'
+					href={'/profile'}
+					target='_blank'
+				>
+					<Image
+						width={42}
+						height={42}
+						src={user?.image || './logo_black.svg'}
+						alt='avatar'
+						className='rounded-full'
+					/>
+					<div className='flex flex-col'>
+						<p className='text-[12px] font-bold'>{user?.name}</p>
+						<Badge
+							className='flex items-center justify-center w-[60px] text-[10px]'
+							variant={
+								user?.role === 'ADMIN'
+									? 'destructive'
+									: user?.role === 'MODER'
+									? 'default'
+									: 'secondary'
+							}
+						>
+							{user?.role}
+						</Badge>
+					</div>
+				</Link>
+			</SidebarFooter>
 		</Sidebar>
 	)
 }

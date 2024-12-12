@@ -1,4 +1,5 @@
-import React from 'react'
+'use client'
+import React, { useEffect } from 'react'
 import { cn } from '@/lib/utils'
 import { Offer } from '@prisma/client'
 import {
@@ -24,6 +25,12 @@ export const ItemVariants: React.FC<Props> = ({
 		const selectedId = value
 		onVariantChange(selectedId)
 	}
+	useEffect(() => {
+		if (variants.length > 0) {
+			onVariantChange(variants[0].id)
+		}
+		// eslint-disable-next-line react-hooks/exhaustive-deps
+	}, []) // Пустой массив зависимостей, чтобы эффект сработал только 1 раз
 	return (
 		<div className={cn('flex flex-col gap-2 items-start py-6', className)}>
 			<p className='text-md text-muted-foreground'>Варианты:</p>

@@ -22,13 +22,25 @@ export const ItemCard: React.FC<Props> = ({ className, item }) => {
 	const [isLoading, setIsLoading] = useState(true) // локальный state для загрузки изображения
 	const isDefaultImage = item.images[0] ? false : true
 	const { activeCity } = useCityStore()
-	const priceArray = Array.isArray(item?.Offer[0]?.price)
-		? item.Offer[0].price
-		: []
-	const activeCityPrice = priceArray.find(priceItem =>
-		priceItem?.name.includes(activeCity),
-	)?.value
-	const price = activeCityPrice ? activeCityPrice : priceArray[0]?.value
+	const offers = Array.isArray(item?.Offer) ? item.Offer : []
+
+	const filteredPrices = offers.flatMap(offer =>
+		Array.isArray(offer?.price)
+			? offer.price.filter(priceItem => priceItem?.name.includes(activeCity))
+			: [],
+	)
+
+	const activeCityPrice = filteredPrices.reduce((minPrice, currentPrice) => {
+		const currentValue = parseFloat(currentPrice?.value) || Infinity
+		const minValue = parseFloat(minPrice?.value) || Infinity
+
+		if (currentValue < minValue) {
+			return currentPrice
+		}
+		return minPrice
+	}, null)?.value
+
+	const price = activeCityPrice ? activeCityPrice : 0
 
 	const imageBaseUrl = process.env.NEXT_PUBLIC_IMAGE_URL
 	return (

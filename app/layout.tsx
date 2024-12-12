@@ -2,6 +2,7 @@ import { Montserrat } from 'next/font/google'
 import '@/app/globals.css'
 import { cn } from '@/lib/utils'
 import { Providers } from '@/components/shared/providers'
+import FaviconSwitcher from '@/components/shared/layout/favicon-switcher'
 const montserrat = Montserrat({
 	subsets: ['cyrillic'],
 	variable: '--font-montserrat',
@@ -16,12 +17,7 @@ export default function RootLayout({
 	return (
 		<html lang='ru'>
 			<head>
-				<link
-					rel='icon'
-					href='/icon?<generated>'
-					type='image/<generated>'
-					sizes='<generated>'
-				/>
+				<link rel='icon' href='/favicon_black.ico' />
 				<link
 					rel='search'
 					type='application/opensearchdescription+xml'
@@ -35,6 +31,7 @@ export default function RootLayout({
 					montserrat.variable,
 				)}
 			>
+				<FaviconSwitcher />
 				<Providers>{children}</Providers>
 			</body>
 		</html>

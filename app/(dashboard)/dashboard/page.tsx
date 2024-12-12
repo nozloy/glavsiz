@@ -2,7 +2,6 @@ import { Banners } from '@/components/shared/dashboard/banners'
 import { Check } from '@/components/shared/dashboard/check'
 import { TopSelelrs } from '@/components/shared/dashboard/top-selelrs'
 import { Users } from '@/components/shared/dashboard/users'
-import { GetSearchParams } from '@/lib/find-items'
 
 export const dynamic = 'force-dynamic'
 

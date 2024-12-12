@@ -32,25 +32,18 @@ export const Product: React.FC<Props> = ({ className, item }) => {
 	const prevCityRef = useRef<string>()
 	useEffect(() => {
 		if (prevCityRef.current !== activeCity) {
-			console.log('Город изменен на:', activeCity)
 			prevCityRef.current = activeCity // Обновляем реф с новым значением
 		}
 	}, [activeCity])
 
 	// const { addCartItem, loading } = useCartStore(state => state)
-	const [selectedOfferId, setSelectedOfferId] = useState<string>(
-		item.Offer?.[0]?.id || '',
-	)
-	// const selectedOffer: OfferWithTypedJson | undefined = offers?.find(
-	// 	offer => offer.id === selectedOfferId,
-	// ) as OfferWithTypedJson | undefined
+	const [selectedOfferId, setSelectedOfferId] = useState<string>()
 	const selectedOffer: OfferWithTypedJson | undefined = item.Offer?.find(
 		offer => offer.id === selectedOfferId,
 	) as OfferWithTypedJson | undefined
 	const handleVariantChange = (offerId: string) => {
 		setSelectedOfferId(offerId)
 	}
-
 	// const { data: session } = useSession()
 	// const fetchCartId = async (): Promise<number> => {
 	// 	const response = await fetch('/api/cart')

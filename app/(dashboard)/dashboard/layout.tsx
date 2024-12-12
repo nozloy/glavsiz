@@ -1,6 +1,5 @@
 import type { Metadata } from 'next'
-import { getUserSession } from '@/lib/get-session'
-import { prisma } from '@/prisma/prisma-client'
+import { getRoleOrUnauthorized, getUserSession } from '@/lib/get-session'
 import { Role } from '@prisma/client'
 import { SidebarProvider, SidebarTrigger } from '@/components/ui/sidebar'
 import { AppSidebar } from '@/components/shared/app-sidebar'
@@ -12,27 +11,17 @@ export const metadata: Metadata = {
 
 export default async function UserLayout({
 	children,
-}: // modal,
-Readonly<{
+}: Readonly<{
 	children: React.ReactNode
-	// modal: React.ReactNode
 }>) {
-	const session = await getUserSession()
+	const role = await getRoleOrUnauthorized()
 
-	if (!session?.id) {
+	if (!role) {
 		return <div>Вы не авторизованы</div>
 	}
 
-	const user = await prisma.user.findFirst({
-		where: { id: Number(session.id) },
-	})
-
-	if (!user) {
-		return <div>Вы не авторизованы</div>
-	}
-
-	if (user.role == Role.USER) {
-		return <div>У Вас недостаточно прав для просмотра этой страницы</div>
+	if (role == Role.USER) {
+		return <div>У Вас недостаточно прав</div>
 	}
 
 	return (

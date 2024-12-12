@@ -14,6 +14,7 @@ import { AuthButton } from './auth-button'
 import { ModalAuth } from '@/components/shared/modal/modal-auth'
 import { useSession } from 'next-auth/react'
 import { useCartStore } from '@/store/cart-store'
+import { useCityStore } from '@/store/city-store'
 
 interface Props {
 	className?: string
@@ -22,6 +23,7 @@ interface Props {
 export const Header: React.FC<Props> = ({ className }) => {
 	const [openAuthModal, setOpenAuthModal] = React.useState(false)
 	const { data: session, status } = useSession()
+	const { activeCity } = useCityStore()
 
 	const fetchCartItems = useCartStore(state => state.initializeCart)
 
@@ -39,7 +41,7 @@ export const Header: React.FC<Props> = ({ className }) => {
 					{/* Левая сторона - город */}
 					<ChooseCity className='flex items-center gap-1' />
 					{/* Правая сторона - телефон */}
-					<TelephoneLink />
+					<TelephoneLink activeCity={activeCity} />
 				</div>
 				<div className='flex items-center justify-between py-2'>
 					{/* Левая сторона - лого */}

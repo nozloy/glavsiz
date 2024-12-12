@@ -109,31 +109,10 @@ model CartItem {
 }
 
 model City {
-  id        Int       @id @default(autoincrement())
-  name      String    @unique
-  contacts  Contact[]
-  addresses Address[]
-}
-
-model Contact {
-  id        Int       @id @default(autoincrement())
-  one       String?
-  two       String?
-  three     String?
-  city      City      @relation(fields: [cityId], references: [id])
-  cityId    Int
-  addresses Address[] @relation("ContactAddresses")
-}
-
-model Address {
-  id       Int       @id @default(autoincrement())
-  name     String
-  url1     String
-  url2     String?
-  url3     String?
-  city     City      @relation(fields: [cityId], references: [id])
-  cityId   Int
-  contacts Contact[] @relation("ContactAddresses")
+  id        Int    @id @default(autoincrement())
+  name      String @unique
+  phone     String
+  addresses Json
 }
 
 enum Season {

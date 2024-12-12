@@ -5,7 +5,6 @@ import { User } from '@prisma/client'
 
 export const allUsers = async (role: string) => {
 	let users: User[] = []
-	console.log(role)
 	if (role === 'moder') {
 		users = await prisma.user.findMany({
 			where: {

@@ -80,7 +80,7 @@ export const filteredItems = async (
 ): Promise<ItemWithOffer[]> => {
 	let query = params.query || ''
 	let categoryId = params.categoryId || ''
-	let count = params.count || 50
+	let count = params.count || 100
 	let itemTypes = params.types || ''
 	try {
 		const response = await apiClient.get(

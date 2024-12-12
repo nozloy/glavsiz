@@ -38,9 +38,14 @@ export const Product: React.FC<Props> = ({ className, item }) => {
 
 	// const { addCartItem, loading } = useCartStore(state => state)
 	const [selectedOfferId, setSelectedOfferId] = useState<string>()
-	const selectedOffer: OfferWithTypedJson | undefined = item.Offer?.find(
-		offer => offer.id === selectedOfferId,
-	) as OfferWithTypedJson | undefined
+
+	//если есть второй оффер, значит будет выбран из компонента, если нет - всегда нулевой офер (единственный)
+	const selectedOffer: OfferWithTypedJson | undefined = item.Offer[1]
+		? (item.Offer?.find(offer => offer.id === selectedOfferId) as
+				| OfferWithTypedJson
+				| undefined)
+		: (item.Offer?.[0] as OfferWithTypedJson | undefined)
+
 	const handleVariantChange = (offerId: string) => {
 		setSelectedOfferId(offerId)
 	}

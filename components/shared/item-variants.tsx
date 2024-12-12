@@ -27,7 +27,7 @@ export const ItemVariants: React.FC<Props> = ({
 	}
 	useEffect(() => {
 		if (variants.length > 0) {
-			onVariantChange(variants[0].id)
+			onVariantChange(variants[0].id.toString())
 		}
 		// eslint-disable-next-line react-hooks/exhaustive-deps
 	}, []) // Пустой массив зависимостей, чтобы эффект сработал только 1 раз

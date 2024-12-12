@@ -25,9 +25,10 @@ export const ItemVariants: React.FC<Props> = ({
 		const selectedId = value
 		onVariantChange(selectedId)
 	}
+	const sortedVariants = variants.sort((a, b) => a.name.localeCompare(b.name))
 	useEffect(() => {
 		if (variants.length > 0) {
-			onVariantChange(variants[0].id.toString())
+			onVariantChange(sortedVariants[0].id.toString())
 		}
 		// eslint-disable-next-line react-hooks/exhaustive-deps
 	}, []) // Пустой массив зависимостей, чтобы эффект сработал только 1 раз
@@ -42,17 +43,15 @@ export const ItemVariants: React.FC<Props> = ({
 					<SelectValue placeholder={variants[0].name} />
 				</SelectTrigger>
 				<SelectContent>
-					{variants
-						.sort((a, b) => a.name.localeCompare(b.name))
-						.map(item => (
-							<SelectItem
-								className='text-lg'
-								key={item.id}
-								value={item.id.toString()}
-							>
-								{item.name}
-							</SelectItem>
-						))}
+					{sortedVariants.map(item => (
+						<SelectItem
+							className='text-lg'
+							key={item.id}
+							value={item.id.toString()}
+						>
+							{item.name}
+						</SelectItem>
+					))}
 				</SelectContent>
 			</Select>
 		</div>

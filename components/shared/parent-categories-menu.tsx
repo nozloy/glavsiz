@@ -10,11 +10,9 @@ import {
 	navigationMenuTriggerStyle,
 } from '@/components/ui/navigation-menu'
 import { capitalizeFirstLetter, cn } from '@/lib/utils'
-import { prisma } from '@/prisma/prisma-client'
-import { Prisma, ParentCategory } from '@prisma/client'
-import Image from 'next/image'
 import React from 'react'
 import { Container } from './container'
+import { findCategories, findParentCategories } from '@/lib/find-categories'
 
 interface Props {
 	className?: string
@@ -47,12 +45,8 @@ const ListItem = React.forwardRef<
 ListItem.displayName = 'ListItem'
 
 export const ParentCategoriesMenu: React.FC<Props> = async ({ className }) => {
-	const parentCategories = await prisma.parentCategory.findMany({
-		orderBy: {
-			order: 'asc', // По возрастанию
-		},
-	})
-	const categories = await prisma.category.findMany()
+	const parentCategories = await findParentCategories()
+	const categories = await findCategories()
 
 	return (
 		<div className='z-10 w-full pt-0 bg-background pb-2 pl-2 border-b sticky top-0 hidden md:block'>

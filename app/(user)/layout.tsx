@@ -1,43 +1,83 @@
-import { Header, Footer } from '@/components/shared/'
-import Metrica from '@/components/shared/layout/metrica'
+import { Header, Footer } from '@/components/shared'
+import { YandexMetricaProvider } from '@artginzburg/next-ym'
 import { ParentCategoriesMenu } from '@/components/shared/parent-categories-menu'
+import { isMobile } from '@/lib/is-mobile'
+import { headers } from 'next/headers'
 
 export const metadata = {
-	title: 'Главсиз',
-	description: 'сеть магазинов спецодежды',
+	title: {
+		template: '%s | Главсиз',
+		default: 'Главсиз',
+	},
+	description:
+		'Компания «ГлавСИЗ» – лидер в продаже спецодежды, спецобуви и средств индивидуальной защиты в Казани, Уфе и Екатеринбурге. У нас вы найдёте сертифицированные товары для охраны труда, отдыха и туризма. Надёжная защита и комфорт для ваших сотрудников – наш приоритет. Доставка быстро и удобно!',
 	metadataBase: new URL(
 		process.env.NEXT_PUBLIC_API_URL || 'https://glavsiz.ru',
 	),
+	keywords: [
+		'спецодежда',
+		'спецобувь',
+		'средства индивидуальной защиты',
+		'купить спецодежду',
+		'спецодежда Казань',
+		'спецодежда Уфа',
+		'спецодежда Екатеринбург',
+		'магазин спецодежды',
+		'СИЗ',
+		'одежда для охраны труда',
+		'спецодежда для рабочих',
+		'защита для сотрудников',
+		'товары для туризма',
+		'главсиз',
+		'спецодежда оптом',
+		'защитная одежда',
+	],
 	openGraph: {
-		images: [
-			'/images/icons/cover_material.png',
-			'/images/icons/hhgoods.png',
-			'/images/icons/turism.png',
-			'/images/icons/clothes.png',
-			'/images/icons/shoes.png',
-			'/images/icons/ppe.png',
-			'/images/icons/gloves.png',
-			'/logo_black.svg',
-			'/logo.svg',
-		],
+		type: 'website',
+		url: process.env.NEXTAUTH_URL,
+		logo: `${process.env.NEXTAUTH_URL}/logo_circle.png`,
+		images: [`${process.env.NEXTAUTH_URL}/logo.png`],
 	},
 }
 
 export default function UserLayout({
-	children,
 	modal,
+	desktop,
+	mobile,
 }: Readonly<{
-	children: React.ReactNode
 	modal: React.ReactNode
+	desktop: React.ReactNode
+	mobile: React.ReactNode
 }>) {
+	// Получаем заголовки на сервере
+	const userAgent = headers().get('user-agent') || ''
+	const isItMobile = isMobile(userAgent)
+
 	return (
-		<main className='flex flex-col min-h-dvh md:min-h-screen'>
-			<Metrica />
-			<Header />
-			<ParentCategoriesMenu />
-			{modal}
-			{children}
-			<Footer />
+		<main className='flex flex-col bg-background'>
+			<YandexMetricaProvider
+				tagID={Number(process.env.NEXT_PUBLIC_YANDEX_METRICA)}
+				initParameters={{
+					clickmap: true,
+					trackLinks: true,
+					accurateTrackBounce: true,
+				}}
+			>
+				{isItMobile ? (
+					<div className='mobile-layout'>
+						{modal}
+						{mobile}
+					</div>
+				) : (
+					<div className='desktop-layout'>
+						<Header />
+						<ParentCategoriesMenu />
+						{modal}
+						{desktop}
+						<Footer />
+					</div>
+				)}
+			</YandexMetricaProvider>
 		</main>
 	)
 }

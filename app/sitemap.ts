@@ -1,5 +1,9 @@
-'use server'
-import { MetadataRoute } from 'next'
+import type { MetadataRoute } from 'next'
+
+export const dynamic = 'force-dynamic'
+
+// Устанавливаем revalidate для кеширования данных sitemap
+export const revalidate = process.env.REVALIDATE_TIME // обновление карты сайта (в секундах)
 
 export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
 	const baseUrl = process.env.NEXTAUTH_URL || 'http://localhost:3000'
@@ -38,5 +42,6 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
 		lastModified: item.createdAt,
 	}))
 
+	// Возвращаем скомпилированную карту сайта
 	return [...staticPages, ...dynamicPages]
 }

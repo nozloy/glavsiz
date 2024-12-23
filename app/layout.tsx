@@ -27,7 +27,7 @@ export default function RootLayout({
 			</head>
 			<body
 				className={cn(
-					'min-h-screen bg-background font-montserrat antialiased',
+					'min-h-dvh bg-background font-montserrat antialiased',
 					montserrat.variable,
 				)}
 			>

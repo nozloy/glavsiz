@@ -113,7 +113,8 @@ export const Product: React.FC<Props> = ({ className, item }) => {
 
 				{/* Детали товара */}
 				<div className='flex flex-col'>
-					<p className='text-3xl font-bold text-balance'>{item.name}</p>
+					{/* Название */}
+					<h1 className='text-3xl font-bold text-balance'>{item.name}</h1>
 
 					<div className='flex flex-col gap-3'>
 						<div className='flex justify-between items-center pb-5'>
@@ -125,7 +126,7 @@ export const Product: React.FC<Props> = ({ className, item }) => {
 							)}
 						</div>
 
-						{infoAvailable && <p className='text-2xl font-bold'>О товаре</p>}
+						{infoAvailable && <h3 className='text-2xl font-bold'>О товаре</h3>}
 
 						{item?.season && (
 							<ItemProps
@@ -212,7 +213,7 @@ export const Product: React.FC<Props> = ({ className, item }) => {
 								size={'lg'}
 								className='w-[250px] text-lg font-bold p-8 bg-primary text-secondary drop-shadow-md hover:drop-shadow-lg hover:scale-105 transition-all delay-75 active:scale-95 select-none'
 							>
-								Добавить в корзину
+								<h5>Добавить в корзину</h5>
 							</Button>
 							<Button
 								variant={'default'}
@@ -223,9 +224,9 @@ export const Product: React.FC<Props> = ({ className, item }) => {
 							</Button>
 						</div>
 					</div>
-					<div className='flex items-end justify-start pr-4 text-md font-medium text-muted-foreground drop-shadow-md'>
+					<h6 className='flex items-end justify-start pr-4 text-md font-medium text-muted-foreground drop-shadow-md'>
 						Наличие на складе:
-					</div>
+					</h6>
 
 					<ItemCount
 						id={selectedOfferId + activeCity}

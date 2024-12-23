@@ -18,7 +18,7 @@ export const ItemDescription: React.FC<Props> = ({
 				className,
 			)}
 		>
-			<div className='text-2xl text-foreground py-2'>Описание:</div>
+			<h4 className='text-2xl text-foreground py-2'>Описание:</h4>
 			{description}
 		</Container>
 	)

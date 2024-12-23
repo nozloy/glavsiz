@@ -34,7 +34,7 @@ export const ItemVariants: React.FC<Props> = ({
 	}, []) // Пустой массив зависимостей, чтобы эффект сработал только 1 раз
 	return (
 		<div className={cn('flex flex-col gap-2 items-start py-6', className)}>
-			<p className='text-md text-muted-foreground'>Варианты:</p>
+			<h2 className='text-md text-muted-foreground'>Варианты:</h2>
 			<Select
 				defaultValue={variants[0].id.toString()}
 				onValueChange={handleSelectChange}

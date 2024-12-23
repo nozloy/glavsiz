@@ -2,7 +2,6 @@
 import { prisma } from '@/prisma/prisma-client'
 import apiClient from '@/lib/axios'
 import { ItemWithOffer } from '@/@types'
-import { BestItem } from '@prisma/client'
 export interface GetSearchParams {
 	query?: string
 	count?: number

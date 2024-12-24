@@ -1,6 +1,6 @@
 import { Header, Footer } from '@/components/shared'
-import { YandexMetricaProvider } from '@artginzburg/next-ym'
 import { ParentCategoriesMenu } from '@/components/shared/parent-categories-menu'
+import Metrica from '@/components/shared/layout/metrica'
 import { isMobile } from '@/lib/is-mobile'
 import { headers } from 'next/headers'
 
@@ -55,29 +55,21 @@ export default function UserLayout({
 
 	return (
 		<main className='flex flex-col bg-background'>
-			<YandexMetricaProvider
-				tagID={Number(process.env.NEXT_PUBLIC_YANDEX_METRICA)}
-				initParameters={{
-					clickmap: true,
-					trackLinks: true,
-					accurateTrackBounce: true,
-				}}
-			>
-				{isItMobile ? (
-					<div className='mobile-layout'>
-						{modal}
-						{mobile}
-					</div>
-				) : (
-					<div className='desktop-layout'>
-						<Header />
-						<ParentCategoriesMenu />
-						{modal}
-						{desktop}
-						<Footer />
-					</div>
-				)}
-			</YandexMetricaProvider>
+			<Metrica />
+			{isItMobile ? (
+				<div className='mobile-layout'>
+					{modal}
+					{mobile}
+				</div>
+			) : (
+				<div className='desktop-layout'>
+					<Header />
+					<ParentCategoriesMenu />
+					{modal}
+					{desktop}
+					<Footer />
+				</div>
+			)}
 		</main>
 	)
 }

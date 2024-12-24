@@ -1,4 +1,3 @@
-'use server'
 import fs from 'fs'
 import path from 'path'
 import { parseStringPromise, Builder } from 'xml2js'
@@ -13,6 +12,8 @@ import {
 	WarehouseInfo,
 	ParameterInfo,
 } from './@types'
+
+export const dynamic = 'force-dynamic'
 
 // Функция для поиска последнего созданного подкаталога
 export async function getLatestDirectory(basePath: string) {

@@ -1,4 +1,3 @@
-'use server'
 import {
 	getLatestDirectory,
 	findXmlFiles,
@@ -18,6 +17,8 @@ import {
 	WarehouseInfo,
 	ParameterInfo,
 } from './@types'
+
+export const dynamic = 'force-dynamic'
 
 export async function dataParsing(basePath: string) {
 	try {

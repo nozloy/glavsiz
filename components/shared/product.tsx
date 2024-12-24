@@ -20,11 +20,11 @@ import { PriceInfo } from '@/exchange/@types'
 import { OfferWithTypedJson } from '@/store/@types'
 import { motion } from 'framer-motion'
 import { ImageCarousel } from './image-carousel'
-import { ItemWithOfferOnly } from '@/@types'
+import { ItemWithOffer } from '@/@types'
 
 interface Props {
 	className?: string
-	item: ItemWithOfferOnly
+	item: ItemWithOffer
 }
 
 export const Product: React.FC<Props> = ({ className, item }) => {
@@ -99,6 +99,42 @@ export const Product: React.FC<Props> = ({ className, item }) => {
 		item?.materialInsulation,
 		item?.sole,
 	].some(Boolean)
+
+	const currentPrice = selectedOffer?.price?.find((item: PriceInfo) =>
+		item.name.includes(activeCity),
+	)?.value
+		? selectedOffer.price.find((item: PriceInfo) =>
+				item.name.includes(activeCity),
+		  )?.value
+		: null
+	const [isInitialLoad, setIsInitialLoad] = useState(true)
+
+	useEffect(() => {
+		if (isInitialLoad) {
+			setIsInitialLoad(false)
+			return
+		}
+		if (!window.dataLayer) {
+			window.dataLayer = []
+		}
+
+		window.dataLayer.push({
+			event: 'view_item',
+			ecommerce: {
+				items: [
+					{
+						item_id: item.vendorCode,
+						item_name: item.name,
+						price: currentPrice,
+						item_brand: item.brand,
+						item_category: item.category.name,
+						item_variant: selectedOffer?.name || 'Без варианта',
+					},
+				],
+			},
+		})
+		// eslint-disable-next-line react-hooks/exhaustive-deps
+	}, [selectedOffer, isInitialLoad])
 
 	return (
 		<Container className='pt-0'>
@@ -185,15 +221,7 @@ export const Product: React.FC<Props> = ({ className, item }) => {
 								transition={{ duration: 0.3 }}
 								className='text-3xl font-bold bg-primary text-secondary p-2 px-4 rounded-2xl drop-shadow-md select-none'
 							>
-								{selectedOffer?.price?.find((item: PriceInfo) =>
-									item.name.includes(activeCity),
-								)?.value
-									? `${
-											selectedOffer.price.find((item: PriceInfo) =>
-												item.name.includes(activeCity),
-											)?.value
-									  }₽`
-									: 'Под заказ'}
+								{currentPrice ? `${currentPrice} ₽` : 'Под заказ'}
 							</motion.div>
 							<p className='relative bottom-3 text-muted-foreground text-md'>
 								{selectedOffer?.price?.find((item: PriceInfo) =>

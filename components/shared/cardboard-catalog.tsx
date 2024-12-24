@@ -4,6 +4,7 @@ import { cn } from '@/lib/utils'
 import { ItemCard } from './item-card'
 import { ItemWithOffer, PriceFromDB } from '@/@types'
 import { useCityStore } from '@/store/city-store'
+import { useEffect } from 'react'
 
 interface Props {
 	items: ItemWithOffer[]
@@ -69,6 +70,22 @@ export const CardboardCatalog: React.FC<Props> = ({
 			: sortBy === 'priceDown'
 			? [...sortedByPriceUp].reverse() // Реверсируем список
 			: pricedItems // Без сортировки, если sortBy не задан
+
+	// Отправляем данные в Yandex Metrica
+	useEffect(() => {
+		window.dataLayer = window.dataLayer || []
+		window.dataLayer.push({
+			ecommerce: {
+				currencyCode: 'RUB',
+				impressions: filteredItems.map(item => ({
+					item_id: item.vendorCode,
+					item_name: item.name,
+					item_brand: item.brand,
+					list: `Каталог - ${item.category.name}`,
+				})),
+			},
+		})
+	}, [filteredItems])
 
 	return (
 		<div className={cn('grid grid-cols-3', className)}>

@@ -30,18 +30,6 @@ export const BannerCarousel: React.FC<Props> = ({ className }) => {
 				}}
 			>
 				<CarouselContent className='rounded-3xl'>
-					<CarouselItem key={1}>
-						<Link href={'https://t.me/glavsiz/535'} target='_blank'>
-							<Image
-								className='rounded-3xl'
-								src='https://cdn.glavsiz.ru/banners/new_year.png'
-								alt='banner'
-								quality={30}
-								width={1300}
-								height={287}
-							/>
-						</Link>
-					</CarouselItem>
 					<CarouselItem key={2}>
 						<Link href={'/catalog?query=Ботинки%20мужские%2013%20ПУ'}>
 							<Image

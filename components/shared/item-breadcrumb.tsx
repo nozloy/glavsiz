@@ -49,19 +49,9 @@ export const ItemBreadcrumb: React.FC<Props> = ({ className, category }) => {
 						</BreadcrumbItem>
 					</>
 				) : (
-					<>
-						<BreadcrumbSeparator />
-						<BreadcrumbItem>
-							<BreadcrumbLink
-								className='px-2 py-1 bg-muted rounded-2xl'
-								href={`/catalog?categoryId=${(category as ParentCategory)?.id}`}
-							>
-								{(category as ParentCategory)?.name}
-							</BreadcrumbLink>
-						</BreadcrumbItem>
-					</>
+					<></>
 				)}
-				{haveParent ? (
+				{category ? (
 					<>
 						<BreadcrumbSeparator />
 						<BreadcrumbItem>

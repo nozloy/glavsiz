@@ -24,7 +24,7 @@ export async function generateMetadata({
 		}
 
 		return {
-			title: item.name,
+			title: `${item.name} (${item.vendorCode})`,
 			description: item.description,
 			twitter: {
 				card: 'summary_large_image',

@@ -1,7 +1,10 @@
 import { prisma } from '@/prisma/prisma-client'
 import { NextRequest, NextResponse } from 'next/server'
 
-export async function GET(req: NextRequest) {
+export async function GET(
+	req: NextRequest,
+	{ params }: { params: { id: string } },
+) {
 	// Получаем API-ключ из заголовков запроса
 	const apiKey = req.headers.get('x-api-key')
 
@@ -15,10 +18,18 @@ export async function GET(req: NextRequest) {
 
 	try {
 		// Запрашиваем данные из базы
-		const categories = await prisma.category.findMany()
+		const categories = await prisma.category.findFirst({
+			where: { id: params.id },
+		})
+
+		const parentCategory = await prisma.parentCategory.findFirst({
+			where: { id: params.id },
+		})
 
 		// Формируем ответ с заголовками кэширования
-		const response = NextResponse.json(categories)
+		const response = NextResponse.json(
+			parentCategory ? parentCategory : categories,
+		)
 
 		// Устанавливаем кэширование
 		response.headers.set(
@@ -29,7 +40,7 @@ export async function GET(req: NextRequest) {
 		// Возвращаем результат
 		return response
 	} catch (error) {
-		console.error('Ошибка получения данных категорий:', error)
+		console.error('API:Ошибка получения данных категорий по ID:', error)
 		return NextResponse.json(
 			{ error: 'Internal Server Error' },
 			{ status: 500 },

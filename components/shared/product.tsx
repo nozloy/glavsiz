@@ -208,7 +208,7 @@ export const Product: React.FC<Props> = ({ className, item }) => {
 				{/* Добавить в корзину */}
 				<div className='flex flex-col items-end justify-start gap-5'>
 					<div className='flex flex-row gap-3 pr-4'>
-						<ItemCode code={item.vendorCode || 'Нет артикула'} />
+						<ItemCode code={item.vendorCode} />
 						<ShareButton />
 					</div>
 					<div className='w-full neo rounded-2xl p-4'>

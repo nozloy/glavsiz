@@ -29,8 +29,14 @@ export async function GET(
 			return NextResponse.json({ error: 'Товар не найден' }, { status: 404 })
 		}
 
-		// Возвращаем результат
-		return NextResponse.json(item)
+		// Формируем ответ с кэшированием
+		const response = NextResponse.json(item)
+		response.headers.set(
+			'Cache-Control',
+			`s-maxage=${process.env.REVALIDATE_TIME || 60}, stale-while-revalidate`,
+		)
+
+		return response
 	} catch (error) {
 		console.error('Ошибка получения товара:', error)
 		return NextResponse.json(

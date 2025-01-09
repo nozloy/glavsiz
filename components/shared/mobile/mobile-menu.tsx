@@ -14,6 +14,7 @@ import { Menu } from 'lucide-react'
 import { Button } from '@/components/ui/button'
 import Image from 'next/image'
 import { findParentCategories } from '@/lib/find-categories'
+import Link from 'next/link'
 
 interface Props {
 	className?: string
@@ -38,18 +39,21 @@ export const MobileMenu: React.FC<Props> = async ({ className }) => {
 					</SheetHeader>
 					<div className='flex flex-col gap-2 pt-10'>
 						{parentCategories.map(parentCategory => (
-							<div
-								key={parentCategory.id}
-								className='flex flex-row gap-3 items-center justify-start rounded-xl bg-card shadow-md p-1 border border-primary border-dashed'
-							>
-								<Image
-									src={'/images/icons/' + parentCategory.icon}
-									alt='logo'
-									width={28}
-									height={28}
-								/>
-								<div className='text-xl font-bold'>{parentCategory.name}</div>
-							</div>
+							<SheetClose asChild key={parentCategory.id}>
+								<Link
+									href={`/catalog?categoryId=${parentCategory.id}`}
+									replace
+									className='flex flex-row gap-3 items-center justify-start rounded-xl bg-card shadow-md p-1 border border-primary border-dashed'
+								>
+									<Image
+										src={'/images/icons/' + parentCategory.icon}
+										alt='logo'
+										width={28}
+										height={28}
+									/>
+									<div className='text-xl font-bold'>{parentCategory.name}</div>
+								</Link>
+							</SheetClose>
 						))}
 					</div>
 					<SheetFooter className='mt-auto'>

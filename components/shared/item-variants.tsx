@@ -34,12 +34,14 @@ export const ItemVariants: React.FC<Props> = ({
 	}, []) // Пустой массив зависимостей, чтобы эффект сработал только 1 раз
 	return (
 		<div className={cn('flex flex-col gap-2 items-start py-6', className)}>
-			<h2 className='text-md text-muted-foreground'>Варианты:</h2>
+			<h2 className='hidden md:block text-md text-muted-foreground'>
+				Варианты:
+			</h2>
 			<Select
 				defaultValue={variants[0].id.toString()}
 				onValueChange={handleSelectChange}
 			>
-				<SelectTrigger className='w-auto min-w-[200px] border-none bg-card text-lg'>
+				<SelectTrigger className='w-auto min-w-[250px] md:min-w-[200px] border-none bg-card text-lg'>
 					<SelectValue placeholder={variants[0].name} />
 				</SelectTrigger>
 				<SelectContent>

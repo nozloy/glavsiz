@@ -1,10 +1,12 @@
-import NotFound from '@/app/not-found'
 import { Container } from '@/components/shared'
 import { ItemBreadcrumb } from '@/components/shared/item-breadcrumb'
 import { ItemDescription } from '@/components/shared/item-description'
 import { Product } from '@/components/shared/product'
 import { findItem } from '@/lib/find-items'
 import type { Metadata, ResolvingMetadata } from 'next'
+import Mobile from '../../page'
+import { MobileProduct } from '@/components/shared/mobile/mobile-product'
+import NotFound from '@/app/not-found'
 
 export async function generateMetadata({
 	params: { id },
@@ -57,20 +59,16 @@ export default async function ProductPage({
 	params: { id: string }
 }) {
 	const item = await findItem(id)
+	const category = item?.category
 
 	// Если товар не найден, показываем страницу 404
 	if (!item) {
 		return NotFound() // Рендерим страницу 404
 	}
 	return (
-		<div>
-			<Container className='pl-10 pt-6'>
-				<ItemBreadcrumb category={item.category} />
-			</Container>
-			<Product item={item} />
-			{item.description && (
-				<ItemDescription className='mt-auto' description={item.description} />
-			)}
+		<div className='p-4 flex flex-col gap-4'>
+			<ItemBreadcrumb category={category} />
+			<MobileProduct item={item} />
 		</div>
 	)
 }

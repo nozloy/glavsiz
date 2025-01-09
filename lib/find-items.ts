@@ -6,6 +6,7 @@ export interface GetSearchParams {
 	query?: string
 	count?: number
 	categoryId?: string
+	parentCategoryId?: string
 	sortBy?: string
 	priceFrom?: string
 	priceTo?: string

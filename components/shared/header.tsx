@@ -35,7 +35,7 @@ export const Header: React.FC<Props> = ({ className }) => {
 		}
 	}, [session, fetchCartItems])
 	return (
-		<header className={cn(' bg-background hidden md:block', className)}>
+		<header className={cn(' bg-background', className)}>
 			<Container className='flex flex-col gap-2 pb-0'>
 				<div className='flex items-center justify-between bg-secondary p-1 rounded-xl'>
 					{/* Левая сторона - город */}

@@ -10,7 +10,6 @@ export async function GET(req: NextRequest) {
 	const query = searchParams.get('query') || ''
 	const categoryId = searchParams.get('categoryId') || ''
 	const itemTypes = searchParams.get('types') || ''
-	const sortBy = searchParams.get('sortBy') || ''
 	// Формируем запрос к базе
 	const products = await prisma.item.findMany({
 		distinct: ['vendorCode'],
@@ -35,7 +34,16 @@ export async function GET(req: NextRequest) {
 				],
 			}),
 			...(categoryId && {
-				categoryId: categoryId,
+				OR: [
+					// Проверяем товары с указанной категорией
+					{ categoryId: categoryId },
+					// Проверяем товары из категорий, связанных с указанной родительской категорией
+					{
+						category: {
+							parentCategoryId: categoryId,
+						},
+					},
+				],
 			}),
 			...(itemTypes && {
 				itemType: {
@@ -45,8 +53,13 @@ export async function GET(req: NextRequest) {
 		},
 		include: {
 			Offer: true,
-			category: true,
+			category: {
+				include: {
+					parentCategory: true,
+				},
+			},
 		},
+
 		take: count,
 	})
 

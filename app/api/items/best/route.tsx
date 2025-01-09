@@ -24,11 +24,21 @@ export async function GET(req: NextRequest) {
 				},
 			},
 		})
+
 		// Преобразуем результат в массив Item[]
 		const items = bestItems.map(bestItem => bestItem.Item)
 
+		// Формируем ответ с заголовками кэширования
+		const response = NextResponse.json(items)
+
+		// Устанавливаем заголовки кэширования
+		response.headers.set(
+			'Cache-Control',
+			`s-maxage=${process.env.REVALIDATE_TIME || 60}, stale-while-revalidate`,
+		)
+
 		// Возвращаем результат
-		return NextResponse.json(items)
+		return response
 	} catch (error) {
 		console.error('Ошибка получения лучших товаров:', error)
 		return NextResponse.json(

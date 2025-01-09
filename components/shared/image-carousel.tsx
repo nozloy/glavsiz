@@ -17,10 +17,16 @@ interface Props {
 	className?: string
 	images: string[]
 	name: string
+	isMobile?: boolean | false
 }
 const imageBaseUrl = process.env.NEXT_PUBLIC_IMAGE_URL
 
-export const ImageCarousel: React.FC<Props> = ({ className, images, name }) => {
+export const ImageCarousel: React.FC<Props> = ({
+	className,
+	images,
+	name,
+	isMobile,
+}) => {
 	const isDefaultImage = images[0] ? false : true
 	const [isModalOpen, setIsModalOpen] = useState(false)
 	const [activeImage, setActiveImage] = useState<string | null>(
@@ -59,15 +65,24 @@ export const ImageCarousel: React.FC<Props> = ({ className, images, name }) => {
 					src={'/logo_black.svg'}
 					alt={name}
 					quality={5}
-					width={500}
-					height={500}
-					className='h-[450px] object-contain relative bg-background rounded-xl'
+					width={isMobile ? 200 : 500}
+					height={isMobile ? 200 : 500}
+					className={cn(
+						'object-contain relative bg-background rounded-xl mx-auto',
+						isMobile ? 'h-[200px]' : 'h-[450px]',
+					)}
 				/>
 			) : (
-				<div className='relative mb-2 '>
+				<div className='relative flex justify-center mb-2 w-full'>
 					{/* Обернут в отдельный контейнер с relative */}
 					{isLoading && (
-						<div className='absolute flex items-center justify-center bg-background min-h-[450px] h-full w-full bg-opacity-50 rounded-xl p-4 animate-pulse'>
+						<div
+							className={cn(
+								'absolute flex items-center justify-center bg-background  w-full h-full bg-opacity-50 rounded-xl p-4 animate-pulse mx-auto',
+								isMobile ? 'min-h-[330px]' : 'min-h-[450px]',
+								isMobile ? 'w-[200px] mx-auto' : '',
+							)}
+						>
 							<div className='w-8 h-8 border-4 border-primary border-t-transparent rounded-full animate-spin'></div>
 						</div>
 					)}
@@ -75,10 +90,10 @@ export const ImageCarousel: React.FC<Props> = ({ className, images, name }) => {
 						src={imageBaseUrl + activeImage!}
 						alt={name}
 						quality={40}
-						width={500}
-						height={500}
+						width={isMobile ? 200 : 500}
+						height={isMobile ? 200 : 500}
 						className={cn(
-							'object-contain rounded-xl border-white border-[10px] cursor-pointer shadow-sm hover:shadow-md transition-all duration-300',
+							'object-contain rounded-xl border-white border-[10px] cursor-pointer shadow-sm hover:shadow-md transition-all duration-300 mx-auto',
 
 							{
 								'opacity-0': isLoading,
@@ -109,7 +124,7 @@ export const ImageCarousel: React.FC<Props> = ({ className, images, name }) => {
 							{images.map((image, index) => (
 								<CarouselItem key={index} className='basis-1/3'>
 									<div>
-										<Card className='shadow-sm cursor-pointer hover:scale-105 hover:shadow-md transition-all duration-300 my-4'>
+										<Card className='shadow-sm cursor-pointer hover:scale-105 hover:shadow-md transition-all duration-300 min-h-[70px] my-4'>
 											<CardContent
 												className='flex aspect-square items-center justify-center p-1'
 												onClick={() => handleImageSet(image)}

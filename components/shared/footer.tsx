@@ -13,7 +13,10 @@ export const Footer: React.FC<Props> = ({ className }) => {
 			<Container>
 				<div className='flex flex-col md:flex-row gap-2 justify-between items-center p-3 '>
 					<p className='text-base font-bold text-muted-foreground'>
-						2021-2024 © ООО ГЛАВСИЗ - Все права защищены их обладаетлями.
+						2021-2025 © ООО ГЛАВСИЗ - Все права защищены их обладаетлями.
+					</p>
+					<p className='text-primary-foreground'>
+						ИНН 0273943621 ОГРН 1210200050422
 					</p>
 					<Socials className='hidden md:flex' />
 				</div>

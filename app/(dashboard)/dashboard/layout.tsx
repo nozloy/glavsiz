@@ -2,7 +2,7 @@ import type { Metadata } from 'next'
 import { getRoleOrUnauthorized, getUserSession } from '@/lib/get-session'
 import { Role } from '@prisma/client'
 import { SidebarProvider, SidebarTrigger } from '@/components/ui/sidebar'
-import { AppSidebar } from '@/components/shared/app-sidebar'
+import { AppSidebar } from '@/components/shared/dashboard/app-sidebar'
 
 export const metadata: Metadata = {
 	title: 'Панель администратора - Главсиз',

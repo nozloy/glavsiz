@@ -105,7 +105,11 @@ html {
 		@apply border-4 border-solid border-t-transparent rounded-full w-10 h-10 animate-spin;
 	}
 }
-
+@layer utilities {
+	.invisible-scrollbar::-webkit-scrollbar {
+		display: none;
+	}
+}
 @layer base {
 	* {
 		@apply border-border;

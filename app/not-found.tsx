@@ -2,7 +2,7 @@ import Link from 'next/link'
 import Image from 'next/image'
 export default function NotFound() {
 	return (
-		<div className='w-full h-full min-h-screen flex flex-col items-center justify-center gap-4'>
+		<div className='w-full grow flex flex-col items-center justify-center gap-4'>
 			<Image
 				src='/logo_black.svg'
 				alt='404'

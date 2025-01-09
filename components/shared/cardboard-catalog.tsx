@@ -5,6 +5,7 @@ import { ItemCard } from './item-card'
 import { ItemWithOffer, PriceFromDB } from '@/@types'
 import { useCityStore } from '@/store/city-store'
 import { useEffect } from 'react'
+import { MobileItemCard } from './mobile/mobile-item-card'
 
 interface Props {
 	items: ItemWithOffer[]
@@ -12,6 +13,7 @@ interface Props {
 	minPrice: number
 	maxPrice: number
 	sortBy: string
+	mobile?: boolean
 }
 
 export const CardboardCatalog: React.FC<Props> = ({
@@ -20,6 +22,7 @@ export const CardboardCatalog: React.FC<Props> = ({
 	minPrice,
 	maxPrice,
 	sortBy,
+	mobile,
 }) => {
 	const activeCity = useCityStore(state => state.activeCity)
 
@@ -88,10 +91,21 @@ export const CardboardCatalog: React.FC<Props> = ({
 	}, [filteredItems])
 
 	return (
-		<div className={cn('grid grid-cols-3', className)}>
-			{filteredItems.map((item, index) => (
-				<ItemCard key={index} className='m-2' item={item} />
-			))}
+		<div
+			className={cn('grid', mobile ? 'grid-cols-2' : 'grid-cols-3', className)}
+		>
+			{filteredItems.map((item, index) =>
+				!mobile ? (
+					<ItemCard key={index} className='m-2' item={item} />
+				) : (
+					<MobileItemCard
+						size={mobile ? 'sm' : 'md'}
+						key={index}
+						className='m-2'
+						item={item}
+					/>
+				),
+			)}
 		</div>
 	)
 }

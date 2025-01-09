@@ -16,7 +16,7 @@ interface Props {
 	className?: string
 }
 
-export const BannerCarousel: React.FC<Props> = ({ className }) => {
+export const MobileBannerCarousel: React.FC<Props> = ({ className }) => {
 	const plugin = React.useRef(
 		Autoplay({ delay: 5000, stopOnInteraction: true, stopOnMouseEnter: true }),
 	)
@@ -36,7 +36,7 @@ export const BannerCarousel: React.FC<Props> = ({ className }) => {
 								className='rounded-3xl'
 								src='https://cdn.glavsiz.ru/banners/new_year.png'
 								alt='banner'
-								quality={30}
+								quality={5}
 								width={1300}
 								height={287}
 							/>
@@ -48,7 +48,7 @@ export const BannerCarousel: React.FC<Props> = ({ className }) => {
 								className='rounded-3xl'
 								src='/images/banners/banner1.png'
 								alt='banner'
-								quality={30}
+								quality={5}
 								width={1300}
 								height={287}
 							/>
@@ -60,15 +60,13 @@ export const BannerCarousel: React.FC<Props> = ({ className }) => {
 								className='rounded-3xl'
 								src='/images/banners/banner2.png'
 								alt='banner'
-								quality={30}
+								quality={5}
 								width={1300}
 								height={287}
 							/>
 						</Link>
 					</CarouselItem>
 				</CarouselContent>
-				<CarouselPrevious className='absolute -left-4 text-foreground bg-primary' />
-				<CarouselNext className='absolute -right-4 text-foreground bg-primary' />
 			</Carousel>
 		</div>
 	)

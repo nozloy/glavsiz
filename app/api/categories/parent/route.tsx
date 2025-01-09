@@ -20,10 +20,20 @@ export async function GET(req: NextRequest) {
 				order: 'asc', // По возрастанию
 			},
 		})
+
+		// Формируем ответ с заголовками кэширования
+		const response = NextResponse.json(parentCategories)
+
+		// Устанавливаем кэширование
+		response.headers.set(
+			'Cache-Control',
+			`s-maxage=${process.env.REVALIDATE_TIME || 60}, stale-while-revalidate`,
+		)
+
 		// Возвращаем результат
-		return NextResponse.json(parentCategories)
+		return response
 	} catch (error) {
-		console.error('Ошибка получения лучших товаров:', error)
+		console.error('Ошибка получения родительских категорий:', error)
 		return NextResponse.json(
 			{ error: 'Internal Server Error' },
 			{ status: 500 },

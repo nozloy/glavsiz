@@ -8,15 +8,17 @@ import {
 	BreadcrumbPage,
 	BreadcrumbSeparator,
 } from '@/components/ui/breadcrumb'
-import { Container } from './container'
-import type { Category } from '@prisma/client'
+import type { Category, ParentCategory } from '@prisma/client'
+import { CategoryWithParent } from '@/@types'
 
 interface Props {
 	className?: string
-	category?: Category
+	category?: CategoryWithParent | ParentCategory
 }
 
 export const ItemBreadcrumb: React.FC<Props> = ({ className, category }) => {
+	const haveParent =
+		(category as CategoryWithParent)?.parentCategory?.name !== undefined
 	return (
 		<Breadcrumb>
 			<BreadcrumbList>
@@ -32,7 +34,34 @@ export const ItemBreadcrumb: React.FC<Props> = ({ className, category }) => {
 						Каталог
 					</BreadcrumbLink>
 				</BreadcrumbItem>
-				{category ? (
+				{haveParent ? (
+					<>
+						<BreadcrumbSeparator />
+						<BreadcrumbItem>
+							<BreadcrumbLink
+								className='px-2 py-1 bg-muted rounded-2xl'
+								href={`/catalog?categoryId=${
+									(category as CategoryWithParent).parentCategory?.id
+								}`}
+							>
+								{(category as CategoryWithParent).parentCategory?.name}
+							</BreadcrumbLink>
+						</BreadcrumbItem>
+					</>
+				) : (
+					<>
+						<BreadcrumbSeparator />
+						<BreadcrumbItem>
+							<BreadcrumbLink
+								className='px-2 py-1 bg-muted rounded-2xl'
+								href={`/catalog?categoryId=${(category as ParentCategory)?.id}`}
+							>
+								{(category as ParentCategory)?.name}
+							</BreadcrumbLink>
+						</BreadcrumbItem>
+					</>
+				)}
+				{haveParent ? (
 					<>
 						<BreadcrumbSeparator />
 						<BreadcrumbItem>

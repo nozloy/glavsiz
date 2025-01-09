@@ -57,12 +57,12 @@ export default function UserLayout({
 		<main className='flex flex-col bg-background'>
 			<Metrica />
 			{isItMobile ? (
-				<div className='mobile-layout'>
+				<div className='mobile-layout min-h-dvh'>
 					{modal}
 					{mobile}
 				</div>
 			) : (
-				<div className='desktop-layout'>
+				<div className='desktop-layout min-h-dvh flex flex-col'>
 					<Header />
 					<ParentCategoriesMenu />
 					{modal}

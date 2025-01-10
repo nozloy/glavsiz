@@ -7,6 +7,7 @@ import type { Metadata, ResolvingMetadata } from 'next'
 import Mobile from '../../page'
 import { MobileProduct } from '@/components/shared/mobile/mobile-product'
 import NotFound from '@/app/not-found'
+import { getCategoryById } from '@/lib/find-categories'
 
 export async function generateMetadata({
 	params: { id },
@@ -59,8 +60,7 @@ export default async function ProductPage({
 	params: { id: string }
 }) {
 	const item = await findItem(id)
-	const category = item?.category
-
+	const category = item ? await getCategoryById(item.categoryId) : undefined
 	// Если товар не найден, показываем страницу 404
 	if (!item) {
 		return NotFound() // Рендерим страницу 404

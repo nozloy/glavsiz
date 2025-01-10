@@ -18,8 +18,11 @@ export async function GET(
 
 	try {
 		// Запрашиваем данные из базы
-		const categories = await prisma.category.findFirst({
+		const category = await prisma.category.findFirst({
 			where: { id: params.id },
+			include: {
+				parentCategory: true, // Указываем, что хотим включить данные о родительской категории
+			},
 		})
 
 		const parentCategory = await prisma.parentCategory.findFirst({
@@ -28,7 +31,7 @@ export async function GET(
 
 		// Формируем ответ с заголовками кэширования
 		const response = NextResponse.json(
-			parentCategory ? parentCategory : categories,
+			parentCategory ? parentCategory : category,
 		)
 
 		// Устанавливаем кэширование

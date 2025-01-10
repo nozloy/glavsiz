@@ -2,7 +2,8 @@
 
 import React, { useEffect, useState } from 'react'
 import { cn } from '@/lib/utils'
-import { useRouter, useSearchParams } from 'next/navigation'
+import { useSearchParams } from 'next/navigation'
+import { useRouter } from 'nextjs-toploader/app'
 import { useDebounce } from 'react-use'
 import {
 	Select,

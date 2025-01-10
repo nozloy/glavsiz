@@ -51,7 +51,7 @@ export const MobileProduct: React.FC<Props> = ({ className, item }) => {
 		: null
 	return (
 		<div className={cn('flex flex-col gap-4 ', className)}>
-			<div className='flex flex-col gap-0 rounded-xl shadow-xl bg-muted p-4 border border-dashed items-center'>
+			<div className='flex flex-col gap-2 rounded-xl shadow-xl bg-muted p-4 border border-dashed items-center'>
 				{/* Название */}
 				<h1 className='text-center text-2xl font-bold'>{item.name}</h1>
 				{/* Изображение */}
@@ -70,6 +70,7 @@ export const MobileProduct: React.FC<Props> = ({ className, item }) => {
 						<ItemVariants
 							variants={item.Offer}
 							onVariantChange={handleVariantChange}
+							className='py-2'
 						/>
 					)}
 				</div>

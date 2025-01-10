@@ -3,7 +3,6 @@ import {
 	Sheet,
 	SheetClose,
 	SheetContent,
-	SheetDescription,
 	SheetFooter,
 	SheetHeader,
 	SheetTitle,
@@ -11,10 +10,10 @@ import {
 } from '@/components/ui/sheet'
 import { cn } from '@/lib/utils'
 import { Menu } from 'lucide-react'
-import { Button } from '@/components/ui/button'
 import Image from 'next/image'
 import { findParentCategories } from '@/lib/find-categories'
 import Link from 'next/link'
+import { MobileAuthButton } from './mobile-auth-button'
 
 interface Props {
 	className?: string
@@ -22,11 +21,12 @@ interface Props {
 
 export const MobileMenu: React.FC<Props> = async ({ className }) => {
 	const parentCategories = await findParentCategories()
+
 	return (
 		<div className={cn('', className)}>
 			<Sheet>
 				<SheetTrigger asChild>
-					<Menu size={24} />
+					<Menu size={30} />
 				</SheetTrigger>
 				<SheetContent side={'left'} className='flex flex-col '>
 					<SheetHeader>
@@ -57,7 +57,7 @@ export const MobileMenu: React.FC<Props> = async ({ className }) => {
 						))}
 					</div>
 					<SheetFooter className='mt-auto'>
-						<Button className='mt-auto w-full'>Войти</Button>
+						<MobileAuthButton />
 					</SheetFooter>
 				</SheetContent>
 			</Sheet>

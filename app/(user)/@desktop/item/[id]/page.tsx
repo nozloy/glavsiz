@@ -3,6 +3,7 @@ import { Container } from '@/components/shared'
 import { ItemBreadcrumb } from '@/components/shared/item-breadcrumb'
 import { ItemDescription } from '@/components/shared/item-description'
 import { Product } from '@/components/shared/product'
+import { getCategoryById } from '@/lib/find-categories'
 import { findItem } from '@/lib/find-items'
 import type { Metadata, ResolvingMetadata } from 'next'
 
@@ -57,7 +58,7 @@ export default async function ProductPage({
 	params: { id: string }
 }) {
 	const item = await findItem(id)
-
+	const category = item ? await getCategoryById(item.categoryId) : undefined
 	// Если товар не найден, показываем страницу 404
 	if (!item) {
 		return NotFound() // Рендерим страницу 404
@@ -65,7 +66,7 @@ export default async function ProductPage({
 	return (
 		<div>
 			<Container className='pl-10 pt-6'>
-				<ItemBreadcrumb category={item.category} />
+				<ItemBreadcrumb category={category} />
 			</Container>
 			<Product item={item} />
 			{item.description && (

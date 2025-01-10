@@ -3,6 +3,7 @@ import { CardboardCatalog } from '@/components/shared/cardboard-catalog'
 import { CatalogFilters } from '@/components/shared/catalog-filters'
 import { ItemBreadcrumb } from '@/components/shared/item-breadcrumb'
 import { SortBy } from '@/components/shared/sort-by'
+import { getCategoryById } from '@/lib/find-categories'
 import { filteredItems, GetSearchParams, getItemTypes } from '@/lib/find-items'
 
 export const dynamic = 'force-dynamic'
@@ -23,12 +24,11 @@ export default async function Page({
 		),
 	] as string[]
 	const categoryId = searchParams.categoryId
+	const category = categoryId ? await getCategoryById(categoryId) : undefined
 	return (
 		<div className='bg-secondary'>
 			<Container className='pl-10 pb-0 flex flex-row justify-between items-center w-full'>
-				<ItemBreadcrumb
-					category={categoryId ? items[1]?.category : undefined}
-				/>
+				<ItemBreadcrumb category={category ? category : undefined} />
 				<SortBy />
 			</Container>
 			<Container className='pt-0 min-h-[calc(50vh)] flex flex-row'>

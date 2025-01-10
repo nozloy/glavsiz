@@ -33,6 +33,7 @@ export const TypesCheckboxGroup: React.FC<Props> = ({
 				className='text-left text-muted-foreground'
 				text={'Вид изделия'}
 			/>
+
 			<div className='flex flex-col gap-1'>
 				{itemTypes?.map((itemtype, index) => (
 					<div key={index} className='flex items-center space-x-1'>

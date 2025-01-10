@@ -1,21 +1,43 @@
 'use client'
+import { Check, ChevronsUpDown } from 'lucide-react'
 
-import { useState } from 'react'
-import React from 'react'
 import { cn } from '@/lib/utils'
+import { Button } from '@/components/ui/button'
+import {
+	Command,
+	CommandEmpty,
+	CommandGroup,
+	CommandInput,
+	CommandItem,
+	CommandList,
+} from '@/components/ui/command'
+import {
+	Popover,
+	PopoverContent,
+	PopoverTrigger,
+} from '@/components/ui/popover'
+import {
+	Drawer,
+	DrawerContent,
+	DrawerFooter,
+	DrawerHeader,
+	DrawerTitle,
+	DrawerTrigger,
+} from '@/components/ui/drawer'
+import React, { useState } from 'react'
+import { SlidersHorizontal } from 'lucide-react'
+import { PriceSlider } from '../price-slider'
+
 import { useSearchParams } from 'next/navigation'
 import { useRouter } from 'nextjs-toploader/app'
 import { useDebounce } from 'react-use'
-import { TypesCheckboxGroup } from './types-checkbox-group'
-import { PriceSlider } from './price-slider'
-import { Minus, Plus } from 'lucide-react'
 
 interface Props {
 	className?: string
 	itemTypes: string[]
 }
 
-export const CatalogFilters: React.FC<Props> = ({ className, itemTypes }) => {
+export const MobileFilters: React.FC<Props> = ({ className, itemTypes }) => {
 	const router = useRouter()
 	const searchParams = useSearchParams()
 
@@ -49,40 +71,35 @@ export const CatalogFilters: React.FC<Props> = ({ className, itemTypes }) => {
 	const handleTypesChange = (types: string[]) => {
 		setActiveTypes(types) // Обновляем состояние с выбранными типами
 	}
-
 	return (
-		<div className={cn('min-w-[300px] m-2', className)}>
-			<div className='flex flex-col gap-4 min-h-[400px] w-full max-w-[300px] bg-background rounded-xl shadow-md p-4'>
-				<div>
-					<TypesCheckboxGroup
-						selectedTypes={activeTypes}
-						itemTypes={displayedTypes}
-						onTypesChange={handleTypesChange}
-					/>
-					<div className=' pl-1 text-primary-foreground'>
-						{itemTypes.length > 8 && (
-							<button onClick={() => setShowAll(!showAll)}>
-								{showAll ? (
-									<div className='flex flex-row items-center'>
-										<Minus size={16} />
-										Скрыть
-									</div>
-								) : (
-									<div className='flex flex-row items-center'>
-										<Plus size={16} />
-										Еще
-									</div>
-								)}
-							</button>
-						)}
+		<div
+			className={cn(
+				'flex sticky bottom-6 right-6 rounded-xl p-2 bg-secondary w-12 ml-auto  border-2 border-dashed border-muted-foreground ',
+				className,
+			)}
+		>
+			<Drawer>
+				<DrawerTrigger asChild>
+					<SlidersHorizontal size={30} className='text-muted-foreground' />
+				</DrawerTrigger>
+				<DrawerContent>
+					<div className='mx-auto w-full max-w-sm'>
+						<DrawerHeader>
+							<DrawerTitle>Фильтры</DrawerTitle>
+						</DrawerHeader>
+						<div className='p-4 pb-0'>
+							<div className='flex flex-col gap-4 w-full'>
+								<div></div>
+								<PriceSlider
+									priceRange={priceRange}
+									onPriceChange={handlePriceChange}
+								/>
+							</div>
+						</div>
+						<DrawerFooter></DrawerFooter>
 					</div>
-				</div>
-
-				<PriceSlider
-					priceRange={priceRange}
-					onPriceChange={handlePriceChange}
-				/>
-			</div>
+				</DrawerContent>
+			</Drawer>
 		</div>
 	)
 }

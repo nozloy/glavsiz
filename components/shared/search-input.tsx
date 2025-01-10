@@ -7,6 +7,7 @@ import { Search } from 'lucide-react'
 import Link from 'next/link'
 import React from 'react'
 import { useClickAway, useDebounce } from 'react-use'
+import { useRouter } from 'nextjs-toploader/app'
 
 interface Props {
 	className?: string
@@ -17,6 +18,7 @@ export const SearchInput: React.FC<Props> = ({ className }) => {
 	const [focused, setFocused] = React.useState(false)
 	const [items, setItems] = React.useState<Item[]>([])
 	const ref = React.useRef(null)
+	const router = useRouter()
 
 	useClickAway(ref, () => {
 		setFocused(false)
@@ -44,7 +46,7 @@ export const SearchInput: React.FC<Props> = ({ className }) => {
 			setFocused(false)
 			const param = searchQuery
 			if (param) {
-				window.location.href = `/catalog?query=${param}&count=50`
+				router.push(`/catalog?query=${param}&count=50`)
 			}
 		} else if (event.key === 'Escape') {
 			setFocused(false)

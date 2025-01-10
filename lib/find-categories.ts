@@ -24,7 +24,7 @@ export const findCategories = async (): Promise<Category[]> => {
 }
 
 export const getCategoryById = async (
-	id: string,
+	id: string | null,
 ): Promise<CategoryWithParent | ParentCategory> => {
 	try {
 		const response = await apiClient.get(`/categories/${id}`)

@@ -53,7 +53,7 @@ export const MobileImageCarousel: React.FC<Props> = ({
 	}
 
 	return (
-		<div className={cn('w-full', className)}>
+		<div className={cn('w-full ', className)}>
 			{/* Основное изображение */}
 			{isDefaultImage ? (
 				<Image

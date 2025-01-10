@@ -14,7 +14,7 @@ interface Props {
 
 export const MobileBenefits: React.FC<Props> = ({ className }) => {
 	return (
-		<div className={cn('p-2', className)}>
+		<div className={cn('p-2 select-none', className)}>
 			<Accordion type='single' collapsible className='w-full snap-y'>
 				<AccordionItem value='item-1'>
 					<AccordionTrigger>Доставка</AccordionTrigger>

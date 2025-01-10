@@ -2,6 +2,7 @@ import { Container } from '@/components/shared'
 import { CardboardCatalog } from '@/components/shared/cardboard-catalog'
 import { CatalogFilters } from '@/components/shared/catalog-filters'
 import { ItemBreadcrumb } from '@/components/shared/item-breadcrumb'
+import { MobileFilters } from '@/components/shared/mobile/mobile-filters'
 import { SortBy } from '@/components/shared/sort-by'
 import { getCategoryById } from '@/lib/find-categories'
 import { filteredItems, GetSearchParams, getItemTypes } from '@/lib/find-items'
@@ -36,6 +37,7 @@ export default async function Page({
 				sortBy={sortBy}
 				mobile={true}
 			/>
+			<MobileFilters itemTypes={categoryId ? itemTypes : itemAllTypes} />
 		</div>
 	)
 }

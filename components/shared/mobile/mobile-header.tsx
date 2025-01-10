@@ -5,6 +5,8 @@ import Image from 'next/image'
 import { Search } from 'lucide-react'
 import { MobileChooseCity } from './mobile-choose-city'
 import { MobilePhone } from './mobile-phone'
+import { SearchInput } from '../search-input'
+import Link from 'next/link'
 
 interface Props {
 	className?: string
@@ -20,8 +22,20 @@ export const MobileHeader: React.FC<Props> = ({ className }) => {
 				)}
 			>
 				<MobileMenu />
-				<Image src={'/icon2.svg'} alt='logo' width={24} height={24} />
-				<Search size={24} />
+
+				<SearchInput className='h-10 px-1' />
+				<Link
+					href='/'
+					className='active:bg-muted-foreground/50 rounded-full p-1'
+				>
+					<Image
+						src={'/icon2.svg'}
+						alt='logo'
+						width={30}
+						height={30}
+						className='select-none'
+					/>
+				</Link>
 			</div>
 			<div className='w-full flex items-start justify-end '>
 				<MobilePhone />

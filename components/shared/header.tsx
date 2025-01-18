@@ -25,13 +25,13 @@ export const Header: React.FC<Props> = ({ className }) => {
 	const { data: session, status } = useSession()
 	const { activeCity } = useCityStore()
 
-	const fetchCartItems = useCartStore(state => state.initializeCart)
+	const fetchCartItems = useCartStore(state => state.syncCart)
 
 	// Эффект для загрузки данных корзины при наличии сессии
 	useEffect(() => {
 		if (session && session.user) {
 			// Запускаем fetchCartItems с id пользователя
-			fetchCartItems(Number(session.user.id))
+			fetchCartItems()
 		}
 	}, [session, fetchCartItems])
 	return (

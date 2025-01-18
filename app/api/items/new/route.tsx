@@ -1,12 +1,6 @@
+import { validateApiKey } from '@/lib/api'
 import { prisma } from '@/prisma/prisma-client'
 import { NextRequest, NextResponse } from 'next/server'
-
-// Функция для проверки API-ключа
-function validateApiKey(req: NextRequest): boolean {
-	const apiKey = req.headers.get('x-api-key')
-	const expectedApiKey = process.env.API_SECRET_KEY
-	return apiKey === expectedApiKey
-}
 
 // Функция для обработки GET запроса
 export async function GET(req: NextRequest) {

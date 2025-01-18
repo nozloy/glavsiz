@@ -18,7 +18,7 @@ import { toast } from 'sonner'
 import { useCityStore } from '@/store/city-store'
 import { PriceInfo } from '@/exchange/@types'
 import { OfferWithTypedJson } from '@/store/@types'
-import { motion } from 'framer-motion'
+import { m } from 'framer-motion'
 import { ImageCarousel } from './image-carousel'
 import { ItemWithOffer } from '@/@types'
 
@@ -36,7 +36,7 @@ export const Product: React.FC<Props> = ({ className, item }) => {
 		}
 	}, [activeCity])
 
-	// const { addCartItem, loading } = useCartStore(state => state)
+	const { addCartItem, cartLoading } = useCartStore(state => state)
 	const [selectedOfferId, setSelectedOfferId] = useState<string>()
 
 	//если есть второй оффер, значит будет выбран из компонента, если нет - всегда нулевой офер (единственный)
@@ -49,45 +49,20 @@ export const Product: React.FC<Props> = ({ className, item }) => {
 	const handleVariantChange = (offerId: string) => {
 		setSelectedOfferId(offerId)
 	}
-	// const { data: session } = useSession()
-	// const fetchCartId = async (): Promise<number> => {
-	// 	const response = await fetch('/api/cart')
-	// 	if (!response.ok) throw new Error('Не удалось получить корзину')
-	// 	const data = await response.json()
-	// 	return data.cartId // cartId будет передан сервером
-	// }
-	// const handleAddCartItem = async () => {
-	// 	if (session && selectedOffer) {
-	// 		const cartId = await fetchCartId()
+	const { data: session, status } = useSession()
 
-	// 		if (!cartId) {
-	// 			toast('Не удалось получить корзину пользователя', {
-	// 				icon: '❗️',
-	// 				duration: 2000,
-	// 			})
-	// 			return
-	// 		}
-
-	// 		// Добавляем товар в Zustand
-	// 		addCartItem({
-	// 			id: String(Date.now()),
-	// 			cartId: cartId,
-	// 			offerId: selectedOffer.id,
-	// 			itemId: item.id,
-	// 			quantity: 1,
-	// 		})
-
-	// 		toast('Товар добавлен в корзину', {
-	// 			icon: '🛒',
-	// 			duration: 2000,
-	// 		})
-	// 	} else {
-	// 		toast('Сначала необходимо авторизоваться', {
-	// 			icon: '❗️',
-	// 			duration: 2000,
-	// 		})
-	// 	}
-	// }
+	// Функция добавления товара в корзину по оферу
+	const handleAddCartItem = async () => {
+		if (session && selectedOffer) {
+			// Добавляем товар в Zustand
+			await addCartItem(selectedOffer)
+		} else {
+			toast('Сначала необходимо авторизоваться', {
+				icon: '❗️',
+				duration: 2000,
+			})
+		}
+	}
 
 	const infoAvailable = [
 		item?.season,
@@ -213,7 +188,7 @@ export const Product: React.FC<Props> = ({ className, item }) => {
 					</div>
 					<div className='w-full neo rounded-2xl p-4'>
 						<div className='flex flex-row items-end gap-2'>
-							<motion.div
+							<m.div
 								key={selectedOfferId + activeCity}
 								initial={{ opacity: 0, x: -10 }}
 								animate={{ opacity: 1, x: 0 }}
@@ -222,7 +197,7 @@ export const Product: React.FC<Props> = ({ className, item }) => {
 								className='text-3xl font-bold bg-primary text-secondary p-2 px-4 rounded-2xl drop-shadow-md select-none'
 							>
 								{currentPrice ? `${currentPrice} ₽` : 'Под заказ'}
-							</motion.div>
+							</m.div>
 							<p className='relative bottom-3 text-muted-foreground text-md'>
 								{selectedOffer?.price?.find((item: PriceInfo) =>
 									item.name.includes(activeCity),
@@ -233,10 +208,9 @@ export const Product: React.FC<Props> = ({ className, item }) => {
 						</div>
 						<div className='flex flex-row gap-2 justify-between pt-6'>
 							<Button
-								// disabled={!session}
-								disabled={true}
-								// loading={loading}
-								// onClick={handleAddCartItem}
+								disabled={!session}
+								loading={cartLoading}
+								onClick={handleAddCartItem}
 								variant={'default'}
 								size={'lg'}
 								className='w-[250px] text-lg font-bold p-8 bg-primary text-secondary drop-shadow-md hover:drop-shadow-lg hover:scale-105 transition-all delay-75 active:scale-95 select-none'
@@ -253,7 +227,7 @@ export const Product: React.FC<Props> = ({ className, item }) => {
 						</div>
 					</div>
 					<h6 className='flex items-end justify-start pr-4 text-md font-medium text-muted-foreground drop-shadow-md'>
-						Наличие на складе:
+						Наличие в городе {activeCity}:
 					</h6>
 
 					<ItemCount

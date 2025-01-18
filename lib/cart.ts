@@ -1,82 +1,96 @@
 'use server'
-import { prisma } from '@/prisma/prisma-client'
 
-// Получение товаров в корзине для пользователя
-export const getCartItems = async (userId: number) => {
-	const cartItems = await prisma.cartItem.findMany({
-		where: { cart: { userId } },
-		include: { offer: true, item: true },
+import { cookies } from 'next/headers'
+import { CartItem, OfferWithTypedJson, responseData } from '@/store/@types'
+import { getPrice } from './get-price'
+import apiClient from './axios'
+import { Offer } from '@prisma/client'
+
+// Функция для получения ID корзины
+
+export const getOrCreateCart = async (userId: number) => {}
+// Функция для получения общей стоимости товаров в корзине
+export const getCartItemsTotalPrice = async (
+	cartItems: CartItem[],
+	activeCity: string,
+): Promise<number> => {
+	const encodedIds = cartItems
+		.map(item => item.offerId)
+		.map(encodeURIComponent)
+		.join(',')
+	const response = await apiClient.get(`/offer?offerids=${encodedIds}`)
+	const offers: OfferWithTypedJson[] = response.data
+	const totalPrice = offers.reduce(
+		(total: number, offer: OfferWithTypedJson) => {
+			const cartItem = cartItems.find(item => item.offerId === offer.id)
+			return (
+				total +
+				(getPrice(offers, offer.id, activeCity) ?? 0) *
+					(cartItem?.quantity ?? 0)
+			)
+		},
+		0,
+	)
+	return totalPrice
+}
+// Функция для получения товаров в корзине
+export const getCartItems = async () => {
+	const cookieHeader = cookies()
+	const response = await apiClient.get('/cart', {
+		headers: {
+			Cookie: cookieHeader.toString(), // Добавляем куки в заголовки, чтобы сервер по api принял куки
+		},
 	})
+	const data: responseData = await response.data
+	const cartItems = data.cartItems
 	return cartItems
 }
-export const getItem = async (offerId: string) => {
-	const item = await prisma.offer.findUnique({ where: { id: offerId } })
-	return item
+
+// Функция для добавления товара в корзину
+export const postCartItem = async (offer: Offer) => {
+	const cookieHeader = cookies()
+	const response = await apiClient.post('/cart', JSON.stringify(offer), {
+		headers: {
+			Cookie: cookieHeader.toString(), // Добавляем куки в заголовки, чтобы сервер по api принял куки
+		},
+	})
+	return response.status
 }
-// Добавление товара в корзину
-export const addItemToCart = async (
-	userId: number,
-	itemId: string,
-	offerId: string,
-) => {
-	const cart = await prisma.cart.upsert({
-		where: { userId },
-		update: {},
-		create: { userId },
-	})
 
-	const existingCartItem = await prisma.cartItem.findFirst({
-		where: { cartId: cart.id, itemId },
+// Функция для удаления товара из корзины
+export const deleteCartItem = async (offer: Offer) => {
+	const cookieHeader = cookies()
+	const response = await apiClient.delete('/cart', {
+		data: JSON.stringify(offer),
+		headers: {
+			Cookie: cookieHeader.toString(), // Добавляем куки в заголовки, чтобы сервер по api принял куки
+		},
 	})
+	return response.status
+}
 
-	if (existingCartItem) {
-		return await prisma.cartItem.update({
-			where: { id: existingCartItem.id },
-			data: { quantity: existingCartItem.quantity + 1 },
-		})
-	} else {
-		return await prisma.cartItem.create({
-			data: {
-				cartId: cart.id,
-				itemId,
-				offerId,
+// Функция для обновления количества товара в корзине
+export const patchCartItem = async (offer: Offer, quantity: number) => {
+	const cookieHeader = cookies()
+	const response = await apiClient.patch(
+		'/cart',
+		JSON.stringify({ offer, quantity }),
+		{
+			headers: {
+				Cookie: cookieHeader.toString(), // Добавляем куки в заголовки, чтобы сервер по api принял куки
 			},
-		})
-	}
+		},
+	)
+	return response.status
 }
 
-// Обновление количества товара в корзине
-export const updateItemQuantity = async (
-	userId: number,
-	itemId: string,
-	quantity: number,
-) => {
-	const cart = await prisma.cart.findUnique({ where: { userId } })
-	if (!cart) return null
-
-	return await prisma.cartItem.updateMany({
-		where: { cartId: cart.id, itemId },
-		data: { quantity },
+// Функция для очищения корзины
+export const clearCart = async () => {
+	const cookieHeader = cookies()
+	const response = await apiClient.delete('/cart/empty', {
+		headers: {
+			Cookie: cookieHeader.toString(), // Добавляем куки в заголовки, чтобы сервер по api принял куки
+		},
 	})
-}
-
-// Удаление товара из корзины
-export const removeItemFromCart = async (userId: number, itemId: string) => {
-	const cart = await prisma.cart.findUnique({ where: { userId } })
-	if (!cart) return null
-
-	return await prisma.cartItem.deleteMany({
-		where: { cartId: cart.id, itemId },
-	})
-}
-export const deleteCart = async (userId: number) => {
-	const cart = await prisma.cart.findUnique({ where: { userId } })
-	console.log('user:', userId, 'cart:', cart?.id)
-	if (!cart) return null
-
-	// Удалить связанные записи в CartItem перед удалением корзины
-	await prisma.cartItem.deleteMany({ where: { cartId: cart.id } })
-
-	// Удалить саму корзину
-	return await prisma.cart.delete({ where: { id: cart.id } })
+	return response.status
 }

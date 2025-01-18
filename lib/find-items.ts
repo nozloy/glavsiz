@@ -1,7 +1,12 @@
 'use server'
 import { prisma } from '@/prisma/prisma-client'
 import apiClient from '@/lib/axios'
-import { ItemWithOffer } from '@/@types'
+import {
+	ItemWithOffer,
+	ItemWithOfferOnly,
+	OfferWithPrice,
+	PriceFromDB,
+} from '@/@types'
 export interface GetSearchParams {
 	query?: string
 	count?: number
@@ -96,7 +101,17 @@ export const filteredItems = async (
 }
 
 //Получение всех товаров c offer
-export const allItems = async () => {
-	const items = await prisma.item.findMany({ include: { Offer: true } })
-	return items
+export const allItems = async (): Promise<ItemWithOfferOnly[]> => {
+	const items = await prisma.item.findMany({
+		include: {
+			Offer: true,
+		},
+	})
+	return items.map(item => ({
+		...item,
+		Offer: item.Offer.map(offer => ({
+			...offer,
+			price: offer.price as PriceFromDB[], // Указываем явные типы
+		})),
+	}))
 }

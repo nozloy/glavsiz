@@ -8,26 +8,29 @@ import {
 	SheetFooter,
 	SheetHeader,
 	SheetTitle,
+	SheetDescription,
 	SheetTrigger,
 } from '@/components/ui/sheet'
-import { Button } from '../ui/button'
 import { ArrowLeft } from 'lucide-react'
-import { Title } from './title'
 import { cn } from '@/lib/utils'
 import { useCartStore } from '@/store/cart-store'
 import { useSession } from 'next-auth/react'
 import { CartSheetItem } from './cart-sheet-item'
+import { Offer } from '@prisma/client'
+import { Button } from '../ui/button'
+import { m } from 'framer-motion'
 
 export const CartSheet: React.FC<React.PropsWithChildren> = ({ children }) => {
 	const {
-		initializeCart,
-		addCartItem,
 		removeCartItem,
 		updateCartItemQuantity,
 		syncCart,
-		items,
-		loading,
-	} = useCartStore(state => state)
+		emptyCart,
+		cartItems,
+		cartLoading,
+		totalPrice,
+		totalAmount,
+	} = useCartStore()
 	const { data: session } = useSession()
 
 	const getItemWord = (count: number) => {
@@ -41,89 +44,98 @@ export const CartSheet: React.FC<React.PropsWithChildren> = ({ children }) => {
 		return 'товаров'
 	}
 
-	const onClickCountButton = (
-		id: string,
-		quantity: number,
-		type: 'plus' | 'minus',
-	) => {
+	const onClickCountButton = (offer: Offer, type: 'plus' | 'minus') => {
 		if (session) {
-			const newQuantity = type === 'plus' ? quantity + 1 : quantity - 1
-			updateCartItemQuantity(id, newQuantity)
+			const quantity: number = type === 'plus' ? 1 : -1
+			updateCartItemQuantity(offer, quantity)
 		}
 	}
-	const totalAmount = 100
-	const totalPrice = 100
 
 	return (
 		<Sheet>
 			<SheetTrigger asChild>{children}</SheetTrigger>
 			<SheetContent className='flex flex-col justify-between pb-0 bg-[#F4F1EE]'>
-				<div className={cn('flex flex-col h-full', !items && 'justify-center')}>
-					{items && (
-						<SheetHeader>
-							<SheetTitle>
-								В корзине{' '}
-								<span className='font-bold'>
-									{totalAmount} {getItemWord(totalAmount)}
-								</span>
-							</SheetTitle>
-						</SheetHeader>
-					)}
-					{!items && (
-						<div className='flex flex-col items-center justify-center w-72 mx-auto'>
+				<div className={cn('flex flex-col h-full justify-start')}>
+					<SheetHeader>
+						<SheetTitle>
+							{cartItems?.length
+								? `${cartItems.length} ${getItemWord(totalAmount)} в корзине`
+								: `Нет товаров`}
+						</SheetTitle>
+						<SheetDescription>
+							<span
+								className={cn(
+									cartItems?.length
+										? 'w-full h-12 text-base underline cursor-pointer'
+										: 'hidden',
+								)}
+								onClick={() => emptyCart()}
+							>
+								{cartItems?.length ? `Очистить корзину` : ``}
+							</span>
+						</SheetDescription>
+					</SheetHeader>
+
+					{!cartItems?.length && (
+						<div className='grow flex flex-col items-center gap-4 justify-center w-72 mx-auto'>
 							<Image
 								src='/icon2.svg'
 								alt='Empty cart'
 								width={120}
 								height={120}
 							/>
-							<Title
-								size='sm'
-								text='Корзина пустая'
-								className='text-center font-bold my-2'
-							/>
-							<p className='text-center text-neutral-500 mb-5'>
+							<p className='text-center text-muted-foreground mb-5'>
 								Добавьте хотя бы один продукт, чтобы совершить заказ
 							</p>
 							<SheetClose>
-								<Button className='w-56 h-12 text-base' size='lg'>
+								<div className='w-56 h-12 text-base font-bold flex items-center justify-center rounded-xl shadow-md bg-primary text-popover'>
 									<ArrowLeft className='w-5 mr-2' /> Вернуться назад
-								</Button>
+								</div>
 							</SheetClose>
 						</div>
 					)}
-					{items && items.length > 0 && session && (
+					{cartItems && cartItems.length > 0 && session && (
 						<>
-							<div className='-mx-6 mt-5 overflow-auto flex-1'>
-								{items.map(item => (
+							<div className='-mx-6 mt-2 overflow-auto flex-1 flex-col gap-1'>
+								{cartItems.map(cartItem => (
 									<CartSheetItem
-										key={item.itemId}
-										item={item}
+										loading={cartLoading}
+										key={cartItem.offerId}
+										cartItem={cartItem}
 										onClickCountButton={type =>
-											onClickCountButton(item.itemId, item.quantity, type)
+											onClickCountButton(cartItem.Offer, type)
 										}
+										removeCartItem={() => removeCartItem(cartItem.Offer)}
 									/>
 								))}
 							</div>
-							<div>
-								{/* <Button
-									loading={loading}
-									variant='outline'
-									className='w-full h-12 text-base'
-									onClick={() => emptyCart(Number(session.user.id))}
-								>
-									Очистить корзину
-								</Button> */}
-							</div>
-							<SheetFooter className='-mx-6 bg-white p-8'>
-								<div className='w-full'>
+
+							<SheetFooter className=' -mx-6 bg-white p-8'>
+								<div className='w-full flex flex-col'>
 									<div className='flex mb-4'>
 										<span className='flex flex-1 text-lg text-neutral-500'>
 											Итого
 											<div className='flex-1 border-b border-dashed border-b-neutral-200 relative -top-1 mx-2' />
 										</span>
-										<span className='font-bold text-lg'>{totalPrice} ₽</span>
+										<m.div
+											key={totalPrice}
+											initial={{ opacity: 0, x: -10 }}
+											animate={{ opacity: 1, x: 0 }}
+											exit={{ opacity: 0, x: 20 }}
+											transition={{ duration: 0.3 }}
+											className='font-bold text-lg'
+										>
+											{totalPrice} ₽
+										</m.div>
 									</div>
+									<Button
+										className='w-full'
+										disabled={true}
+										// disabled={cartLoading}
+										onClick={() => syncCart()}
+									>
+										Оформить заказ
+									</Button>
 								</div>
 							</SheetFooter>
 						</>

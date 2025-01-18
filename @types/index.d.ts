@@ -11,8 +11,9 @@ export interface ItemWithOffer extends Item {
 	category: CategoryWithParent
 }
 export interface ItemWithOfferOnly extends Item {
-	Offer: Offer[]
+	Offer: OfferWithPrice[]
 }
+
 export type PriceFromDB = {
 	name: string
 	value: number

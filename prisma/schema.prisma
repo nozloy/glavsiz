@@ -51,7 +51,7 @@ model Subcategory {
 }
 
 model Item {
-  id                 String     @id @unique
+  id                 String    @id @unique
   name               String
   description        String?
   vendorCode         String?
@@ -66,11 +66,10 @@ model Item {
   itemType           String?
   composition        String?
   heights            String?
-  category           Category?  @relation(fields: [categoryId], references: [id])
+  category           Category? @relation(fields: [categoryId], references: [id])
   categoryId         String?
   Offer              Offer[]
-  CartItem           CartItem[]
-  createdAt          DateTime   @default(now())
+  createdAt          DateTime  @default(now())
   BestItem           BestItem?
 }
 
@@ -79,8 +78,8 @@ model Offer {
   name      String
   Item      Item       @relation(fields: [itemId], references: [id])
   itemId    String
-  warehouse Json
-  price     Json
+  warehouse Json /// JSON-объект, где ключи — ID складов, значения — количество.
+  price     Json /// JSON-объект, где ключи — типы цен, значения — их значения.
   CartItem  CartItem[]
 }
 
@@ -98,14 +97,11 @@ model Cart {
 }
 
 model CartItem {
-  id       Int    @id @default(autoincrement())
-  cart     Cart   @relation(fields: [cartId], references: [id])
+  offerId  String @id
+  Cart     Cart   @relation(fields: [cartId], references: [id])
   cartId   Int
-  offer    Offer  @relation(fields: [offerId], references: [id])
-  offerId  String
+  Offer    Offer  @relation(fields: [offerId], references: [id])
   quantity Int    @default(1)
-  item     Item   @relation(fields: [itemId], references: [id])
-  itemId   String
 }
 
 model City {

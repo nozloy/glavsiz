@@ -1,22 +1,32 @@
-import React from 'react'
+'use client'
+import React, { useEffect } from 'react'
 import { Button } from '../ui/button'
 import { ArrowRight, ShoppingCart } from 'lucide-react'
 import { cn } from '@/lib/utils'
 import { CartSheet } from './cart-sheet'
 import { useCartStore } from '@/store/cart-store'
 import type { Session } from 'next-auth'
-
+import { useCityStore } from '@/store/city-store'
 interface Props {
 	className?: string
 	session?: Session
 }
 
 export const CartButton: React.FC<Props> = ({ className, session }) => {
-	const { totalPrice, totalAmount, loading } = useCartStore(state => state)
+	const { totalPrice, totalAmount, cartLoading, syncCart } = useCartStore()
+	const activeCity = useCityStore(state => state.activeCity)
+
+	useEffect(() => {
+		let isFirstLoad = true
+		if (session && !isFirstLoad) {
+			syncCart() // Пересчёт корзины при смене города
+		}
+		isFirstLoad = false
+	}, [activeCity, syncCart, session])
 	return (
 		<CartSheet>
 			<Button
-				loading={loading}
+				loading={cartLoading}
 				className={cn(
 					'group relative min-w-[110px] transition-all ease-in-out delay-100 ',
 					className,

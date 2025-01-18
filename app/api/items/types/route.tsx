@@ -1,15 +1,10 @@
 import { NextRequest, NextResponse } from 'next/server'
 import { prisma } from '@/prisma/prisma-client'
+import { validateApiKey } from '@/lib/api'
 
 export async function GET(req: NextRequest) {
-	// Получаем API-ключ из заголовков запроса
-	const apiKey = req.headers.get('x-api-key')
-
-	// Получаем секретный ключ из переменных окружения
-	const expectedApiKey = process.env.API_SECRET_KEY
-
-	// Проверяем валидность API-ключа
-	if (!apiKey || apiKey !== expectedApiKey) {
+	// Проверка API-ключа
+	if (!validateApiKey(req)) {
 		return NextResponse.json({ error: 'Неверный API ключ' }, { status: 403 })
 	}
 

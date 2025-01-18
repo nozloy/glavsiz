@@ -1,52 +1,49 @@
-// Тип для Item
-export interface Item {
-	id: string
-	name: string
-	description?: string
-	vendorCode?: string
-	brand?: string
-	images: string[]
-	season?: string
-	materials?: string
-	materialLiner?: string
-	materialInsulation?: string
-	color?: string
-	composition?: string
-	heights?: string
-	categoryId?: string
-}
+import { prisma } from '@/prisma/prisma-client'
+import { Offer, Item } from '@prisma/client'
 
-// Тип для Offer
-export interface Offer {
-	id: string
-	name: string
-	itemId: string
-	warehouse: Record<string, number> // Ожидается JSON-объект с ключами как идентификаторами складов
-	price: Record<string, number> // Ожидается JSON-объект с ключами как типами цен
-}
+// Тип для Item
+// export interface Item {
+// 	id: string
+// 	name: string
+// 	description?: string
+// 	vendorCode?: string
+// 	brand?: string
+// 	images: string[]
+// 	season?: string
+// 	materials?: string
+// 	materialLiner?: string
+// 	materialInsulation?: string
+// 	color?: string
+// 	composition?: string
+// 	heights?: string
+// 	categoryId?: string
+// }
 
 // @types.ts
 export interface CartItem {
-	id: int // ID элемента корзины
-	cartId: int // ID корзины
 	offerId: string
-	itemId: string
+	Offer: OfferWithTypedJson
 	quantity: number
 }
 
+export interface responseData {
+	cartId: number
+	cartItems: CartItem[]
+}
 export interface CartState {
-	items: CartItem[]
-	loading: boolean
+	cartItems: CartItem[]
+	cartLoading: boolean
 	totalAmount: number
 	totalPrice: number
-	initializeCart: (userId: number) => Promise<void>
-	addCartItem: (cartItem: CartItem) => Promise<void>
-	removeCartItem: (offerId: string) => Promise<void>
-	updateCartItemQuantity: (offerId: string, quantity: number) => Promise<void>
+	emptyCart: () => void
 	syncCart: () => Promise<void>
+	addCartItem: (offer: Offer) => Promise<void>
+	removeCartItem: (offer: Offer) => Promise<void>
+	updateCartItemQuantity: (offer: Offer, quantity: number) => Promise<void>
 }
 
 interface OfferWithTypedJson extends Offer {
 	price: PriceItem[] // price теперь строго массив объектов с name и value
 	warehouse: WarehouseItem[] // warehouse также типизирован
+	Item: Item // item теперь строго объект типа Item
 }

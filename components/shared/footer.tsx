@@ -7,7 +7,7 @@ interface Props {
 	className?: string
 }
 
-export const Footer: React.FC<Props> = ({ className }) => {
+export const Footer: React.FC<Props> = async ({ className }) => {
 	return (
 		<div className={cn('bg-background mt-auto', className)}>
 			<Container>
@@ -17,6 +17,7 @@ export const Footer: React.FC<Props> = ({ className }) => {
 					</p>
 					<p className='text-base font-bold text-muted-foreground/50'>
 						ИНН 0273943621 ОГРН 1210200050422
+						{}
 					</p>
 					<Socials className='hidden md:flex' />
 				</div>

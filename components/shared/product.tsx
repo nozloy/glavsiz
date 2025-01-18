@@ -208,7 +208,7 @@ export const Product: React.FC<Props> = ({ className, item }) => {
 						</div>
 						<div className='flex flex-row gap-2 justify-between pt-6'>
 							<Button
-								disabled={!session}
+								disabled={!session || !currentPrice}
 								loading={cartLoading}
 								onClick={handleAddCartItem}
 								variant={'default'}
@@ -218,6 +218,7 @@ export const Product: React.FC<Props> = ({ className, item }) => {
 								Добавить в корзину
 							</Button>
 							<Button
+								disabled={true}
 								variant={'default'}
 								size={'lg'}
 								className='text-lg font-bold p-8 bg-primary/20 hover:bg-primary/60 text-primary hover:text-card drop-shadow-md hover:animate-pulse hover:drop-shadow-lg hover:scale-105 transition-all delay-75'

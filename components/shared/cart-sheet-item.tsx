@@ -5,7 +5,7 @@ import { CartItem, OfferWithTypedJson } from '@/store/@types'
 import { CountButton } from './count-button'
 import { useCityStore } from '@/store/city-store'
 import { PriceInfo } from '@/exchange/@types'
-import { m } from 'framer-motion'
+import { motion } from 'framer-motion'
 interface Props {
 	loading?: boolean
 	cartItem: CartItem
@@ -48,7 +48,7 @@ export const CartSheetItem: React.FC<Props> = ({
 				>
 					Удалить
 				</div>
-				<m.div
+				<motion.div
 					key={cartItem.Offer.id + cartItem.quantity}
 					initial={{ opacity: 0, x: -10 }}
 					animate={{ opacity: 1, x: 0 }}
@@ -57,7 +57,7 @@ export const CartSheetItem: React.FC<Props> = ({
 					className='text-md font-bold'
 				>
 					{price * cartItem.quantity}₽
-				</m.div>
+				</motion.div>
 			</div>
 		</div>
 	)

@@ -1,7 +1,7 @@
 'use client'
 import React from 'react'
 import { cn } from '@/lib/utils'
-import { AnimatePresence, m } from 'framer-motion'
+import { AnimatePresence, motion } from 'framer-motion'
 import { Copy } from 'lucide-react'
 import { toast } from 'sonner'
 import {
@@ -42,7 +42,7 @@ export const ItemCode: React.FC<Props> = ({ className, code, size }) => {
 			)}
 		>
 			<AnimatePresence mode='wait'>
-				<m.div
+				<motion.div
 					key={code || 'item-code'}
 					initial={{ opacity: 0, x: -10 }}
 					animate={{ opacity: 1, x: 0 }}
@@ -78,7 +78,7 @@ export const ItemCode: React.FC<Props> = ({ className, code, size }) => {
 							</TooltipContent>
 						</Tooltip>
 					</TooltipProvider>
-				</m.div>
+				</motion.div>
 			</AnimatePresence>
 		</div>
 	)

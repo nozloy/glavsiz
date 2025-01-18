@@ -18,7 +18,7 @@ import { useSession } from 'next-auth/react'
 import { CartSheetItem } from './cart-sheet-item'
 import { Offer } from '@prisma/client'
 import { Button } from '../ui/button'
-import { m } from 'framer-motion'
+import { motion } from 'framer-motion'
 
 export const CartSheet: React.FC<React.PropsWithChildren> = ({ children }) => {
 	const {
@@ -117,7 +117,7 @@ export const CartSheet: React.FC<React.PropsWithChildren> = ({ children }) => {
 											Итого
 											<div className='flex-1 border-b border-dashed border-b-neutral-200 relative -top-1 mx-2' />
 										</span>
-										<m.div
+										<motion.div
 											key={totalPrice}
 											initial={{ opacity: 0, x: -10 }}
 											animate={{ opacity: 1, x: 0 }}
@@ -126,7 +126,7 @@ export const CartSheet: React.FC<React.PropsWithChildren> = ({ children }) => {
 											className='font-bold text-lg'
 										>
 											{totalPrice} ₽
-										</m.div>
+										</motion.div>
 									</div>
 									<Button
 										className='w-full'

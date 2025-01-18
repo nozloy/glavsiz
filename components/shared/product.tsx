@@ -18,7 +18,7 @@ import { toast } from 'sonner'
 import { useCityStore } from '@/store/city-store'
 import { PriceInfo } from '@/exchange/@types'
 import { OfferWithTypedJson } from '@/store/@types'
-import { m } from 'framer-motion'
+import { motion } from 'framer-motion'
 import { ImageCarousel } from './image-carousel'
 import { ItemWithOffer } from '@/@types'
 
@@ -188,7 +188,7 @@ export const Product: React.FC<Props> = ({ className, item }) => {
 					</div>
 					<div className='w-full neo rounded-2xl p-4'>
 						<div className='flex flex-row items-end gap-2'>
-							<m.div
+							<motion.div
 								key={selectedOfferId + activeCity}
 								initial={{ opacity: 0, x: -10 }}
 								animate={{ opacity: 1, x: 0 }}
@@ -197,7 +197,7 @@ export const Product: React.FC<Props> = ({ className, item }) => {
 								className='text-3xl font-bold bg-primary text-secondary p-2 px-4 rounded-2xl drop-shadow-md select-none'
 							>
 								{currentPrice ? `${currentPrice} ₽` : 'Под заказ'}
-							</m.div>
+							</motion.div>
 							<p className='relative bottom-3 text-muted-foreground text-md'>
 								{selectedOffer?.price?.find((item: PriceInfo) =>
 									item.name.includes(activeCity),

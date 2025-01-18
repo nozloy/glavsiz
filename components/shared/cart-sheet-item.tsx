@@ -22,9 +22,10 @@ export const CartSheetItem: React.FC<Props> = ({
 	removeCartItem,
 }) => {
 	const { activeCity } = useCityStore.getState()
-	const price = cartItem.Offer.price.find(
-		(item: PriceInfo) => item.name === activeCity,
-	).value
+	const cityPrice =
+		cartItem.Offer.price.find((item: PriceInfo) => item.name === activeCity)
+			?.value || 0
+	const price = cityPrice ? true : false
 
 	return (
 		<div
@@ -56,7 +57,9 @@ export const CartSheetItem: React.FC<Props> = ({
 					transition={{ duration: 0.3 }}
 					className='text-md font-bold'
 				>
-					{price * cartItem.quantity}₽
+					{price
+						? (cityPrice * cartItem.quantity).toFixed(2) + '₽'
+						: 'под заказ'}
 				</motion.div>
 			</div>
 		</div>

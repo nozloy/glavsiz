@@ -213,9 +213,9 @@ export const Product: React.FC<Props> = ({ className, item }) => {
 								onClick={handleAddCartItem}
 								variant={'default'}
 								size={'lg'}
-								className='w-[250px] text-lg font-bold p-8 bg-primary text-secondary drop-shadow-md hover:drop-shadow-lg hover:scale-105 transition-all delay-75 active:scale-95 select-none'
+								className='w-[250px] text-xl font-bold p-8 bg-primary text-secondary drop-shadow-md hover:drop-shadow-lg hover:scale-105 transition-all delay-75 active:scale-95 select-none'
 							>
-								<h5>Добавить в корзину</h5>
+								Добавить в корзину
 							</Button>
 							<Button
 								variant={'default'}
